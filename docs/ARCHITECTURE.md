@@ -37,6 +37,19 @@ Native surfaces:
 | blog-post | blog-post |
 | forgejo | forgejo |
 
+## Worker hierarchy
+
+Normal implementation uses a supervised hierarchy rather than flat model fan-out:
+
+```text
+Main/controller
+└── flow-implementer (@task / Terra) — owns the unit
+    ├── scout (@smol / Luna) — bounded read-only discovery
+    └── sonic (@smol / Luna) — strictly mechanical leaf edits
+```
+
+The Terra owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the Terra owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
+
 ## Review specialists
 
 COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses.

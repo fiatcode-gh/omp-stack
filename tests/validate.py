@@ -69,6 +69,26 @@ ldd=(ROOT/'agent/skills/flow-ldd/SKILL.md').read_text().lower()
 if 'architect **never writes production code**' not in ldd: err('LDD strict non-coding architect rule missing')
 if '.flow/ldd' not in ldd: err('LDD .flow namespace missing')
 
+# Nested delegation and live-clarification contract.
+impl_path=ROOT/'agent/agents/flow-implementer.md'
+impl_fm,impl_body=frontmatter(impl_path)
+spawns=impl_fm.get('spawns')
+if spawns != ['scout','sonic']: err(f'flow-implementer spawns must be exactly scout+sonic, got {spawns!r}')
+impl_lower=impl_body.lower()
+for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim"]:
+    if required not in impl_lower: err(f'flow-implementer missing nested delegation/clarification invariant: {required}')
+
+execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
+for required in ['sonic','live clarification','delegation never transfers verification responsibility']:
+    if required not in execution: err(f'flow-execution missing nested delegation invariant: {required}')
+
+for required in ['sonic','clarify live','material clarifications']:
+    if required not in ldd: err(f'flow-ldd missing nested delegation/clarification invariant: {required}')
+
+evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
+if 'delegation never transfers verification responsibility' not in evidence:
+    err('flow-evidence delegation invariant missing')
+
 
 # Relative skill asset references must resolve from each skill directory.
 asset_re = re.compile(r'`((?:references|scripts)/[^`]+)`')

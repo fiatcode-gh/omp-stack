@@ -26,16 +26,23 @@ Classify units:
 
 Worker briefs are self-contained: intended behavior, exact scope/subsystem, governing constraints/interfaces and observable acceptance criteria. Do not paste the whole conversation. Do not pass concrete model names.
 
-If a worker discovers a new product/design choice or proves the governing plan wrong, stop that unit and return to design/Plan/user decision rather than improvising.
+`flow-implementer` remains the Terra unit owner. It may spawn `scout` for bounded discovery and `sonic` for mechanical leaf edits when the approved contract already determines the answer. Nested delegation is optional and must not create overlapping writers or transfer design/integration responsibility to the child.
+
+### Live clarification
+
+Workers should not terminally fail at the first real ambiguity. They first derive what they can from the contract, repository, tests and tools. When the unresolved point would change/extend approved behavior, scope, interface, data contract or architecture, the `flow-implementer` asks Main through `hub` with concise evidence + recommendation and continues any independent work. It awaits only when completely blocked.
+
+Main may clarify within the already-approved contract. Main must not silently expand authorization. If the answer requires a new product/design/user choice or proves the governing plan wrong, tell the worker to stop at a clean boundary and return BLOCKED, then route through design/Plan/user decision.
 
 ## 3. Accept by evidence
 
 For each completed unit/wave:
 
 1. inspect the actual patch/files, not only worker prose;
-2. run focused proof appropriate to the unit;
-3. check integration points with already accepted work;
-4. reject or correct deviations before dependent work proceeds.
+2. inspect material nested-child changes as part of the owning unit; delegation never transfers verification responsibility;
+3. run focused proof appropriate to the unit;
+4. check integration points with already accepted work;
+5. reject or correct deviations before dependent work proceeds.
 
 ## 4. Review proportionally
 

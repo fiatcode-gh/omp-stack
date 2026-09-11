@@ -21,10 +21,11 @@ The durable authority lives under `.flow/ldd/<epic>/`. Do not use `.omp/` for LD
 3. **Recon** — verify inherited claims at source. Parallel read-only scouts are encouraged. Record coverage/gaps.
 4. **Decide** — resolve product/architecture forks with the user. Use `flow-design` for a material decision. Lock the result in the ledger.
 5. **Specify unit** — write a fresh-worker-ready unit contract: behavior, boundaries, dependencies, acceptance criteria and traps. A hard story may use native Plan mode; a well-specified ordinary story need not spend a Plan call.
-6. **Dispatch** — normally OMP `flow-implementer` workers/tasks. Independent units may run isolated/concurrently; dependent units stay sequential. External top-level session/other harness → `flow-external-session`.
-7. **Verify/accept** — inspect actual patches and independently verify the unit using `references/verification-doctrine.md`. Review proportionally; acceptance is the architect's judgment, not the worker's DONE string.
-8. **Record** — append decisions/results, status, verification receipts and a fresh RESUME snapshot; preserve unresolved hazards/deviations.
-9. **Integrate** — sequence accepted units; external publication/merge stays user-owned (`flow-integrating`).
+6. **Dispatch** — normally OMP `flow-implementer` workers/tasks. The Terra unit owner may use nested `scout` discovery and `sonic` mechanical leaves, but retains implementation/integration responsibility. Independent top-level units may run isolated/concurrently; dependent units stay sequential. Nested leaf workers share their parent's unit workspace rather than creating isolation-inside-isolation. External top-level session/other harness → `flow-external-session`.
+7. **Clarify live** — workers resolve local uncertainty themselves first. A unit owner may ask the architect/Main through `hub` when the remaining ambiguity would alter a locked behavior/scope/interface/data/architecture decision. The architect answers only inside already-authorized decisions; material clarifications/corrections are recorded in the ledger. A genuinely new decision returns through `flow-design`/user approval instead of being improvised.
+8. **Verify/accept** — inspect actual patches and independently verify the unit using `references/verification-doctrine.md`. Child and unit-owner reports are claims; acceptance is the architect's judgment, not a DONE string.
+9. **Record** — append decisions/results, status, verification receipts and a fresh RESUME snapshot; preserve unresolved hazards/deviations.
+10. **Integrate** — sequence accepted units; external publication/merge stays user-owned (`flow-integrating`).
 
 ## Ledger boundary
 

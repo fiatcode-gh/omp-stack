@@ -8,7 +8,8 @@ The stack encodes **intent in roles**, not concrete model names. `config.recomme
 |---|---|---|
 | tiny metadata/title/background | `@tiny` | lowest-cost Luna |
 | commit/changelog generation | `@commit` | Luna low; cheap background text generation |
-| repo exploration / mechanical worker | bundled `scout` / `@smol` | Luna |
+| repo exploration | bundled `scout` / `@smol` | Luna |
+| mechanical leaf implementation | bundled `sonic` / `@smol` | Luna medium |
 | normal interactive coding | `@default` | Terra |
 | delegated implementation / Vibe good | `@task` | Terra |
 | TTC/CRF/audit auxiliary lenses | `@review_aux` | Terra high |
@@ -32,8 +33,12 @@ Keep `task.enableEffort: false`. Quality intent is already represented by role s
 
 ## Prewalk
 
-Do not globally prewalk Terra implementers down to Luna at first write. Reasoning often continues after the first edit (test failure, redesign, integration). Use Luna explicitly for known mechanical work/Vibe fast workers instead.
+Do not globally prewalk Terra implementers down to Luna at first write. Reasoning often continues after the first edit (test failure, redesign, integration). Instead, keep Terra as the unit owner and explicitly delegate sufficiently mechanical leaves to bundled `sonic`; use `scout` for read-only discovery. The parent still verifies and integrates all child work.
 
 ## Review economics
 
 Review coherent waves rather than every tiny implementation task. COR remains the strongest normal lens. TTC/CRF use Terra high and run only when applicable. Security uses OMP's security specialist/scan only when the surface warrants it.
+
+## Nested delegation
+
+`flow-implementer` may spawn only `scout` and `sonic`. This uses the default shallow nested-agent budget without making implementers unrestricted orchestrators. Delegate only when a leaf has one obvious correct outcome under the approved contract and a mechanical acceptance check. Questions rise `sonic/scout → flow-implementer → Main → user/design` only as high as necessary.
