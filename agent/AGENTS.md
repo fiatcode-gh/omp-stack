@@ -1,0 +1,73 @@
+# User instructions
+
+## Engineering principles
+
+- **YAGNI** — do not build what is not needed yet.
+- **DRY, without premature abstraction** — remove meaningful duplication; do not create abstractions before the shape is stable.
+- **Separation of concerns** — keep modules and layers focused.
+- **Self-explaining code** — code explains *what* through names and structure. Comments explain *why*, invariants, constraints, or non-obvious context only.
+- Prefer the smallest coherent change that satisfies the requirement. Avoid opportunistic cleanup unless it is required for correctness or explicitly requested.
+
+## OMP / Flow execution
+
+OMP owns Plan mode, task-agent lifecycle, isolation, Agent Hub, Vibe, built-in review and security scanning. Flow skills add judgment and gates; they do not recreate those mechanics.
+
+- Load a Flow skill when its description matches the task. There is no bootstrap skill.
+- Design only when a material decision exists. Do not manufacture a design ceremony for mechanical work.
+- Use native Plan mode when the work needs an execution specification; do not use a Flow planning substitute.
+- Route task agents by agent name/role. Do not pass or hard-code concrete model identifiers in workflow prompts.
+- Parallelize independent work, not merely divisible work. Dependency structure decides isolation and concurrency.
+- For ordinary work, the main session may code. Under `flow-ldd`, the architect is strictly non-coding and delegates production edits.
+
+## Commits
+
+Use Conventional Commits: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`.
+
+Before committing, run the repository's declared formatter/linter on changed files and the verification appropriate to the change. If tooling is not documented, infer it from repository configuration or the project's Weft page.
+
+A local commit is not permission to push, open/update a pull request, publish a review, merge, release, or otherwise affect a remote system.
+
+## Communication
+
+Use short, plain English. Expand abbreviations on first use while keeping technical names exact. Avoid idioms and report-like ceremony. Discuss the approach in prose before presenting a structured choice when a real choice remains.
+
+Never use the section-sign character in prose/docs/specs; write `section 8`.
+
+Stakeholder-facing comments (pull requests, trackers, review replies) are short plain prose. Avoid automatic preambles, recaps, and unasked-for next steps; response length follows what the user asked for, not the work performed.
+
+## Skill authoring
+
+When evolving these skills, prefer a light real-world field trial and two or three clean uses over building a large evaluation harness prematurely. Tune descriptions after observing real mis-triggers.
+
+## Shell awareness
+
+Two shells may differ: the tool shell and the user's login shell. Before the first shell-sensitive command in a session, check reality:
+
+```sh
+ps -p $$ -o comm=
+basename "$SHELL"
+```
+
+Write tool commands in POSIX `sh`. When Bash-only syntax is necessary, invoke Bash explicitly. Commands handed to the user must fit their login shell.
+
+## Weft graph
+
+`${WEFT_GRAPH}` is the durable human/project knowledge graph.
+
+- Before substantive work in a project, read the matching project page when available for constraints and gotchas.
+- Durable project state, backlog and conventions belong in Weft rather than harness-native memory files or ad-hoc repository backlogs.
+- When this session completes a **known** Weft TODO it was working from, close it to `DONE` and attach the result in the same session. Do not mutate arbitrary TODO search results without instruction.
+- Personal collection projects use a `*-stack` repository name and matching `[[X Stack]]` canonical page where applicable.
+
+## Documentation lookup
+
+For libraries, frameworks, SDKs, APIs, CLIs and cloud services, prefer the configured Context7 MCP when available. If it is unavailable or insufficient, use upstream official documentation or current web research rather than guessing.
+
+## Python
+
+Use `uv` for Python.
+
+- Project dependencies: `uv add` / `uv remove`; run via `uv run`; synchronize via `uv sync`.
+- Standalone tools: `uv tool install`; one-off tools: `uvx`.
+- Interpreters: `uv python install`.
+- Do not use `pip install`, `pipx`, Poetry or hand-rolled virtualenvs for user/project tooling.

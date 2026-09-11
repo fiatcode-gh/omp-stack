@@ -1,0 +1,14 @@
+{
+	"_comment": "Copy to ~/.omp/agent/mcp.json and replace the placeholder API key. Same rule as pi/mcp.example.json: deliberately NOT copied by scripts/omp-stack install — the placeholder key would produce a live config that looks wired but silently fails, and install's do-not-clobber rule would then leave that broken file in place. Copy it by hand, once. verify only checks presence and parse, never the key.",
+	"mcpServers": {
+		"context7": {
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/context7-mcp",
+				"--api-key",
+				"ctx7sk-REPLACE-WITH-YOUR-KEY"
+			]
+		}
+	}
+}

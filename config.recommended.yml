@@ -1,0 +1,71 @@
+# Merge intentionally into your existing ~/.omp/agent/config.yml.
+# scripts/omp-stack never overwrites the live config.
+providers:
+  webSearchOrder: []
+
+defaultThinkingLevel: auto
+
+modelRoles:
+  default: openai-codex/gpt-5.6-terra
+  smol: openai-codex/gpt-5.6-luna
+  tiny: openai-codex/gpt-5.6-luna:low
+  vision: openai-codex/gpt-5.6-luna
+  task: openai-codex/gpt-5.6-terra
+  plan: openai-codex/gpt-5.6-sol:high
+  slow: openai-codex/gpt-5.6-sol:high
+  review_aux: openai-codex/gpt-5.6-terra:high
+  critical: openai-codex/gpt-5.6-sol:xhigh
+  commit: openai-codex/gpt-5.6-luna:low
+
+# Keep per-dispatch effort disabled so an orchestrator cannot silently turn a
+# cheap worker into the selected model's highest reasoning level.
+task:
+  maxConcurrency: 3
+  maxRecursionDepth: 2
+  enableEffort: false
+  isolation:
+    enabled: true
+
+isolation:
+  backend: auto
+
+# Preserve the user's current UI choices.
+symbolPreset: nerd
+composer:
+  shape: rule
+theme:
+  dark: titanium
+  light: light
+setupVersion: 2
+statusLine:
+  preset: custom
+  leftSegments:
+    - pi
+    - model
+    - mode
+    - git
+    - context_pct
+  rightSegments:
+    - session_name
+    - usage
+  separator: powerline-thin
+  sessionAccent: true
+  compactThinkingLevel: true
+  contextLine: embedded
+  segmentOptions:
+    model:
+      showThinkingLevel: true
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: true
+colorBlindMode: true
+tui:
+  codexResetFireworks: true
+cycleOrder:
+  - smol
+  - default
+  - slow
+dev:
+  autoqaConsent: granted
