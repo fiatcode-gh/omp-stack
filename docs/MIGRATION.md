@@ -38,5 +38,5 @@ Compared with the attached config:
 - add `critical`: Sol xhigh;
 - add `commit`: Luna low;
 - keep `task`: Terra and `plan`: Sol high;
-- enable per-spawn task isolation with backend `auto`;
+- enable per-spawn task isolation with backend `auto` as an available capability; Flow normally uses it for independent concurrent writers, not every task;
 - keep `task.enableEffort: false`, `maxConcurrency: 3`.

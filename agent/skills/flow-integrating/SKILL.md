@@ -9,7 +9,9 @@ Integration belongs to the user.
 
 ## 1. Prove local completion
 
-Run the appropriate fresh final test/build/lint/format/static checks and inspect the final diff/status. Re-test the original symptom for bug fixes. State pre-existing/unverified failures separately.
+Ensure the appropriate final test/build/lint/format/static gates cover the **current final tree/head** and inspect the final diff/status. Re-test the original symptom for bug fixes. State pre-existing/unverified failures separately.
+
+Do not rerun an expensive final command merely because control moved into this skill: a just-completed Main-owned result remains fresh if no relevant file/head/environment changed and its scope is sufficient. Any material edit after that proof makes the affected evidence stale and requires the corresponding gate again.
 
 Reconcile the result against the governing request/spec/approved plan. Name omissions/deviations rather than silently redefining done.
 

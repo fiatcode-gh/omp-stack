@@ -79,15 +79,43 @@ for required in ['mechanical leaf work','hub','main','nested children share your
     if required not in impl_lower: err(f'flow-implementer missing nested delegation/clarification invariant: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
-for required in ['sonic','live clarification','delegation never transfers verification responsibility']:
-    if required not in execution: err(f'flow-execution missing nested delegation invariant: {required}')
+for required in [
+    'route by work type', 'preserve the unit owner', 'clarify live',
+    'never broadly tell a writer', 'route corrections cheaply',
+    'delegation never transfers verification responsibility',
+    'a complete review round is not automatic',
+]:
+    if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
-for required in ['sonic','clarify live','material clarifications']:
-    if required not in ldd: err(f'flow-ldd missing nested delegation/clarification invariant: {required}')
+for required in [
+    'current flow/omp stack owns **execution mechanics**', 'flow-execution',
+    'bounded parallel read-only `scout`', 'normally non-isolated',
+    'correct efficiently', 'worker self-verification is required',
+]:
+    if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
 evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
-if 'delegation never transfers verification responsibility' not in evidence:
-    err('flow-evidence delegation invariant missing')
+for required in [
+    'writers verify their own work', 'delegation never transfers verification responsibility',
+    'leaf worker proves its leaf', 'do not rerun the same expensive full suite',
+]:
+    if required not in evidence: err(f'flow-evidence invariant missing: {required}')
+
+safety=(ROOT/'agent/rules/flow-safety.md').read_text().lower()
+for required in ['sole/sequential writer', 'independent concurrent writers', 'completed isolated task workspaces']:
+    if required not in safety: err(f'flow-safety workspace-lifecycle invariant missing: {required}')
+
+tdd=(ROOT/'agent/skills/flow-tdd/SKILL.md').read_text().lower()
+for required in ['ownership and workspace safety', 'higher-layer verification', 'unit owner']:
+    if required not in tdd: err(f'flow-tdd layered-proof invariant missing: {required}')
+
+review=(ROOT/'agent/skills/flow-review/SKILL.md').read_text().lower()
+if 'do **not** automatically repeat every original lens' not in review:
+    err('flow-review affected-lens rerun invariant missing')
+
+integrating=(ROOT/'agent/skills/flow-integrating/SKILL.md').read_text().lower()
+if 'do not rerun an expensive final command merely because control moved into this skill' not in integrating:
+    err('flow-integrating fresh-evidence reuse invariant missing')
 
 
 # Relative skill asset references must resolve from each skill directory.

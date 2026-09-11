@@ -10,3 +10,5 @@ Before handoff, flush decided state into the ledger, then regenerate `RESUME.md`
 4. immediate task: re-orient first, do not trust the handoff summary over the ledger.
 
 Do not duplicate the whole ledger into the handoff prompt.
+
+The receiving architect inherits durable project decisions, not frozen harness mechanics. Revalidate any historical mailbox/isolation/model-routing instructions against the current Flow/OMP stack before dispatching new work.

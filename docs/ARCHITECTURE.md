@@ -37,23 +37,39 @@ Native surfaces:
 | blog-post | blog-post |
 | forgejo | forgejo |
 
-## Worker hierarchy
+## Execution hierarchy
 
-Normal implementation uses a supervised hierarchy rather than flat model fan-out:
+The normal Flow execution model is shared by ordinary work, approved Plans and LDD units. Route by remaining judgment rather than by file count alone:
 
 ```text
 Main/controller
-└── flow-implementer (@task / Terra) — owns the unit
-    ├── scout (@smol / Luna) — bounded read-only discovery
-    └── sonic (@smol / Luna) — strictly mechanical leaf edits
+├── scout (@smol / Luna) — bounded read-only recon
+├── sonic (@smol / Luna) — direct behavior-preserving mechanical edit / diagnosed exact correction
+└── flow-implementer (@task / Terra) — semantic unit owner
+    ├── scout (@smol / Luna) — bounded local discovery
+    └── sonic (@smol / Luna) — settled mechanical leaf edits
 ```
 
 The Terra owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the Terra owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
 
+A sole/sequential Terra owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments.
+
+## Evidence hierarchy
+
+Evidence broadens with ownership rather than repeating the same full gate everywhere:
+
+```text
+leaf proof → unit proof → integration/review proof → final-tree gate
+```
+
+Writers must verify their own changes. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged.
+
 ## Review specialists
 
-COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses.
+COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses. After fixes, rerun only affected/newly applicable lenses unless the change moved enough to justify a new full round.
 
 ## LDD
 
-LDD state lives under `.flow/ldd`, never `.omp`, because `.omp` affects OMP discovery/config semantics. Agent Hub/transcripts capture execution history; the ledger captures current decisions/state and outranks conversation summaries after compaction/resume.
+LDD state lives under `.flow/ldd`, never `.omp`, because `.omp` affects OMP discovery/config semantics. Agent Hub/transcripts capture execution history; the ledger captures durable project decisions/state and outranks conversation summaries after compaction/resume.
+
+The ledger does **not** permanently own harness mechanics. Historical mailbox/isolation/model-routing instructions are version-sensitive and must be revalidated against the current Flow/OMP stack on resume.

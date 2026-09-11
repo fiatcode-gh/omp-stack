@@ -35,7 +35,7 @@ Then merge the model/task settings you want from `config.recommended.yml` into y
 The old 24-skill surface is reduced to 14 skills:
 
 - `flow-design` — material product/architecture decisions only.
-- `flow-execution` — dependency-aware execution, isolation and review waves.
+- `flow-execution` — judgment-aware routing, resumable unit ownership, dependency-aware isolation, layered verification and review waves.
 - `flow-tdd` — behavior-first Red/Green/Refactor.
 - `flow-debugging` — root-cause-first diagnosis.
 - `flow-review` — local change, PR reviewer, PR author-feedback, and codebase-audit modes.
@@ -45,7 +45,7 @@ The old 24-skill surface is reduced to 14 skills:
 - `forgejo`, `ui-design`, `blog-post` — domain capabilities.
 - `weft-worklog`, `weft-memory`, `weft-maintenance` — grouped Weft operations.
 
-The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the mechanics; `flow-safety` and `flow-evidence` rules retain the invariants.
+The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the mechanics; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs.
 
 ## Model philosophy
 

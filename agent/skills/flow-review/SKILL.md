@@ -22,7 +22,7 @@ Never expose secret values. Review/audit specialists are read-only.
 
 ## Change-lens selection
 
-- COR always.
+- COR always for the initial coherent change review.
 - TTC only when executable behavior/tests/validation/migrations/types/schemas/contracts changed.
 - CRF only when non-trivial logic, abstractions, docs/comments, cross-module refactors, duplication/nesting or mixed responsibilities changed.
 - SEC only when a real security boundary is involved (authentication/authorization, secrets, cryptography, payments, destructive operations, untrusted-input boundaries, privileged filesystem/process/network access, etc.).
@@ -30,6 +30,8 @@ Never expose secret values. Review/audit specialists are read-only.
 Route COR to bundled `reviewer`; TTC to `flow-ttc-reviewer`; CRF to `flow-craft-reviewer`; SEC to built-in `security-reviewer` or native `security_scan` when a dedicated scan is warranted. Do not pass concrete model names.
 
 Run applicable lenses in parallel and blind to one another.
+
+After fixes, do **not** automatically repeat every original lens. Re-run the lens that raised the finding when independent confirmation matters, plus any lens newly made applicable by the fix's changed surface. Repeat COR/the full lens set only when the corrections materially changed the reviewed design/behavior/risk or the original review target moved substantially. Main's final verification is separate from specialist re-review.
 
 ## Publication gate
 

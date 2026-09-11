@@ -16,7 +16,9 @@ OMP owns Plan mode, task-agent lifecycle, isolation, Agent Hub, Vibe, built-in r
 - Design only when a material decision exists. Do not manufacture a design ceremony for mechanical work.
 - Use native Plan mode when the work needs an execution specification; do not use a Flow planning substitute.
 - Route task agents by agent name/role. Do not pass or hard-code concrete model identifiers in workflow prompts.
-- Parallelize independent work, not merely divisible work. Dependency structure decides isolation and concurrency.
+- Parallelize independent work, not merely divisible work. Dependency structure decides isolation and concurrency. A sole/sequential writer on a suitable feature checkout should normally stay non-isolated so it can be resumed.
+- Writers verify their own changes with focused repository-native proof. Controller/final verification is additive; never make workers blind merely to preserve independence.
+- Route settled behavior-preserving/mechanical edits and already-diagnosed exact corrections to bundled `sonic`; keep new behavior, TDD sequencing, debugging and integration judgment with Main or `flow-implementer`.
 - For ordinary work, the main session may code. Under `flow-ldd`, the architect is strictly non-coding and delegates production edits.
 
 ## Commits

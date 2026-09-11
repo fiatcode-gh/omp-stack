@@ -1,6 +1,6 @@
 ---
 name: flow-tdd
-description: Use when adding or changing executable behavior; establish a failing behavioral proof before production code, then Red/Green/Refactor with regression verification.
+description: Use when adding or changing executable behavior; establish a failing behavioral proof before production code, then Red/Green/Refactor with verification scoped to the owning layer.
 ---
 
 # Flow TDD
@@ -13,11 +13,13 @@ For executable behavior: **no production behavior without a failing proof first*
 1. **RED** — write one minimal behavioral test/reproduction for one behavior. Prefer real code and public seams; mock only where the boundary requires it.
 2. Run it and confirm the failure is for the intended missing/broken behavior, not a typo/setup failure.
 3. **GREEN** — make the smallest production change that satisfies the behavior. No unrelated features/options.
-4. Run the focused test, then the appropriate broader regression suite.
+4. Run the focused test, then the broader regression scope appropriate to **your ownership and workspace safety**.
 5. If the green result could be hard-coded/accidental, add a second case that forces the real rule.
 6. **REFACTOR** — improve names/structure/remove duplication while staying green.
 
 Repeat per behavior.
+
+A leaf child need not run the whole repository after every mechanical edit. A unit owner must integrate leaf work and prove the unit. Main/final integration owns the full repository gate when concurrent or cross-unit state makes that the correct layer. Never use higher-layer verification as a reason to skip the focused proof available to the writer.
 
 ## Test philosophy
 
