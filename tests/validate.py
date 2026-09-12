@@ -88,6 +88,7 @@ for required in [
     'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
     'dispatch preflight', 'verification ownership:', 'do not spawn a writing worker until all four entries are concrete',
     'formatter-only failure', 'forward pointer',
+    'accepted external planning handoff', 'do not invoke native plan only to reproduce it',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
@@ -95,8 +96,36 @@ for required in [
     'current flow/omp stack owns **execution mechanics**', 'flow-execution',
     'bounded parallel read-only `scout`', 'normally non-isolated',
     'correct efficiently', 'worker self-verification is required', 'forward pointer',
+    'external planning intake', 'does not carry local implementation authorization',
+    'current validated external implementation strategy',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
+
+external=(ROOT/'agent/skills/flow-external-session/SKILL.md').read_text().lower()
+for required in ['planning handoff intake', 'references/planning-handoff.md', 'evidence/proposal, not authority or authorization', 'do not create a mailbox for a one-way static planning import']:
+    if required not in external: err(f'flow-external-session planning-handoff invariant missing: {required}')
+
+ph=(ROOT/'agent/skills/flow-external-session/references/planning-handoff.md').read_text().lower()
+schema_path=ROOT/'agent/skills/flow-external-session/references/planning-handoff.schema.json'
+if not schema_path.exists(): err('planning-handoff JSON schema missing')
+else:
+    import json
+    schema=json.loads(schema_path.read_text())
+    if schema.get('properties',{}).get('authorization',{}).get('const') != 'not-carried': err('planning-handoff schema authorization boundary missing')
+    if schema.get('additionalProperties') is not False: err('planning-handoff schema must reject unknown fields')
+for required in ['flow_handoff', 'authorization', 'not-carried', 'reject absolute paths', 'skip a redundant plan call', 'current local project instructions', 'flow-handoff.json']:
+    if required not in ph: err(f'planning-handoff schema invariant missing: {required}')
+
+validator=ROOT/'agent/skills/flow-external-session/scripts/validate-planning-handoff.py'
+if not validator.exists(): err('planning-handoff validator missing')
+else:
+    validator_text=validator.read_text().lower()
+    for required in ['authorization must be exactly not-carried', "artifact path must be relative without '..'", 'artifacts must declare handoff.md']:
+        if required not in validator_text: err(f'planning-handoff validator invariant missing: {required}')
+
+interop=(ROOT/'docs/GPT-INTEROP.md').read_text().lower()
+for required in ['flow-planning', 'never authorization', 'synchronization discipline']:
+    if required not in interop: err(f'gpt interop doctrine missing: {required}')
 
 evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
 for required in [

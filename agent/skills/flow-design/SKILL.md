@@ -21,6 +21,10 @@ Use this skill when at least one real fork affects behavior, architecture, inter
 6. Get explicit user agreement on product/architecture choices before code depends on them.
 7. After each settled fork, maintain the forward pointer: move to the next unresolved material fork, or state the next downstream action (unit contract / Plan / execution) and whether another user decision is actually required. Do not make the user say "continue" when the design workflow already determines the next step.
 
+## Imported design context
+
+A validated external planning/LDD handoff may contain user-approved design decisions. Treat those as external evidence until current project/LDD authority is checked, then preserve still-valid settled decisions instead of re-running brainstorming by ritual. Reopen only decisions that are stale, contradicted, materially incomplete, or not actually user-approved. An implementation strategy in the handoff belongs to Plan/execution reasoning, not to this design skill.
+
 ## Durability
 
 - Ordinary small decisions may live in the conversation.

@@ -4,6 +4,7 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$ROOT"
 
 uv run --with pyyaml python tests/validate.py
+uv run python tests/planning-handoff.test.py
 node --no-warnings --experimental-strip-types tests/ai-memory.test.mjs
 sh -n scripts/omp-stack
 ./tests/install.test.sh

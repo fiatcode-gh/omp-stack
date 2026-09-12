@@ -41,11 +41,11 @@ The old 24-skill surface is reduced to 14 skills:
 - `flow-review` — local change, PR reviewer, PR author-feedback, and codebase-audit modes.
 - `flow-integrating` — final evidence and user-owned integration decision.
 - `flow-ldd` — durable architect/worker protocol for epics; architect never codes.
-- `flow-external-session` — external worktrees, handoffs and filesystem mailbox only.
+- `flow-external-session` — external worktrees, static planning/worker handoffs and filesystem mailbox when genuinely needed.
 - `forgejo`, `ui-design`, `blog-post` — domain capabilities.
 - `weft-worklog`, `weft-memory`, `weft-maintenance` — grouped Weft operations.
 
-The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the mechanics; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
+The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the local mechanics; validated external ChatGPT/other-harness planning handoffs can preserve already-settled design/strategy without duplicating native Plan; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
 
 ## Model philosophy
 

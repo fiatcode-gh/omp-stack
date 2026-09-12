@@ -14,7 +14,7 @@ OMP owns Plan mode, task-agent lifecycle, isolation, Agent Hub, Vibe, built-in r
 
 - Load a Flow skill when its description matches the task. There is no bootstrap skill.
 - Design only when a material decision exists. Do not manufacture a design ceremony for mechanical work.
-- Use native Plan mode when the work needs an execution specification; do not use a Flow planning substitute.
+- Use native Plan mode when the work needs an execution specification. A validated external planning handoff may already satisfy that need; do not duplicate planning that is still current, and do not use a Flow planning substitute inside OMP.
 - Route task agents by agent name/role. Do not pass or hard-code concrete model identifiers in workflow prompts.
 - Parallelize independent work, not merely divisible work. Dependency structure decides isolation and concurrency. A sole/sequential writer on a suitable feature checkout should normally stay non-isolated so it can be resumed.
 - Writers verify their own changes with focused repository-native proof. Controller/final verification is additive; never make workers blind merely to preserve independence.

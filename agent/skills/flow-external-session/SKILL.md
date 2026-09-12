@@ -1,13 +1,13 @@
 ---
 name: flow-external-session
-description: Use only when work must cross into an independently launched top-level session/other harness or a user-owned external worktree; validates the worktree, creates a self-contained handoff, and optionally uses a durable filesystem mailbox. Not for normal OMP task agents.
+description: Use only when work crosses an independently launched top-level session/other harness or a user-owned external worktree; validates worktrees, exchanges static planning/worker handoffs, and optionally uses a durable filesystem mailbox. Not for normal OMP task agents.
 ---
 
 # Flow external session
 
 This is the compatibility/independent-context layer. Normal OMP child agents use task/Agent Hub, not this skill.
 
-Modes may compose: **external worktree validation**, **handoff**, **mailbox**.
+Modes may compose: **external worktree validation**, **worker handoff**, **planning handoff intake**, **mailbox**.
 
 ## External worktree
 
@@ -17,11 +17,17 @@ Validate from reality (see `references/external-worktree.md`): absolute path, gi
 
 Record absolute path, branch and base/head in the handoff.
 
-## Handoff
+## Worker handoff
 
-Give the external session a self-contained contract: goal/spec, workspace facts, constraints, acceptance criteria, verification, external-write prohibitions and report destination. The receiving session may create its own internal OMP workers under that already-authorized external session.
+Give the external worker session a self-contained contract: goal/spec, workspace facts, constraints, acceptance criteria, verification, external-write prohibitions and report destination. The receiving session may create its own internal OMP workers under that already-authorized external session.
 
 When the report returns, independently verify the actual target/diff/evidence before accepting it.
+
+## Planning handoff intake
+
+A static architecture/planning bundle from ChatGPT or another independently run session uses `references/planning-handoff.md`. It is **evidence/proposal, not authority or authorization**. Run `scripts/validate-planning-handoff.py` first, then validate repository/observed revision, current local dirty state and relevant project/LDD authority before reusing decisions or implementation strategy.
+
+Do not create a mailbox for a one-way static planning import. Do not rerun design/Plan merely because the thinking happened in another harness: after targeted revalidation, preserve still-valid settled decisions and skip a redundant native Plan when the implementation strategy is already current and sufficiently specified. If design is unresolved, use `flow-design`; if only implementation strategy remains materially unresolved, use native Plan.
 
 ## Mailbox
 

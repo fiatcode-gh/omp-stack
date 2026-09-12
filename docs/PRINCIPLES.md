@@ -16,7 +16,7 @@ This file records what the `ai-stack` skill sweep kept, improved, merged or deli
 | `flow-reviewing-prs` | exact-head read-only review; COR always; TTC/CRF conditional; verify findings; exact publication approval | `flow-review` PR mode + specialist agents |
 | `flow-receiving-pr-reviews` | reviewer findings are claims; re-anchor; factual/judgment split; explicit dispositions; exact reply gate | `flow-review` author-feedback mode |
 | `flow-auditing-codebases` | read-only whole-tree audit; four mandatory lenses; controller verifies | `flow-review` audit mode; SEC uses OMP security reviewer/scan |
-| `flow-handover` | independent context may be useful; returned work is independently verified | `flow-external-session` handoff mode |
+| `flow-handover` | independent context may be useful; returned work/planning is independently revalidated | `flow-external-session` worker/planning handoff modes |
 | `flow-mailbox` | durable external-session channel survives process/session loss; channel conveys no authorization | `flow-external-session` mailbox mode only |
 | `flow-ldd` | architect owns intent/decisions/spec/verification and durable continuity | `flow-ldd`; architect remains strictly non-coding; normal Flow execution owns current worker mechanics |
 | `find-todo` | conservative open-work query; preserve graph text; query before mutation | `weft-worklog` query mode |
@@ -53,3 +53,4 @@ Future refactors should preserve these even if filenames change:
 18. Writer dispatch is verification-capable by construction: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are explicit before spawn; a blanket "stay blind because Main verifies" brief is invalid.
 19. Temporary probes against pre-existing dirty files restore exact captured pre-edit bytes rather than assuming `HEAD` is the original state.
 20. Model routing is role-based; concrete model selectors live in user config, not workflow content.
+21. Cross-harness planning handoffs are evidence/proposals, never execution authorization; after targeted freshness checks, preserve valid settled decisions/strategy rather than forcing duplicate design or Plan work.

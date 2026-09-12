@@ -18,7 +18,13 @@ The durable authority lives under `.flow/ldd/<epic>/`. Do not use `.omp/` for LD
 
 The ledger owns durable **project truth**: accepted product/architecture decisions, contracts, traps, verified facts, unit state and unresolved questions.
 
-The current Flow/OMP stack owns **execution mechanics**: agent transport, mailbox vs Hub, isolation/workspace policy, model routing, verification layering and task lifecycle. Historical ledger/handoff instructions about those mechanics are version-sensitive evidence, not permanent authority; revalidate them against the current stack when resuming. Explicit current user instructions outrank both.
+The current Flow/OMP stack owns **execution mechanics**: agent transport, mailbox vs Hub, isolation/workspace policy, model routing, verification layering and task lifecycle. Historical ledger/handoff instructions about those mechanics are version-sensitive evidence, not permanent authority; revalidate them against the current stack when resuming. Static planning handoffs from ChatGPT/another harness are also evidence/proposals until reconciled into the current ledger. Explicit current user instructions outrank both.
+
+## External planning intake
+
+When the user brings a ChatGPT/other-harness planning bundle into an epic, first use the `flow-external-session` planning-handoff protocol. Validate its manifest, observed repository revision, local dirty state and current ledger. Do not copy a proposed ledger delta/unit into canonical state blindly; reconcile it, record accepted decisions/contracts, and preserve conflicts/open questions explicitly. A handoff does not carry local implementation authorization.
+
+Do not make the user repeat already-settled design choices merely because they were decided in another session. Reopen only a fork whose assumptions are stale, contradicted, unapproved, or materially incomplete. Likewise, if the handoff contains a sufficiently detailed implementation strategy that remains current, do not spend a native Plan call just to restate it. Use native Plan only for the implementation strategy that is still materially unresolved/risky.
 
 ## Loop
 
@@ -26,7 +32,7 @@ The current Flow/OMP stack owns **execution mechanics**: agent transport, mailbo
 2. **Bootstrap** (new epic) — choose local vs shared ledger mode with the user and create `references/ledger-skeleton.md`.
 3. **Recon** — verify inherited claims at source. For broad recon spanning separable subsystems/historical sources, prefer bounded parallel read-only `scout` tasks for extraction/mapping; the architect synthesizes centrally and independently checks consequential facts. Do not spawn scouts for trivial recon.
 4. **Decide** — resolve product/architecture forks with the user. Use `flow-design` for a material decision. Lock the result in the ledger.
-5. **Specify unit** — write a fresh-worker-ready unit contract: behavior, boundaries, dependencies, acceptance criteria, traps and verification expectations. A hard story may use native Plan mode; a well-specified ordinary story need not spend a Plan call.
+5. **Specify unit** — write a fresh-worker-ready unit contract: behavior, boundaries, dependencies, acceptance criteria, traps and verification expectations. A hard story may use native Plan mode when its implementation strategy remains materially unresolved; a well-specified ordinary story or a current validated external implementation strategy need not spend a Plan call.
 6. **Dispatch** — use `flow-execution` rather than inventing an LDD-specific worker protocol. A semantic unit normally has one Terra `flow-implementer` owner; it may use nested `scout` discovery and `sonic` mechanical leaves. A sole/sequential writer on a suitable feature checkout is normally non-isolated so it can be resumed for corrections. Independent top-level writers may run isolated/concurrently. External top-level session/other harness → `flow-external-session`.
 7. **Clarify/wait live** — workers resolve local uncertainty themselves first. A unit owner may ask the architect/Main through `hub` when the remaining ambiguity would alter a locked behavior/scope/interface/data/architecture decision. The architect answers only inside already-authorized decisions; material clarifications/corrections are recorded in the ledger. A genuinely new decision returns through `flow-design`/user approval instead of being improvised. While workers run, the architect does useful independent architect work when available; when fully blocked, follow `flow-execution`'s bounded event-driven Hub-wait policy rather than spending turns polling status.
 8. **Verify/accept** — inspect actual patches and independently verify consequential unit/integration claims using `references/verification-doctrine.md`. Worker self-verification is required; architect verification is additive, not a substitute for it. Child and unit-owner reports are claims; acceptance is the architect's judgment, not a DONE string.
@@ -48,6 +54,6 @@ Worker transcripts/patches/PR discussions are evidence linked from the ledger, n
 
 1. Same OMP session/task agents → Agent Hub/`hub`, `history://`, `agent://`.
 2. Optional Vibe director mode when persistent worker conversations are specifically useful; remember it is a different session mode, not a requirement of LDD.
-3. Independent top-level session/other harness → `flow-external-session` filesystem handoff/mailbox.
+3. Independent top-level session/other harness → `flow-external-session` static planning/worker handoff; mailbox only when durable two-way asynchronous conversation is actually needed.
 
 Never create a filesystem mailbox around ordinary OMP child agents.

@@ -9,7 +9,7 @@ OMP owns plan approval, task spawning, isolation and Agent Hub. This skill owns 
 
 ## 1. Orient
 
-Read the governing request/spec/approved plan and project rules. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
+Read the governing request/spec/approved execution strategy and project rules. An accepted external planning handoff may serve as that strategy after local validation; it does not carry implementation authorization. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
 
 Classify units:
 
@@ -17,7 +17,7 @@ Classify units:
 - dependent on another unit's result/interface → serialize or start from the verified updated base;
 - overlapping mutable surface → one writer at a time unless the units are explicitly redesigned to be independent.
 
-Separate unresolved **judgment** from settled/mechanical work. A detailed plan reduces rediscovery; it does not make every implementation mechanical.
+Separate unresolved **judgment** from settled/mechanical work. A detailed plan reduces rediscovery; it does not make every implementation mechanical. If a validated external strategy already settles the consequential HOW and the relevant tree/contracts are unchanged, do not invoke native Plan only to reproduce it; Plan only the part that remains materially unresolved/risky.
 
 ## 2. Route by work type
 
