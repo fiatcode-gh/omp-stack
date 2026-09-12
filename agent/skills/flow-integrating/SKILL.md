@@ -30,6 +30,8 @@ Present only choices that are actually available, for example:
 
 Do not push, open/update a PR, request reviewers, merge or release until the user chooses the exact action.
 
+Do not end a locally-complete integration checkpoint with only a status summary. Either ask the concrete integration decision now, or state the specific blocker that prevents presenting the choices and what happens next. This is a required user-facing forward pointer.
+
 ## 4. After integration
 
 Re-check actual remote/local result before claiming integration succeeded. Delete a local feature branch only when it is genuinely integrated and safe. For a user-owned external worktree, report it as removable; do not remove it yourself unless explicitly instructed.

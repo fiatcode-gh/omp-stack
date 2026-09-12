@@ -75,7 +75,7 @@ impl_fm,impl_body=frontmatter(impl_path)
 spawns=impl_fm.get('spawns')
 if spawns != ['scout','sonic']: err(f'flow-implementer spawns must be exactly scout+sonic, got {spawns!r}')
 impl_lower=impl_body.lower()
-for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim", 'canonical formatter on every file you changed']:
+for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim", 'canonical formatter on every file you changed', 'brief sanity check', 'orchestration defect']:
     if required not in impl_lower: err(f'flow-implementer missing nested delegation/clarification invariant: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -86,13 +86,15 @@ for required in [
     'a complete review round is not automatic',
     'eventfully rather than polling', 'do not use an unbounded wait by default',
     'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
+    'dispatch preflight', 'verification ownership:', 'do not spawn a writing worker until all four entries are concrete',
+    'formatter-only failure', 'forward pointer',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
 for required in [
     'current flow/omp stack owns **execution mechanics**', 'flow-execution',
     'bounded parallel read-only `scout`', 'normally non-isolated',
-    'correct efficiently', 'worker self-verification is required',
+    'correct efficiently', 'worker self-verification is required', 'forward pointer',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
@@ -101,6 +103,7 @@ for required in [
     'writers verify their own work', 'delegation never transfers verification responsibility',
     'leaf worker proves its leaf', 'do not rerun the same expensive full suite',
     'pre-edit bytes', 'not restoration proof when the file was already modified',
+    'invalid flow orchestration',
 ]:
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 
@@ -117,10 +120,18 @@ if 'do **not** automatically repeat every original lens' not in review:
     err('flow-review affected-lens rerun invariant missing')
 if 'explicit disposition for all four change lenses' not in review:
     err('flow-review explicit lens-disposition invariant missing')
+if 'next action' not in review:
+    err('flow-review forward-pointer invariant missing')
 
 integrating=(ROOT/'agent/skills/flow-integrating/SKILL.md').read_text().lower()
 if 'do not rerun an expensive final command merely because control moved into this skill' not in integrating:
     err('flow-integrating fresh-evidence reuse invariant missing')
+if 'do not end a locally-complete integration checkpoint with only a status summary' not in integrating:
+    err('flow-integrating mandatory integration handoff missing')
+
+agents_md=(ROOT/'agent/AGENTS.md').read_text().lower()
+for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate']:
+    if required not in agents_md: err(f'AGENTS communication invariant missing: {required}')
 
 
 # Relative skill asset references must resolve from each skill directory.

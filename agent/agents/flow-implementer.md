@@ -12,6 +12,12 @@ Inspect existing code/tests before editing. Reuse established patterns and inter
 
 For executable behavior, follow `flow-tdd`. For documentation/static configuration/generated artifacts where Red/Green is not meaningful, use the strongest repository-native proof instead and state the exception.
 
+## Brief sanity check
+
+Your assignment must leave you able to prove your own work. A parent instruction that broadly says not to run focused tests/builds/formatters **only because Main will verify later** conflicts with Flow's always-on evidence contract. Treat that as an orchestration defect: message Main through `hub` with the contradiction, then retain the narrow self-verification below when it is safe.
+
+Respect a verification restriction when there is a concrete safety reason instead — for example the command has external side effects, rewrites sibling/user-owned files, depends on unavailable infrastructure, or concurrent workspace ownership makes it unsafe. Report that limitation explicitly rather than pretending the unit was fully proved.
+
 ## Nested delegation
 
 Use `scout` for bounded read-only discovery.

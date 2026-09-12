@@ -62,7 +62,9 @@ Evidence broadens with ownership rather than repeating the same full gate everyw
 leaf proof → unit proof → integration/review proof → final-tree gate
 ```
 
-Writers must verify their own changes, including canonical formatting of touched files when the formatter can be safely scoped. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged. Temporary probes against pre-existing dirty files restore against a captured pre-edit snapshot, never against `HEAD`.
+Writers must verify their own changes, including canonical formatting of touched files when the formatter can be safely scoped. Writer dispatch has a verification-capable preflight: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are stated explicitly before spawn. A blanket "do not verify because Main will" brief is invalid; the implementer also detects that contradiction so one controller mistake cannot silently recreate a blind worker. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged. Temporary probes against pre-existing dirty files restore against a captured pre-edit snapshot, never against `HEAD`.
+
+Interactive Flow also keeps a **forward pointer**: at meaningful user-facing checkpoints Main states the outcome, the next workflow action, and whether user input is required. Internal authorized next actions continue automatically; concrete questions are reserved for real design/approval/integration gates.
 
 ## Review specialists
 

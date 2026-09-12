@@ -49,5 +49,7 @@ Future refactors should preserve these even if filenames change:
 14. Exact behavior-preserving mechanical work or an already-diagnosed correction may route to `sonic`; new behavior/TDD sequencing and semantic/debugging/integration judgment remain with Main/Terra.
 15. Controllers wait eventfully for long-running workers instead of burning model turns on short status polling; waits stay bounded so liveness can be reassessed.
 16. Writers own safe touched-file formatting; Main owns final repo-wide cleanliness/integration gates, not basic formatting discovery.
-17. Temporary probes against pre-existing dirty files restore exact captured pre-edit bytes rather than assuming `HEAD` is the original state.
-18. Model routing is role-based; concrete model selectors live in user config, not workflow content.
+17. Interactive Flow maintains a forward pointer: every meaningful checkpoint says what is true, what happens next, and whether the user is needed; Flow does not hand orchestration back to the user when the next action is already determined.
+18. Writer dispatch is verification-capable by construction: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are explicit before spawn; a blanket "stay blind because Main verifies" brief is invalid.
+19. Temporary probes against pre-existing dirty files restore exact captured pre-edit bytes rather than assuming `HEAD` is the original state.
+20. Model routing is role-based; concrete model selectors live in user config, not workflow content.

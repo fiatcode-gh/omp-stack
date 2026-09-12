@@ -34,6 +34,10 @@ The current Flow/OMP stack owns **execution mechanics**: agent transport, mailbo
 10. **Record** — append decisions/results, status, verification receipts and a fresh RESUME snapshot; preserve unresolved hazards/deviations.
 11. **Integrate** — sequence accepted units; external publication/merge stays user-owned (`flow-integrating`).
 
+## User-facing continuity
+
+The architect maintains a **forward pointer** across sessions and checkpoints. After a recon result, locked decision, accepted unit, correction, or ledger update, briefly state what is now true, what the architect will do next, and whether the user must decide/approve anything. If the next step is determined by this loop and already authorized, proceed without asking the user to choose it. At a real approval/design/integration gate, ask the concrete question immediately instead of reporting status and stopping.
+
 ## Ledger boundary
 
 The ledger is not a backlog and not a transcript. Weft remains the durable human/project backlog. The ledger holds only what a future architect needs to continue the epic correctly: current state, locked decisions/rejected alternatives, cross-unit contracts, traps, open questions, unit status, verification receipts and corrections to previous assumptions.

@@ -35,7 +35,9 @@ Use short, plain English. Expand abbreviations on first use while keeping techni
 
 Never use the section-sign character in prose/docs/specs; write `section 8`.
 
-Stakeholder-facing comments (pull requests, trackers, review replies) are short plain prose. Avoid automatic preambles, recaps, and unasked-for next steps; response length follows what the user asked for, not the work performed.
+Stakeholder-facing comments (pull requests, trackers, review replies) are short plain prose. Avoid automatic preambles and recaps; response length follows what the user asked for, not the work performed.
+
+Maintain the **forward pointer** in interactive Flow work. At each meaningful user-facing checkpoint, briefly state the current outcome, the next workflow action Main intends to take, and whether user input/approval is required. If Flow can determine and perform the next action, say what you will do and continue rather than asking the user to choose. Ask the user only at a genuine decision/approval gate or when blocked on information they uniquely control.
 
 ## Skill authoring
 

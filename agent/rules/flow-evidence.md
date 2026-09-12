@@ -10,7 +10,7 @@ No material completion/correctness claim without fresh evidence appropriate to t
 
 - Run the proving command now when a command is the proof; read its whole relevant output and exit status.
 - `tests pass` requires the stated test scope with zero relevant failures. `build works` requires a successful build. `bug fixed` requires the original symptom/reproduction to be gone.
-- Writers verify their own work before returning it. Independent controller verification is **additive**, not a reason to make workers blind or forbid focused tests/builds/formatting.
+- Writers verify their own work before returning it. Independent controller verification is **additive**, not a reason to make workers blind or forbid focused tests/builds/formatting. A task brief that suppresses focused self-verification solely because Main will verify later is invalid Flow orchestration and should be corrected before work proceeds.
 - Scope proof by ownership: a leaf worker proves its leaf, the unit owner proves the integrated unit, Main proves consequential cross-unit/integration claims, and the final gate proves the final tree. Do not rerun the same expensive full suite at every layer merely as ceremony.
 - Agent/subagent reports are claims, not proof. Inspect the actual patch/files and independently verify consequential claims before accepting them. Delegation never transfers verification responsibility: each parent owns acceptance of its children's work, and Main owns acceptance of the resulting integration.
 - A recent proof may be reused only while its exact target/tree/head and relevant environment remain unchanged and its scope still covers the claim. Any material edit makes affected evidence stale.

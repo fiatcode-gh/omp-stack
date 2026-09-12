@@ -19,6 +19,7 @@ Use this skill when at least one real fork affects behavior, architecture, inter
 4. Offer alternatives only when genuinely viable alternatives exist. Name your recommendation and trade-offs.
 5. Converge on the smallest design that satisfies the requirement. Cover only relevant surfaces: components/boundaries, data/control flow, errors, compatibility and test strategy.
 6. Get explicit user agreement on product/architecture choices before code depends on them.
+7. After each settled fork, maintain the forward pointer: move to the next unresolved material fork, or state the next downstream action (unit contract / Plan / execution) and whether another user decision is actually required. Do not make the user say "continue" when the design workflow already determines the next step.
 
 ## Durability
 

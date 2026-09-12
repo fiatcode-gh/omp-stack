@@ -44,6 +44,25 @@ Keep the unit owner's agent id/name. When later evidence finds a semantic correc
 
 Worker briefs are self-contained: intended behavior, exact scope/subsystem, governing constraints/interfaces, observable acceptance criteria, workspace/concurrency context and verification scope. Do not paste the whole conversation. Do not pass concrete model names.
 
+Before spawning a writing worker, run a **dispatch preflight**. The brief must positively state all four of these:
+
+1. the focused behavioral/static proof the writer owns;
+2. the canonical formatter responsibility for touched files (or the concrete reason it cannot be run safely);
+3. which focused lint/type/build checks the writer may run;
+4. which broader/project-wide gates remain with Main, and why.
+
+If any of those are absent or the brief contains a blanket verification prohibition, repair the brief before dispatch. Use a compact footer when helpful so the permission cannot disappear in prose:
+
+```text
+Verification ownership:
+- Focused proof: <commands/checks the writer must run>
+- Formatter: <scoped formatter command or concrete safety exception>
+- Focused static/build: <allowed/required checks>
+- Main-owned gates: <broader commands and why they stay with Main>
+```
+
+Do not spawn a writing worker until all four entries are concrete.
+
 Never broadly tell a writer "do not test/build/format because Main will verify." Instead:
 
 - require focused repository-native proof of the writer's own changes;
@@ -78,6 +97,7 @@ A child proves its leaf; the Terra owner proves the combined unit; Main proves i
 When verification/review finds a problem:
 
 - exact, fully diagnosed mechanical correction with an existing failing/mechanical proof and one obvious result → direct `sonic` is appropriate;
+- formatter-only failure → have the current owner run the canonical formatter on its touched files, or route the exact formatter correction to `sonic`; never ask a semantic owner to imitate formatter output by hand;
 - correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available;
 - owner unavailable/non-revivable → dispatch a new bounded `flow-implementer` as fallback;
 - correction invalidates the governing contract/plan → stop implementation and return through design/Plan/user decision.
@@ -102,3 +122,5 @@ Run applicable read-only lenses in parallel and blind to one another. Verify Cri
 When the governing plan/user expects local commits, commit coherent behavior units rather than one mechanical task per commit by ritual; use Conventional Commits and the repository's pre-commit checks. Do not create commits merely because an internal worker boundary existed.
 
 Run or reuse fresh Main-owned final verification only while the final tree/head is unchanged and the evidence covers the final claims. Inspect the final diff. Then use `flow-integrating` for the user's integration choice.
+
+At meaningful user-facing checkpoints, maintain the forward pointer: state the outcome, name the next Flow action, and say whether user input is needed. When the next action is internal and authorized, continue it rather than ending with a generic "what next?".

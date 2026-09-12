@@ -35,6 +35,8 @@ Run applicable lenses in parallel and blind to one another.
 
 After fixes, do **not** automatically repeat every original lens. Re-run the lens that raised the finding when independent confirmation matters, plus any lens newly made applicable by the fix's changed surface. Repeat COR/the full lens set only when the corrections materially changed the reviewed design/behavior/risk or the original review target moved substantially. Main's final verification is separate from specialist re-review.
 
+At a user-facing review checkpoint, state the review outcome and the next action. If findings are actionable and locally authorized, route fixes rather than stopping at a passive summary. If review is clean, continue to final verification/integration or state the exact user gate that remains.
+
 ## Publication gate
 
 Any forge write — review verdict/comment, reply, resolve action, reviewer request — requires the user's approval of the **exact** draft/action set. Re-query remote head immediately before publishing; if it moved, post nothing until the draft is rebuilt against the new head.

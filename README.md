@@ -45,7 +45,7 @@ The old 24-skill surface is reduced to 14 skills:
 - `forgejo`, `ui-design`, `blog-post` — domain capabilities.
 - `weft-worklog`, `weft-memory`, `weft-maintenance` — grouped Weft operations.
 
-The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the mechanics; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs.
+The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the mechanics; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
 
 ## Model philosophy
 
