@@ -75,7 +75,7 @@ impl_fm,impl_body=frontmatter(impl_path)
 spawns=impl_fm.get('spawns')
 if spawns != ['scout','sonic']: err(f'flow-implementer spawns must be exactly scout+sonic, got {spawns!r}')
 impl_lower=impl_body.lower()
-for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim"]:
+for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim", 'canonical formatter on every file you changed']:
     if required not in impl_lower: err(f'flow-implementer missing nested delegation/clarification invariant: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -84,6 +84,8 @@ for required in [
     'never broadly tell a writer', 'route corrections cheaply',
     'delegation never transfers verification responsibility',
     'a complete review round is not automatic',
+    'eventfully rather than polling', 'do not use an unbounded wait by default',
+    'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
@@ -98,11 +100,12 @@ evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
 for required in [
     'writers verify their own work', 'delegation never transfers verification responsibility',
     'leaf worker proves its leaf', 'do not rerun the same expensive full suite',
+    'pre-edit bytes', 'not restoration proof when the file was already modified',
 ]:
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 
 safety=(ROOT/'agent/rules/flow-safety.md').read_text().lower()
-for required in ['sole/sequential writer', 'independent concurrent writers', 'completed isolated task workspaces']:
+for required in ['sole/sequential writer', 'independent concurrent writers', 'completed isolated task workspaces', 'snapshot its exact current content']:
     if required not in safety: err(f'flow-safety workspace-lifecycle invariant missing: {required}')
 
 tdd=(ROOT/'agent/skills/flow-tdd/SKILL.md').read_text().lower()
@@ -112,6 +115,8 @@ for required in ['ownership and workspace safety', 'higher-layer verification', 
 review=(ROOT/'agent/skills/flow-review/SKILL.md').read_text().lower()
 if 'do **not** automatically repeat every original lens' not in review:
     err('flow-review affected-lens rerun invariant missing')
+if 'explicit disposition for all four change lenses' not in review:
+    err('flow-review explicit lens-disposition invariant missing')
 
 integrating=(ROOT/'agent/skills/flow-integrating/SKILL.md').read_text().lower()
 if 'do not rerun an expensive final command merely because control moved into this skill' not in integrating:

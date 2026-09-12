@@ -41,10 +41,13 @@ Future refactors should preserve these even if filenames change:
 6. Writers verify their own changes; controller verification is additive, not a reason to suppress focused worker proof.
 7. Reviewer/worker output is a claim until the controller verifies consequential findings/results.
 8. Evidence broadens leaf → unit → integration → final tree; do not duplicate expensive full gates at every layer by ritual.
-9. Change review lenses remain applicability-driven: COR always initially; TTC/CRF/SEC conditional; post-fix re-review is affected-lens driven.
+9. Change review lenses remain applicability-driven and explicit: COR always initially; TTC/CRF/SEC each get a run/skip reason; post-fix re-review is affected-lens driven.
 10. Whole-codebase audit still runs CDH/TTC/DST/SEC.
 11. LDD architect never writes production code.
 12. LDD ledger is durable project truth, not backlog/transcript or permanent harness mechanics; Weft owns durable human backlog/project knowledge.
 13. Isolation follows independence/concurrency structure; a sole suitable feature-branch writer is normally non-isolated/resumable.
 14. Exact behavior-preserving mechanical work or an already-diagnosed correction may route to `sonic`; new behavior/TDD sequencing and semantic/debugging/integration judgment remain with Main/Terra.
-15. Model routing is role-based; concrete model selectors live in user config, not workflow content.
+15. Controllers wait eventfully for long-running workers instead of burning model turns on short status polling; waits stay bounded so liveness can be reassessed.
+16. Writers own safe touched-file formatting; Main owns final repo-wide cleanliness/integration gates, not basic formatting discovery.
+17. Temporary probes against pre-existing dirty files restore exact captured pre-edit bytes rather than assuming `HEAD` is the original state.
+18. Model routing is role-based; concrete model selectors live in user config, not workflow content.

@@ -47,15 +47,18 @@ Worker briefs are self-contained: intended behavior, exact scope/subsystem, gove
 Never broadly tell a writer "do not test/build/format because Main will verify." Instead:
 
 - require focused repository-native proof of the writer's own changes;
-- explicitly allow formatter/linter actions on writer-owned files when safe;
+- make touched-file formatting the writer's responsibility when the repository's canonical formatter can be scoped safely to those files; do not reserve ordinary touched-file formatting for Main;
+- allow focused lint/type/build checks owned by the writer's surface;
 - explicitly authorize broader/project-wide gates when the worker is the sole writer or otherwise isolated from sibling in-progress edits;
-- reserve final cross-unit/full-repository acceptance for Main when concurrent or dependent work makes worker-wide gates unsafe.
+- reserve repo-wide autoformatting and final cross-unit/full-repository acceptance for Main when those commands could rewrite/check sibling-owned or unrelated work.
 
 ## 5. Clarify live
 
 Workers should not terminally fail at the first real ambiguity. They first derive what they can from the contract, repository, tests and tools. When the unresolved point would change/extend approved behavior, scope, interface, data contract or architecture, the `flow-implementer` asks Main through `hub` with concise evidence + recommendation and continues any independent work. It awaits only when completely blocked.
 
 Main may clarify within the already-approved contract. Main must not silently expand authorization. If the answer requires a new product/design/user choice or proves the governing plan wrong, tell the worker to stop at a clean boundary and return BLOCKED, then route through design/Plan/user decision.
+
+When Main has useful independent work, do it while children run. When Main is otherwise blocked on a child completion or reply, wait **eventfully rather than polling**: use one bounded `hub` wait over the relevant task job ids when available, with a window long enough for the expected work (commonly 15–30 minutes for a semantic unit), or use `hub send` with `await: true` / a peer-filtered wait when the next useful event is one specific child's reply. Do not burn turns on repeated 3–5 minute status polls. Do not use an unbounded wait by default; if a long bounded wait expires, inspect liveness/current state before deciding whether to wait again or intervene.
 
 ## 6. Accept by layered evidence
 
@@ -89,6 +92,8 @@ Do not pay for a full specialist round after every tiny task. Review **coherent 
 - TTC: `flow-ttc-reviewer` when behavior/tests/validation/migrations/types/schemas/contracts changed.
 - Craft: `flow-craft-reviewer` for non-trivial logic, abstractions, docs/comments, cross-module refactors, duplication/nesting or mixed responsibilities.
 - Security: built-in `security-reviewer` or native `security_scan` when the change crosses a meaningful security boundary.
+
+Before dispatch, record an explicit disposition for **COR / TTC / CRF / SEC**: run or skip, with one short reason grounded in the actual changed surface. COR is always run for an initial coherent change review. Conditional lenses must not disappear by silent omission; the disposition can be concise and need not become user-facing ceremony.
 
 Run applicable read-only lenses in parallel and blind to one another. Verify Critical/Important findings before acting on them. After fixes, rerun only the lens(es) whose findings or newly changed risk surface require independent re-review; a complete review round is not automatic. Avoid endless review/fix loops; repeated disagreement/failure becomes an evidence-backed user decision/escalation.
 

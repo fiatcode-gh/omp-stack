@@ -43,7 +43,8 @@ Never rely on Main to discover basic compile/type/format/test failures for work 
 
 - Run the narrowest repository-native proof that can falsify each changed behavior while developing.
 - Before yielding, run focused tests/checks for every touched executable surface and inspect your diff.
-- Format/lint the files you own when the repository defines such tooling and doing so cannot rewrite sibling-owned work.
+- Run the repository's canonical formatter on every file you changed when it can be safely scoped to those files. If the only formatter rewrites a wider tree, run it only when that wider mutation is safe/authorized; otherwise report the limitation to Main.
+- Run focused lint/type/build checks for the executable surface you own when they are repository-native and safe.
 - Run broader or project-wide verification only when the assignment explicitly authorizes it and the workspace is safe for it (for example, you are the sole writer or isolated from siblings). Otherwise report which broader gates remain for Main.
 - Do not rerun expensive broad checks after every child leaf; integrate first, then prove the unit once.
 

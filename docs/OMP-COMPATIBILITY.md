@@ -12,7 +12,7 @@ The design relies on these native behaviors:
 - task batches support per-item agents and optional per-spawn isolation when `task.isolation.enabled` is on;
 - task model selection comes from agent overrides/frontmatter roles rather than a per-call model field;
 - headless subagents cannot prompt for approvals, so Flow constrains writer authority in the task contract and verifies results at the controller;
-- child agents can coordinate with their parent/Main through `hub`; ordinary non-isolated agents are revivable after parking, while completed isolated task runs are torn down and are not revivable;
+- child agents can coordinate with their parent/Main through `hub`; ordinary non-isolated agents are revivable after parking, while completed isolated task runs are torn down and are not revivable; unified Hub waits wake on watched job completion or peer messages, and `send` can await one peer reply; Flow deliberately prefers long bounded waits over repeated short polling or an unbounded wait;
 - nested agents are depth-gated by OMP; `flow-implementer` intentionally restricts nested spawning to bundled `scout` and `sonic`;
 - Agent Hub/history/agent artifacts are execution records, not replacements for LDD's durable ledger;
 - bundled `reviewer` handles correctness review, while security review/scan remains OMP-native.

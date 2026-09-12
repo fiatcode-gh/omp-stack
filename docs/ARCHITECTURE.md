@@ -52,7 +52,7 @@ Main/controller
 
 The Terra owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the Terra owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
 
-A sole/sequential Terra owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments.
+A sole/sequential Terra owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments. When the controller has no independent work while a child runs, it uses a bounded event-driven Hub wait rather than repeated short polling turns.
 
 ## Evidence hierarchy
 
@@ -62,11 +62,11 @@ Evidence broadens with ownership rather than repeating the same full gate everyw
 leaf proof → unit proof → integration/review proof → final-tree gate
 ```
 
-Writers must verify their own changes. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged.
+Writers must verify their own changes, including canonical formatting of touched files when the formatter can be safely scoped. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged. Temporary probes against pre-existing dirty files restore against a captured pre-edit snapshot, never against `HEAD`.
 
 ## Review specialists
 
-COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses. After fixes, rerun only affected/newly applicable lenses unless the change moved enough to justify a new full round.
+COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses. Controllers explicitly disposition COR/TTC/CRF/SEC before dispatch so conditional lenses cannot disappear by omission. After fixes, rerun only affected/newly applicable lenses unless the change moved enough to justify a new full round.
 
 ## LDD
 

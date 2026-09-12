@@ -52,7 +52,7 @@ Do not globally prewalk Terra implementers down to Luna at first write. Reasonin
 
 ## Review economics
 
-Review coherent waves rather than every tiny implementation task. COR remains the strongest normal lens. TTC/CRF use Terra high and run only when applicable. Security uses OMP's security specialist/scan only when the surface warrants it. After corrections, rerun affected/newly applicable lenses instead of automatically repeating the whole original set.
+Review coherent waves rather than every tiny implementation task. COR remains the strongest normal lens. TTC/CRF use Terra high and run only when applicable. Security uses OMP's security specialist/scan only when the surface warrants it. Before dispatch, explicitly record run/skip dispositions for COR/TTC/CRF/SEC so conditional-lens selection is inspectable rather than implicit. After corrections, rerun affected/newly applicable lenses instead of automatically repeating the whole original set.
 
 ## Nested delegation
 

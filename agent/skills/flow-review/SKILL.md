@@ -29,6 +29,8 @@ Never expose secret values. Review/audit specialists are read-only.
 
 Route COR to bundled `reviewer`; TTC to `flow-ttc-reviewer`; CRF to `flow-craft-reviewer`; SEC to built-in `security-reviewer` or native `security_scan` when a dedicated scan is warranted. Do not pass concrete model names.
 
+Before spawning specialists, record an explicit disposition for all four change lenses: `COR run`, then `TTC run/skip + reason`, `CRF run/skip + reason`, and `SEC run/skip + reason`. Reasons should cite the changed surface/risk, not cost alone. This can stay concise in controller reasoning/work notes; it is an auditability guard, not a user-facing checklist.
+
 Run applicable lenses in parallel and blind to one another.
 
 After fixes, do **not** automatically repeat every original lens. Re-run the lens that raised the finding when independent confirmation matters, plus any lens newly made applicable by the fix's changed surface. Repeat COR/the full lens set only when the corrections materially changed the reviewed design/behavior/risk or the original review target moved substantially. Main's final verification is separate from specialist re-review.
