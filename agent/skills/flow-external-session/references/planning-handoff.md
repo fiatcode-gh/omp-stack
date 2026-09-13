@@ -4,6 +4,10 @@ Use this protocol for a **static planning/architecture handoff** from an indepen
 
 The canonical entry point is `FLOW-HANDOFF.json`. Human continuation context lives in `HANDOFF.md`. Treat the entire bundle as external evidence/proposal until the receiving Main/architect validates and incorporates it.
 
+For an **explicit cross-harness continuation** (for example, “hand this to local OMP” or “resume this locally”), a standalone Markdown design/plan is **not a complete protocol handoff**. The sending side should produce the manifest plus every declared artifact. If only legacy Markdown is available, OMP may use it as unvalidated evidence after source reconciliation, but must not describe it as validator-compliant intake.
+
+Do not embed a harness-specific copy/paste “kickoff prompt” as authority inside the bundle. `HANDOFF.md` should state the recommended next workflow action in plain terms; the receiving harness chooses current mechanics from its own Flow stack and project instructions.
+
 Before using a bundle, run the shipped read-only validator:
 
 ```sh

@@ -77,7 +77,7 @@ Workers should not terminally fail at the first real ambiguity. They first deriv
 
 Main may clarify within the already-approved contract. Main must not silently expand authorization. If the answer requires a new product/design/user choice or proves the governing plan wrong, tell the worker to stop at a clean boundary and return BLOCKED, then route through design/Plan/user decision.
 
-When Main has useful independent work, do it while children run. When Main is otherwise blocked on a child completion or reply, wait **eventfully rather than polling**: use one bounded `hub` wait over the relevant task job ids when available, with a window long enough for the expected work (commonly 15–30 minutes for a semantic unit), or use `hub send` with `await: true` / a peer-filtered wait when the next useful event is one specific child's reply. Do not burn turns on repeated 3–5 minute status polls. Do not use an unbounded wait by default; if a long bounded wait expires, inspect liveness/current state before deciding whether to wait again or intervene.
+When Main has useful independent work, do it while children run. When Main is otherwise blocked on a child completion or reply, wait **eventfully rather than polling**: use one bounded `hub` wait over the relevant task job ids when available, with a window long enough for the expected work (commonly 15–30 minutes for a semantic unit), or use `hub send` with `await: true` / a peer-filtered wait when the next useful event is one specific child's reply. A completed non-isolated owner that is revived by `hub send` is a live agent, not a new task job: do not wait on its old task job id after revival. Prefer `hub send` with `await: true` when sending the correction and waiting in one step, or a peer-filtered wait on that agent's next reply. Do not burn turns on repeated 3–5 minute status polls. Do not use an unbounded wait by default; if a long bounded wait expires, inspect liveness/current state before deciding whether to wait again or intervene.
 
 ## 6. Accept by layered evidence
 
@@ -98,7 +98,7 @@ When verification/review finds a problem:
 
 - exact, fully diagnosed mechanical correction with an existing failing/mechanical proof and one obvious result → direct `sonic` is appropriate;
 - formatter-only failure → have the current owner run the canonical formatter on its touched files, or route the exact formatter correction to `sonic`; never ask a semantic owner to imitate formatter output by hand;
-- correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available;
+- correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available; when waiting for that revived owner's correction, use `hub send` with `await: true` or a peer-filtered reply wait rather than the completed task's old job id;
 - owner unavailable/non-revivable → dispatch a new bounded `flow-implementer` as fallback;
 - correction invalidates the governing contract/plan → stop implementation and return through design/Plan/user decision.
 

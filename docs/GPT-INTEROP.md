@@ -13,7 +13,7 @@ OMP additionally owns local execution/TDD/debugging/integration, task agents, Hu
 
 ## Handoff rule
 
-ChatGPT emits a versioned static `FLOW-HANDOFF.json` + `HANDOFF.md` bundle using the schema in `agent/skills/flow-external-session/references/planning-handoff.md`. OMP validates and reconciles it before use. The bundle may carry decisions and implementation strategy, but **never authorization**.
+ChatGPT emits a versioned static `FLOW-HANDOFF.json` + `HANDOFF.md` bundle using the schema in `agent/skills/flow-external-session/references/planning-handoff.md`. When the user explicitly intends to continue in local OMP, that machine-readable bundle is mandatory; a standalone Markdown plan/design is only legacy evidence, not a complete protocol handoff. OMP validates and reconciles the bundle before use. The bundle may carry decisions and implementation strategy, but **never authorization**. Do not use embedded copy/paste kickoff prompts as a second orchestration protocol; the receiving OMP stack owns current mechanics.
 
 For LDD, an existing local `LEDGER.md` remains canonical. ChatGPT may propose ledger/unit changes; the local architect accepts/rejects and records them. For a new epic, local OMP still establishes local/shared ledger mode before the proposal becomes canonical.
 

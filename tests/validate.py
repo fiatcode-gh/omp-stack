@@ -89,6 +89,7 @@ for required in [
     'dispatch preflight', 'verification ownership:', 'do not spawn a writing worker until all four entries are concrete',
     'formatter-only failure', 'forward pointer',
     'accepted external planning handoff', 'do not invoke native plan only to reproduce it',
+    'do not wait on its old task job id after revival', 'peer-filtered reply wait',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
@@ -113,7 +114,7 @@ else:
     schema=json.loads(schema_path.read_text())
     if schema.get('properties',{}).get('authorization',{}).get('const') != 'not-carried': err('planning-handoff schema authorization boundary missing')
     if schema.get('additionalProperties') is not False: err('planning-handoff schema must reject unknown fields')
-for required in ['flow_handoff', 'authorization', 'not-carried', 'reject absolute paths', 'skip a redundant plan call', 'current local project instructions', 'flow-handoff.json']:
+for required in ['flow_handoff', 'authorization', 'not-carried', 'reject absolute paths', 'skip a redundant plan call', 'current local project instructions', 'flow-handoff.json', 'not a complete protocol handoff', 'kickoff prompt']:
     if required not in ph: err(f'planning-handoff schema invariant missing: {required}')
 
 validator=ROOT/'agent/skills/flow-external-session/scripts/validate-planning-handoff.py'
@@ -124,7 +125,7 @@ else:
         if required not in validator_text: err(f'planning-handoff validator invariant missing: {required}')
 
 interop=(ROOT/'docs/GPT-INTEROP.md').read_text().lower()
-for required in ['flow-planning', 'never authorization', 'synchronization discipline']:
+for required in ['flow-planning', 'never authorization', 'synchronization discipline', 'standalone markdown', 'kickoff prompts']:
     if required not in interop: err(f'gpt interop doctrine missing: {required}')
 
 evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
