@@ -1,0 +1,80 @@
+# omp-stack managed baseline for: omp --profile ollama-cloud
+# scripts/omp-stack copies this file only when the profile has no config.yml.
+providers:
+  webSearchOrder: []
+
+defaultThinkingLevel: auto
+
+modelRoles:
+  # Cheap background / mechanical roles.
+  smol: ollama-cloud/deepseek-v4-flash:low
+  tiny: ollama-cloud/deepseek-v4-flash:low
+  commit: ollama-cloud/deepseek-v4-flash:low
+
+  # Normal coding and multimodal work. OMP currently exposes GLM 5.3 Flash
+  # reasoning at high/max; high is the routine lane.
+  default: ollama-cloud/glm-5.3-flash:high
+  task: ollama-cloud/glm-5.3-flash:high
+  vision: ollama-cloud/glm-5.3-flash:high
+
+  # Deliberate reasoning and independent review.
+  plan: ollama-cloud/deepseek-v4-pro:high
+  slow: ollama-cloud/deepseek-v4-pro:high
+  review_aux: ollama-cloud/deepseek-v4-pro:high
+
+  # Explicit frontier escalation only. Keep this high rather than max because
+  # OMP maps generic Ollama Cloud xhigh to high and only advertises supported
+  # effort lanes from the discovered model metadata.
+  critical: ollama-cloud/kimi-k3:high
+
+# Keep per-dispatch effort disabled so an orchestrator cannot silently turn a
+# cheap worker into the selected model's highest reasoning level.
+task:
+  maxConcurrency: 3
+  maxRecursionDepth: 2
+  enableEffort: false
+  isolation:
+    enabled: true
+
+isolation:
+  backend: auto
+
+symbolPreset: nerd
+composer:
+  shape: rule
+theme:
+  dark: titanium
+  light: light
+setupVersion: 2
+statusLine:
+  preset: custom
+  leftSegments:
+    - pi
+    - model
+    - mode
+    - git
+    - context_pct
+  rightSegments:
+    - session_name
+    - usage
+  separator: powerline-thin
+  sessionAccent: true
+  compactThinkingLevel: true
+  contextLine: embedded
+  segmentOptions:
+    model:
+      showThinkingLevel: true
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: true
+colorBlindMode: true
+tui:
+  codexResetFireworks: true
+cycleOrder:
+  - smol
+  - default
+  - slow
+dev:
+  autoqaConsent: granted

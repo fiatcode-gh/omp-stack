@@ -4,14 +4,20 @@ set -eu
 HERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 ROOT=$(CDPATH= cd -- "$HERE/.." && pwd)
 ROOT=$(readlink -f "$ROOT")
-if command -v omp >/dev/null 2>&1; then
-  OMP_DIR=$(omp config path 2>/dev/null || printf '%s' "${PI_CODING_AGENT_DIR:-$HOME/.omp/agent}")
-else
-  OMP_DIR=${PI_CODING_AGENT_DIR:-"$HOME/.omp/agent"}
-fi
+PROFILES="openai-codex ollama-cloud"
 
 info() { printf '%s\n' "$*"; }
 fail() { printf 'error: %s\n' "$*" >&2; exit 1; }
+
+profile_dir() { # profile
+  profile=$1
+  if command -v omp >/dev/null 2>&1; then
+    omp --profile "$profile" config path 2>/dev/null || fail "could not resolve OMP profile '$profile'"
+  else
+    config_root=${PI_CONFIG_DIR:-.omp}
+    printf '%s/%s/profiles/%s/agent\n' "$HOME" "$config_root" "$profile"
+  fi
+}
 
 link_owned() { # source dest
   src=$1 dst=$2
@@ -21,14 +27,30 @@ link_owned() { # source dest
   ln -sfn "$src" "$dst"
 }
 
-install() {
-  mkdir -p "$OMP_DIR"
+install_profile() { # profile
+  profile=$1
+  dir=$(profile_dir "$profile")
+  mkdir -p "$dir"
   for name in AGENTS.md agents rules skills extensions lib; do
-    link_owned "$ROOT/agent/$name" "$OMP_DIR/$name"
-    info "linked $OMP_DIR/$name -> $ROOT/agent/$name"
+    link_owned "$ROOT/agent/$name" "$dir/$name"
+    info "linked $dir/$name -> $ROOT/agent/$name"
   done
-  info "left $OMP_DIR/config.yml untouched; merge $ROOT/config.recommended.yml manually"
-  info "left $OMP_DIR/mcp.json untouched; optional example: $ROOT/mcp.example.json"
+
+  cfg="$dir/config.yml"
+  template="$ROOT/profiles/$profile/config.yml"
+  if [ -e "$cfg" ]; then
+    info "left $cfg untouched; compare/merge $template manually"
+  else
+    cp "$template" "$cfg"
+    info "created $cfg from $template"
+  fi
+  info "left $dir/mcp.json untouched; optional example: $ROOT/mcp.example.json"
+}
+
+install() {
+  for profile in $PROFILES; do
+    install_profile "$profile"
+  done
 }
 
 verify_link() { # source dest
@@ -39,19 +61,33 @@ verify_link() { # source dest
   info "ok: $2"
 }
 
-verify() {
+verify_profile() { # profile
+  profile=$1
+  dir=$(profile_dir "$profile")
   rc=0
+  info "profile: $profile ($dir)"
   for name in AGENTS.md agents rules skills extensions lib; do
-    verify_link "$ROOT/agent/$name" "$OMP_DIR/$name" || rc=1
+    verify_link "$ROOT/agent/$name" "$dir/$name" || rc=1
   done
-  [ -f "$OMP_DIR/config.yml" ] && info "ok: config.yml present (user-owned)" || { info "WARN: $OMP_DIR/config.yml missing"; rc=1; }
+  [ -f "$dir/config.yml" ] && info "ok: $dir/config.yml present (profile-owned)" || { info "FAIL: $dir/config.yml missing"; rc=1; }
   return "$rc"
 }
 
-doctor() {
-  cfg="$OMP_DIR/config.yml"
+verify() {
+  rc=0
+  for profile in $PROFILES; do
+    verify_profile "$profile" || rc=1
+  done
+  return "$rc"
+}
+
+doctor_profile() { # profile
+  profile=$1
+  dir=$(profile_dir "$profile")
+  cfg="$dir/config.yml"
   [ -f "$cfg" ] || fail "$cfg not found"
 
+  info "profile: $profile"
   info "config: $cfg"
   if grep -q 'ai-stack/.*/flow-skills\.ts\|ai-stack/omp/extensions/flow-skills\.ts' "$cfg"; then
     info "WARN: remove old ai-stack flow-skills.ts registration"
@@ -67,7 +103,7 @@ doctor() {
     info "WARN: explicit old ai-memory.ts path is redundant; native extensions/ auto-discovery owns it now"
   fi
 
-  for role in task plan slow review_aux critical; do
+  for role in default smol tiny vision task plan slow review_aux critical commit; do
     if grep -Eq "^[[:space:]]+$role:" "$cfg"; then info "ok: modelRoles.$role present"; else info "WARN: modelRoles.$role missing"; fi
   done
 
@@ -77,10 +113,16 @@ doctor() {
 
   if command -v omp >/dev/null 2>&1; then
     info "omp: $(command -v omp)"
-    omp config path 2>/dev/null || true
+    omp --profile "$profile" config path 2>/dev/null || true
   else
     info "WARN: omp not found on PATH"
   fi
+}
+
+doctor() {
+  for profile in $PROFILES; do
+    doctor_profile "$profile"
+  done
 }
 
 usage() {

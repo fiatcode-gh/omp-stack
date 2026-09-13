@@ -32,7 +32,7 @@ Once root cause is supported:
 
 Urgent containment may be done first only when the user explicitly wants mitigation; label it as mitigation and continue root-cause work separately.
 
-Once the root cause and exact correction are settled, an orchestrating `flow-execution` session may delegate a strictly mechanical edit to `sonic`. Never hand `sonic` an open-ended "debug/fix this" task; diagnosis, hypothesis ownership and semantic verification remain with Main/the Terra unit owner.
+Once the root cause and exact correction are settled, an orchestrating `flow-execution` session may delegate a strictly mechanical edit to `sonic`. Never hand `sonic` an open-ended "debug/fix this" task; diagnosis, hypothesis ownership and semantic verification remain with Main/the semantic unit owner.
 
 ## Stop/escalate
 

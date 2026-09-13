@@ -46,7 +46,7 @@ Future refactors should preserve these even if filenames change:
 11. LDD architect never writes production code.
 12. LDD ledger is durable project truth, not backlog/transcript or permanent harness mechanics; Weft owns durable human backlog/project knowledge.
 13. Isolation follows independence/concurrency structure; a sole suitable feature-branch writer is normally non-isolated/resumable.
-14. Exact behavior-preserving mechanical work or an already-diagnosed correction may route to `sonic`; new behavior/TDD sequencing and semantic/debugging/integration judgment remain with Main/Terra.
+14. Exact behavior-preserving mechanical work or an already-diagnosed correction may route to `sonic`; new behavior/TDD sequencing and semantic/debugging/integration judgment remain with Main/the semantic `@task` owner.
 15. Controllers wait eventfully for long-running workers instead of burning model turns on short status polling; waits stay bounded so liveness can be reassessed. A revived completed owner is awaited as a live peer, not through its old settled task job id.
 16. Writers own safe touched-file formatting; Main owns final repo-wide cleanliness/integration gates, not basic formatting discovery.
 17. Interactive Flow maintains a forward pointer: every meaningful checkpoint says what is true, what happens next, and whether the user is needed; Flow does not hand orchestration back to the user when the next action is already determined.

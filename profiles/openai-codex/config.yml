@@ -1,5 +1,5 @@
-# Merge intentionally into your existing ~/.omp/agent/config.yml.
-# scripts/omp-stack never overwrites the live config.
+# omp-stack managed baseline for: omp --profile openai-codex
+# scripts/omp-stack copies this file only when the profile has no config.yml.
 providers:
   webSearchOrder: []
 
@@ -29,7 +29,6 @@ task:
 isolation:
   backend: auto
 
-# Preserve the user's current UI choices.
 symbolPreset: nerd
 composer:
   shape: rule

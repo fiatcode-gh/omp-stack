@@ -26,9 +26,9 @@ Use the cheapest owner that can correctly own the remaining judgment:
 - tiny cohesive edit where spawn overhead exceeds the work → Main may implement directly under `flow-tdd`;
 - bounded read-only fact finding → bundled `scout`;
 - fully specified **behavior-preserving** mechanical edit, or an already-diagnosed exact correction with an existing failing/mechanical proof and one obvious result → bundled `sonic` may be dispatched directly;
-- new executable behavior, TDD sequencing, semantic implementation, debugging, integration or work that still requires judgment → `flow-implementer` (`@task` / Terra owner).
+- new executable behavior, TDD sequencing, semantic implementation, debugging, integration or work that still requires judgment → `flow-implementer` (`@task` semantic owner).
 
-Do not route ambiguous/new behavior, architecture, migration semantics, concurrency/error semantics or root-cause diagnosis to `sonic` merely because a plan exists. Direct Sonic must not bypass Red/Green: when executable behavior is changing, Main/Terra owns the TDD cycle and may delegate only settled leaves within it.
+Do not route ambiguous/new behavior, architecture, migration semantics, concurrency/error semantics or root-cause diagnosis to `sonic` merely because a plan exists. Direct Sonic must not bypass Red/Green: when executable behavior is changing, Main/the semantic owner owns the TDD cycle and may delegate only settled leaves within it.
 
 A `flow-implementer` may itself use `scout` for bounded discovery and `sonic` for settled mechanical leaves. Nested delegation is optional and must not create overlapping writers or transfer design/integration responsibility to the child.
 
@@ -38,7 +38,7 @@ For a sole/sequential implementation unit on a suitable feature checkout, prefer
 
 Use task isolation for independent concurrent writers or an explicitly disposable experiment. Do not isolate by reflex: a completed isolated task is intentionally disposable and may not be revivable after its workspace is applied/cleaned.
 
-Keep the unit owner's agent id/name. When later evidence finds a semantic correction, follow up with that same non-isolated owner through `hub` when available instead of cold-spawning another Terra worker.
+Keep the unit owner's agent id/name. When later evidence finds a semantic correction, follow up with that same non-isolated owner through `hub` when available instead of cold-spawning another semantic worker.
 
 ## 4. Write a verification-capable brief
 
@@ -90,7 +90,7 @@ For each completed unit/wave:
 5. check integration points with already accepted work;
 6. reject/correct deviations before dependent work proceeds.
 
-A child proves its leaf; the Terra owner proves the combined unit; Main proves integration/high-risk claims and owns final repository acceptance. Delegation never transfers verification responsibility, but independent evidence does not require ritual duplicate full-suite runs.
+A child proves its leaf; the semantic unit owner proves the combined unit; Main proves integration/high-risk claims and owns final repository acceptance. Delegation never transfers verification responsibility, but independent evidence does not require ritual duplicate full-suite runs.
 
 ## 7. Route corrections cheaply
 

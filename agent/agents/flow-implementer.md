@@ -1,6 +1,6 @@
 ---
 name: flow-implementer
-description: Implement one bounded, already-authorized semantic unit with strict scope, behavior-first TDD, bounded Luna delegation, live clarification and fresh self-verification.
+description: Implement one bounded, already-authorized semantic unit with strict scope, behavior-first TDD, bounded cheap-leaf delegation, live clarification and fresh self-verification.
 model: "@task"
 autoloadSkills: [flow-tdd]
 spawns: [scout, sonic]

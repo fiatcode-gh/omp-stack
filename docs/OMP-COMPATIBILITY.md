@@ -1,9 +1,10 @@
 # OMP compatibility assumptions
 
-This stack was designed and validated against the public `can1357/oh-my-pi` main branch at commit `3b3a6dc9bbd85102ce19d0b1c11bf6870915f6ec` (coding-agent 18.1.17 era, 2026-09-11). OMP moves quickly; re-check these assumptions when upgrading across substantial releases.
+This stack was designed and validated against the public `can1357/oh-my-pi` main branch at commit `8fad7f10066247d394a962a32302d3d0b5e7efb9` (2026-09-13). OMP moves quickly; re-check these assumptions when upgrading across substantial releases.
 
 The design relies on these native behaviors:
 
+- named profiles (`omp --profile <name>`) relocate the whole OMP-native user root to the profile-specific agent directory and do not inherit the default profile config;
 - user skills are discovered from the active agent directory `skills/*/SKILL.md`;
 - user task agents are discovered from `agents/*.md` and may bind model-role aliases plus `autoloadSkills`;
 - user rules are discovered from `rules/*.{md,mdc}`, including `alwaysApply`;
@@ -25,5 +26,7 @@ After upgrading OMP:
 ./tests/run.sh
 ./scripts/omp-stack doctor
 ```
+
+Then sanity-check both `omp --profile openai-codex` and `omp --profile ollama-cloud`.
 
 Then sanity-check in OMP that `flow-implementer`, `flow-ttc-reviewer`, and the Flow skills are discoverable and that an isolated test task exposes the `isolated` field. Do not paper over a changed OMP contract inside skills; update the native boundary deliberately.

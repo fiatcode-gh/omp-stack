@@ -43,16 +43,16 @@ The normal Flow execution model is shared by ordinary work, approved Plans and L
 
 ```text
 Main/controller
-├── scout (@smol / Luna) — bounded read-only recon
-├── sonic (@smol / Luna) — direct behavior-preserving mechanical edit / diagnosed exact correction
-└── flow-implementer (@task / Terra) — semantic unit owner
-    ├── scout (@smol / Luna) — bounded local discovery
-    └── sonic (@smol / Luna) — settled mechanical leaf edits
+├── scout (@smol) — bounded read-only recon
+├── sonic (@smol) — direct behavior-preserving mechanical edit / diagnosed exact correction
+└── flow-implementer (@task) — semantic unit owner
+    ├── scout (@smol) — bounded local discovery
+    └── sonic (@smol) — settled mechanical leaf edits
 ```
 
-The Terra owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the Terra owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
+The semantic unit owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the semantic unit owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
 
-A sole/sequential Terra owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments. When the controller has no independent work while a child runs, it uses a bounded event-driven Hub wait rather than repeated short polling turns.
+A sole/sequential semantic unit owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments. When the controller has no independent work while a child runs, it uses a bounded event-driven Hub wait rather than repeated short polling turns.
 
 ## Evidence hierarchy
 

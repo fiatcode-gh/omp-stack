@@ -1,6 +1,6 @@
 # Migration from ai-stack OMP tenant
 
-Your previous OMP config registered:
+Your previous default OMP config registered:
 
 ```yaml
 extensions:
@@ -11,32 +11,48 @@ skills:
     - .../ai-stack/shared/skills
 ```
 
-The new stack should remove those entries after installation.
+The profiled stack should not carry those entries forward.
 
 Why:
 
 - `flow-skills.ts` injected the old bootstrap; OMP now discovers the redesigned skills/rules natively.
 - the old `customDirectories` points at obsolete same-named Flow skills and can shadow/collide with the OMP-native set.
-- `ai-memory.ts` is auto-discovered from `~/.omp/agent/extensions` after install, so an explicit path is unnecessary.
+- `ai-memory.ts` is auto-discovered from each active profile's `extensions/` symlink after install, so an explicit path is unnecessary.
 
 ## Recommended sequence
 
 1. Extract/clone `omp-stack` somewhere stable.
-2. Run `./scripts/omp-stack install`.
-3. Merge `config.recommended.yml` into your existing `~/.omp/agent/config.yml` rather than replacing it.
-4. Remove the old `ai-stack` `extensions:` registrations and `skills.customDirectories` entry shown above.
-5. Keep your personal theme/statusline/provider keys; the recommended file already mirrors the attached config as a starting point.
-6. Optionally copy `mcp.example.json` to `~/.omp/agent/mcp.json` and insert your Context7 key if you use it. The installer never writes credentials.
+2. Run `./scripts/omp-stack install`. This provisions `openai-codex` and `ollama-cloud` under OMP's native profile roots.
+3. If a profile already had `config.yml`, compare/merge it with `profiles/<name>/config.yml`; the installer never overwrites an existing profile config.
+4. Remove any old `ai-stack` `extensions:` registrations and `skills.customDirectories` entries from the profile configs.
+5. Authenticate each profile/provider as needed. Named OMP profiles do not inherit runtime/auth state from the default profile or from each other. `OLLAMA_CLOUD_API_KEY` may instead be supplied through the environment.
+6. Optionally copy `mcp.example.json` to a profile's `mcp.json` if you use Context7. MCP is intentionally profile-owned and the installer never writes credentials.
 7. Run `./scripts/omp-stack verify` and `./scripts/omp-stack doctor`.
+8. Launch with native OMP profile selection:
 
-## Important routing change
+   ```sh
+   omp --profile openai-codex
+   omp --profile ollama-cloud
+   ```
 
-Compared with the attached config:
+The old default `~/.omp/agent` tree is left untouched. Delete or retire it only after both named profiles behave as expected.
 
-- `slow`: Sol xhigh → **Sol high**;
-- add `review_aux`: Terra high;
-- add `critical`: Sol xhigh;
-- add `commit`: Luna low;
-- keep `task`: Terra and `plan`: Sol high;
-- enable per-spawn task isolation with backend `auto` as an available capability; Flow normally uses it for independent concurrent writers, not every task;
-- keep `task.enableEffort: false`, `maxConcurrency: 3`.
+## Routing changes
+
+The OpenAI Codex profile preserves the current quota-conscious routing:
+
+- `task`: Terra;
+- `plan` / `slow`: Sol high;
+- `review_aux`: Terra high;
+- `critical`: Sol xhigh;
+- `commit`: Luna low;
+- `task.enableEffort: false`, `maxConcurrency: 3`, per-spawn isolation enabled with backend `auto`.
+
+The Ollama Cloud profile maps the same roles to:
+
+- `smol` / `tiny` / `commit`: DeepSeek V4 Flash low;
+- `default` / `task` / `vision`: GLM-5.3-Flash high;
+- `plan` / `slow` / `review_aux`: DeepSeek V4 Pro high;
+- `critical`: Kimi K3 high.
+
+See `docs/MODEL-ROUTING.md` for the reasoning.

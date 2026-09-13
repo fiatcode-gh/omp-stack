@@ -14,21 +14,30 @@ agent/
   skills/                   optional workflow/domain capabilities
   extensions/               auto-discovered OMP extensions
   lib/                      extension support code
-config.recommended.yml      merge target; never installed automatically
+profiles/
+  openai-codex/config.yml   first-install baseline for `omp --profile openai-codex`
+  ollama-cloud/config.yml   first-install baseline for `omp --profile ollama-cloud`
 mcp.example.json            optional Context7 MCP example
 scripts/omp-stack           install / verify / doctor
 ```
 
 ## Install
 
-The installer symlinks only repo-owned native surfaces. It refuses to replace a real file or directory and never edits `~/.omp/agent/config.yml` or `mcp.json`.
+The installer provisions two native OMP profiles: `openai-codex` and `ollama-cloud`. It symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
 
 ```sh
 ./scripts/omp-stack install
 ./scripts/omp-stack doctor
 ```
 
-Then merge the model/task settings you want from `config.recommended.yml` into your existing OMP config. See `docs/MIGRATION.md`.
+Launch OMP directly with the native profile selector:
+
+```sh
+omp --profile openai-codex
+omp --profile ollama-cloud
+```
+
+Existing profile configs are never overwritten; compare them with `profiles/<name>/config.yml` after stack updates. See `docs/MIGRATION.md`.
 
 ## Flow shape
 
@@ -45,18 +54,13 @@ The old 24-skill surface is reduced to 14 skills:
 - `forgejo`, `ui-design`, `blog-post` — domain capabilities.
 - `weft-worklog`, `weft-memory`, `weft-maintenance` — grouped Weft operations.
 
-The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the local mechanics; validated external ChatGPT/other-harness planning handoffs can preserve already-settled design/strategy without duplicating native Plan; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on Terra, pushes settled mechanical leaves/corrections to Luna, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
+The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the local mechanics; validated external ChatGPT/other-harness planning handoffs can preserve already-settled design/strategy without duplicating native Plan; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on `@task`, pushes settled mechanical leaves/corrections to `@smol`, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
 
 ## Model philosophy
 
-Skills and agents use **roles**, never concrete models. The recommended config is quota-conscious for ChatGPT Plus:
+Skills and agents use **roles**, never concrete models. Native OMP profiles provide provider-specific role maps while the Flow content stays shared.
 
-```text
-Luna      discovery / mechanical / tiny background work
-Terra     normal coding / implementation / auxiliary review
-Sol high  planning / correctness review / hard reasoning
-Sol xhigh explicit critical escalation only
-```
+The OpenAI Codex profile keeps the quota-conscious Luna → Terra → Sol ladder. The Ollama Cloud profile uses DeepSeek V4 Flash for cheap roles, GLM-5.3-Flash for routine coding/vision, DeepSeek V4 Pro for deliberate planning/review, and Kimi K3 for explicit critical escalation.
 
 See `docs/MODEL-ROUTING.md`. Current OMP assumptions are recorded in `docs/OMP-COMPATIBILITY.md`.
 

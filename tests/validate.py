@@ -173,14 +173,67 @@ for p in skills:
         target=p.parent/rel
         if not target.exists(): err(f'{p.relative_to(ROOT)}: missing referenced asset {rel}')
 
-# Every role used by custom agents must exist in the recommended modelRoles map.
-cfg=yaml.safe_load((ROOT/'config.recommended.yml').read_text())
-roles=set((cfg.get('modelRoles') or {}).keys())
+# Every native provider profile must expose the same complete role vocabulary.
+required_roles={'default','smol','tiny','vision','task','plan','slow','review_aux','critical','commit'}
+profile_cfgs={
+    'openai-codex': ROOT/'profiles/openai-codex/config.yml',
+    'ollama-cloud': ROOT/'profiles/ollama-cloud/config.yml',
+}
+profile_roles={}
+for profile,path in profile_cfgs.items():
+    if not path.exists():
+        err(f'missing profile config: {path.relative_to(ROOT)}')
+        continue
+    cfg=yaml.safe_load(path.read_text()) or {}
+    roles=cfg.get('modelRoles') or {}
+    if set(roles) != required_roles:
+        err(f'{path.relative_to(ROOT)}: modelRoles mismatch: {sorted(set(roles)^required_roles)}')
+    profile_roles[profile]=set(roles)
+    prefix=profile+'/'
+    for role,model in roles.items():
+        if not isinstance(model,str) or not model.startswith(prefix):
+            err(f'{path.relative_to(ROOT)}: modelRoles.{role} must use {prefix}*, got {model!r}')
+
+expected_openai={
+    'default':'openai-codex/gpt-5.6-terra',
+    'smol':'openai-codex/gpt-5.6-luna',
+    'tiny':'openai-codex/gpt-5.6-luna:low',
+    'vision':'openai-codex/gpt-5.6-luna',
+    'task':'openai-codex/gpt-5.6-terra',
+    'plan':'openai-codex/gpt-5.6-sol:high',
+    'slow':'openai-codex/gpt-5.6-sol:high',
+    'review_aux':'openai-codex/gpt-5.6-terra:high',
+    'critical':'openai-codex/gpt-5.6-sol:xhigh',
+    'commit':'openai-codex/gpt-5.6-luna:low',
+}
+openai=yaml.safe_load(profile_cfgs['openai-codex'].read_text()).get('modelRoles',{})
+if openai != expected_openai:
+    err('profiles/openai-codex/config.yml: role mapping drifted from documented routing')
+
+expected_ollama={
+    'default':'ollama-cloud/glm-5.3-flash:high',
+    'smol':'ollama-cloud/deepseek-v4-flash:low',
+    'tiny':'ollama-cloud/deepseek-v4-flash:low',
+    'vision':'ollama-cloud/glm-5.3-flash:high',
+    'task':'ollama-cloud/glm-5.3-flash:high',
+    'plan':'ollama-cloud/deepseek-v4-pro:high',
+    'slow':'ollama-cloud/deepseek-v4-pro:high',
+    'review_aux':'ollama-cloud/deepseek-v4-pro:high',
+    'critical':'ollama-cloud/kimi-k3:high',
+    'commit':'ollama-cloud/deepseek-v4-flash:low',
+}
+ollama=yaml.safe_load(profile_cfgs['ollama-cloud'].read_text()).get('modelRoles',{})
+if ollama != expected_ollama:
+    err('profiles/ollama-cloud/config.yml: role mapping drifted from documented routing')
+
 for p in agents:
     fm,_=frontmatter(p)
     model=fm.get('model')
-    if isinstance(model,str) and model.startswith('@') and model[1:] not in roles:
-        err(f'{p.relative_to(ROOT)}: role {model} missing from config.recommended.yml')
+    if isinstance(model,str) and model.startswith('@'):
+        role=model[1:]
+        for profile,roles in profile_roles.items():
+            if role not in roles:
+                err(f'{p.relative_to(ROOT)}: role {model} missing from {profile} profile')
 
 # The principle-preservation ledger must account for every old skill from ai-stack.
 old={
