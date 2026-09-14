@@ -18,7 +18,7 @@ Native surfaces:
 |---|---|
 | flow-using-skills | delete; native discovery + rules |
 | flow-brainstorming | flow-design |
-| flow-writing-plans | native OMP Plan mode |
+| flow-writing-plans | flow-planning doctrine + native OMP `@plan` routing |
 | flow-workspace | flow-safety rule + flow-external-session when external |
 | flow-executing-plans | flow-execution |
 | flow-verification | flow-evidence rule |
@@ -42,17 +42,21 @@ Native surfaces:
 The normal Flow execution model is shared by ordinary work, approved Plans and LDD units. Route by remaining judgment rather than by file count alone:
 
 ```text
-Main/controller
+Main/controller (@default)
+├── flow-planner (@plan) — judgment-heavy execution plan author, no production code
 ├── scout (@smol) — bounded read-only recon
 ├── sonic (@smol) — direct behavior-preserving mechanical edit / diagnosed exact correction
-└── flow-implementer (@task) — semantic unit owner
+├── flow-plan-executor (@execute) — constrained owner for execution-grade plan work
+└── flow-implementer (@task) — semantic/debugging/broken-plan fallback
     ├── scout (@smol) — bounded local discovery
     └── sonic (@smol) — settled mechanical leaf edits
+
+planned coherent result → flow-acceptance-reviewer (@slow)
 ```
 
-The semantic unit owner decides whether nested delegation is worthwhile, prevents overlapping writers, inspects child changes, integrates the unit and verifies it. Child uncertainty rises to the nearest owner first; only contract/design ambiguity rises from the semantic unit owner to Main. Nested children share the owning unit workspace and do not add another isolation layer.
+The planning stage locks consequential interfaces/tests/ownership/error semantics and explicit executor discretion. A plan executor may implement new behavior because that judgment was paid upstream, but it cannot redesign; contradictions rise to Main/planning. The semantic `@task` owner remains available when judgment genuinely cannot be removed from execution.
 
-A sole/sequential semantic unit owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived for verification or review corrections. Isolation is primarily for independent concurrent writers or explicitly disposable experiments. When the controller has no independent work while a child runs, it uses a bounded event-driven Hub wait rather than repeated short polling turns.
+A sole/sequential owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived. One plan executor may continue across adjacent sequential plan tasks to reduce cold starts. Isolation remains primarily for independent concurrent writers or explicitly disposable experiments. Long waits remain event-driven.
 
 ## Evidence hierarchy
 
@@ -66,9 +70,11 @@ Writers must verify their own changes, including canonical formatting of touched
 
 Interactive Flow also keeps a **forward pointer**: at meaningful user-facing checkpoints Main states the outcome, the next workflow action, and whether user input is required. Internal authorized next actions continue automatically; concrete questions are reserved for real design/approval/integration gates.
 
-## Review specialists
+## Planning and review
 
-COR uses OMP's bundled reviewer. SEC uses OMP's bundled security reviewer/native security scan. Custom agents exist only where Flow adds a distinct lens: TTC, Craft, and three non-security audit lenses. Controllers explicitly disposition COR/TTC/CRF/SEC before dispatch so conditional lenses cannot disappear by omission. After fixes, rerun only affected/newly applicable lenses unless the change moved enough to justify a new full round.
+Execution-grade planned work applies COR/TTC/CRF/SEC as one integrated **plan quality gate** before coding, then uses `flow-acceptance-reviewer` for one strong final independent acceptance pass. That reviewer checks both plan conformance and correctness so plan defects are still findings. Verified material findings are batched into one correction wave; one scoped closure review is the default ceiling.
+
+Standalone/unplanned changes, PR review and audits still use the existing specialist doctrine: bundled COR/security plus Flow TTC/Craft/audit lenses as applicable. The lenses remain principles of record; v8 changes when they are paid for, not what they mean.
 
 ## LDD
 

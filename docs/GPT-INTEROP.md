@@ -7,7 +7,7 @@ The ChatGPT Flow port and this OMP stack share **doctrine**, not identical mecha
 - `flow-design` — material WHAT/WHY decisions.
 - `flow-review` — evidence-backed PR/change/audit review doctrine.
 - `flow-ldd` — durable architect/ledger semantics.
-- implementation planning — ChatGPT uses `flow-planning`; OMP uses native Plan when strategy is still materially unresolved.
+- `flow-planning` — shared execution-grade planning doctrine; ChatGPT and OMP use different mechanics but the same plan contract/lens quality gate.
 
 OMP additionally owns local execution/TDD/debugging/integration, task agents, Hub/isolation and formatter/test ownership. Do not copy those mechanics into the ChatGPT planning skills.
 
@@ -22,8 +22,11 @@ For LDD, an existing local `LEDGER.md` remains canonical. ChatGPT may propose le
 After validation:
 
 - unresolved WHAT/WHY → `flow-design`;
-- settled design but consequential HOW still unresolved → native OMP Plan;
-- settled/current design + strategy → request/confirm local execution approval, then `flow-execution`.
+- settled design + execution-grade current plan → request/confirm local execution approval, then constrained `flow-execution`;
+- settled strategy but executor would still make consequential HOW/test/interface decisions → preserve the strategy and use `flow-planning` only to make those missing decisions execution-grade;
+- tiny obvious implementation with no meaningful planning judgment → authorized semantic/direct execution without plan ceremony.
+
+ChatGPT handoffs should evolve toward the same execution-grade plan shape (locked decisions, task briefs, proof, discretion/escalation and plan quality-gate receipt). Until the GPT port is updated, an `IMPLEMENTATION-PLAN.md` may be strategy-quality and must be graded rather than blindly treated as cheap-executor-ready.
 
 A changed commit SHA triggers targeted revalidation, not automatic rejection or a full restart. A matching SHA does not erase local dirty-tree or ledger differences.
 

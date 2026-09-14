@@ -6,9 +6,9 @@ This file records what the `ai-stack` skill sweep kept, improved, merged or deli
 |---|---|---|
 | `flow-using-skills` | Important doctrine must stay discoverable | deleted as bootstrap; native skill discovery + `flow-safety` / `flow-evidence` rules |
 | `flow-brainstorming` | resolve material intent/design decisions before speculative code; YAGNI | `flow-design`, but no ceremony for decision-free work |
-| `flow-writing-plans` | execution spec removes implementation ambiguity | native OMP Plan mode; LDD unit specs remain requirements/contracts, not duplicate plans |
+| `flow-writing-plans` | execution spec removes implementation ambiguity and moves costly judgment before coding | `flow-planning` doctrine + native OMP `@plan` mechanics; LDD unit contracts remain WHAT while execution-grade plans lock consequential HOW |
 | `flow-workspace` | protect dirty/user state; no silent main work; safe concurrency | `flow-safety`; native task isolation; external worktree validation in `flow-external-session` |
-| `flow-executing-plans` | bounded execution, TDD, independent review, controller acceptance | `flow-execution`; judgment-based routing, persistent unit ownership, dependency waves and proportional review |
+| `flow-executing-plans` | bounded execution, TDD, independent acceptance and controller ownership | `flow-execution`; execution-grade `@execute` lane, semantic `@task` fallback, persistent ownership and bounded acceptance closure |
 | `flow-tdd` | failing proof first; minimal green; regression protection | `flow-tdd`; tests behavior rather than every function; proof scope follows ownership/workspace safety |
 | `flow-debugging` | reproduce/root-cause/hypothesis before permanent fix | `flow-debugging`; read-only scout fan-out and deliberate escalation after repeated failures |
 | `flow-verification` | claims need fresh evidence; worker reports are not proof | always-apply `flow-evidence`; layered leaf→unit→integration→final proof avoids both blind workers and ritual duplicate full gates |
@@ -41,16 +41,20 @@ Future refactors should preserve these even if filenames change:
 6. Writers verify their own changes; controller verification is additive, not a reason to suppress focused worker proof.
 7. Reviewer/worker output is a claim until the controller verifies consequential findings/results.
 8. Evidence broadens leaf → unit → integration → final tree; do not duplicate expensive full gates at every layer by ritual.
-9. Change review lenses remain applicability-driven and explicit: COR always initially; TTC/CRF/SEC each get a run/skip reason; post-fix re-review is affected-lens driven.
+9. Review concerns are never dropped: standalone/unplanned change review keeps applicability-driven COR/TTC/CRF/SEC; execution-grade planned work moves those concerns into the plan quality gate and uses one integrated final acceptance reviewer, with specialist escalation only when concrete residual risk warrants it.
 10. Whole-codebase audit still runs CDH/TTC/DST/SEC.
 11. LDD architect never writes production code.
 12. LDD ledger is durable project truth, not backlog/transcript or permanent harness mechanics; Weft owns durable human backlog/project knowledge.
 13. Isolation follows independence/concurrency structure; a sole suitable feature-branch writer is normally non-isolated/resumable.
-14. Exact behavior-preserving mechanical work or an already-diagnosed correction may route to `sonic`; new behavior/TDD sequencing and semantic/debugging/integration judgment remain with Main/the semantic `@task` owner.
+14. Routing follows remaining judgment: exact mechanical work → `@smol`; new behavior with execution-grade locked HOW/proof → constrained `@execute`; unresolved semantic/debugging/integration judgment → Main/`@task`. Executors escalate plan contradictions instead of redesigning.
 15. Controllers wait eventfully for long-running workers instead of burning model turns on short status polling; waits stay bounded so liveness can be reassessed. A revived completed owner is awaited as a live peer, not through its old settled task job id.
 16. Writers own safe touched-file formatting; Main owns final repo-wide cleanliness/integration gates, not basic formatting discovery.
 17. Interactive Flow maintains a forward pointer: every meaningful checkpoint says what is true, what happens next, and whether the user is needed; Flow does not hand orchestration back to the user when the next action is already determined.
 18. Writer dispatch is verification-capable by construction: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are explicit before spawn; a blanket "stay blind because Main verifies" brief is invalid.
 19. Temporary probes against pre-existing dirty files restore exact captured pre-edit bytes rather than assuming `HEAD` is the original state.
 20. Model routing is role-based; concrete model selectors live in user config, not workflow content.
-21. Cross-harness planning handoffs are evidence/proposals, never execution authorization; after targeted freshness checks, preserve valid settled decisions/strategy rather than forcing duplicate design or Plan work.
+21. Cross-harness planning handoffs are evidence/proposals, never execution authorization; after targeted freshness checks, preserve valid settled decisions/strategy rather than forcing duplicate design work.
+22. Substantial execution should front-load consequential HOW into an execution-grade plan when doing so removes implementer judgment; decision completeness matters, not plan length.
+23. Planned execution normally closes with one strong acceptance review plus at most one scoped closure round; verified findings are batched rather than triggering reviewer-by-reviewer correction loops.
+24. LDD resume is context-budget aware: RESUME + active contract + active plan/task + git state first; older ledger/history is read only when the pointer/contradiction requires it.
+25. Runtime approval patterns backstop normal publication commands, but they do not replace the semantic rule that stakeholder-visible effects require explicit user authorization.

@@ -103,7 +103,7 @@ doctor_profile() { # profile
     info "WARN: explicit old ai-memory.ts path is redundant; native extensions/ auto-discovery owns it now"
   fi
 
-  for role in default smol tiny vision task plan slow review_aux critical commit; do
+  for role in default smol tiny vision execute task plan slow review_aux critical commit; do
     if grep -Eq "^[[:space:]]+$role:" "$cfg"; then info "ok: modelRoles.$role present"; else info "WARN: modelRoles.$role missing"; fi
   done
 

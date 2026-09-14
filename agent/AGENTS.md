@@ -14,11 +14,12 @@ OMP owns Plan mode, task-agent lifecycle, isolation, Agent Hub, Vibe, built-in r
 
 - Load a Flow skill when its description matches the task. There is no bootstrap skill.
 - Design only when a material decision exists. Do not manufacture a design ceremony for mechanical work.
-- Use native Plan mode when the work needs an execution specification. A validated external planning handoff may already satisfy that need; do not duplicate planning that is still current, and do not use a Flow planning substitute inside OMP.
+- Use `flow-planning` when consequential implementation HOW should be made decision-complete before coding. Native Plan reasoning / `flow-planner` owns that judgment. A validated external **execution-grade** plan may satisfy the stage; a strategy-only handoff does not become execution-grade merely because `implementation_strategy` is settled.
 - Route task agents by agent name/role. Do not pass or hard-code concrete model identifiers in workflow prompts.
 - Parallelize independent work, not merely divisible work. Dependency structure decides isolation and concurrency. A sole/sequential writer on a suitable feature checkout should normally stay non-isolated so it can be resumed.
 - Writers verify their own changes with focused repository-native proof. Controller/final verification is additive; never make workers blind merely to preserve independence.
-- Route settled behavior-preserving/mechanical edits and already-diagnosed exact corrections to bundled `sonic`; keep new behavior, TDD sequencing, debugging and integration judgment with Main or `flow-implementer`.
+- Route execution-grade plan work to `flow-plan-executor` (`@execute`); route unresolved semantic judgment/debugging/broken-plan fallback to `flow-implementer` (`@task`); route settled behavior-preserving/mechanical edits and already-diagnosed exact corrections to bundled `sonic` (`@smol`).
+- For execution-grade plan work, prefer one strong integrated `flow-acceptance-reviewer` pass after the coherent implementation instead of routine COR/TTC/CRF fan-out. Specialist lenses remain available for unplanned work, audits, PR review, security boundaries, or escalation.
 - For ordinary work, the main session may code. Under `flow-ldd`, the architect is strictly non-coding and delegates production edits.
 
 ## Commits

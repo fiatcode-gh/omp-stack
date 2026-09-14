@@ -41,10 +41,11 @@ Existing profile configs are never overwritten; compare them with `profiles/<nam
 
 ## Flow shape
 
-The old 24-skill surface is reduced to 14 skills:
+The old 24-skill surface is reduced to 15 skills in the v8 trial:
 
 - `flow-design` — material product/architecture decisions only.
-- `flow-execution` — judgment-aware routing, resumable unit ownership, dependency-aware isolation, layered verification and review waves.
+- `flow-planning` — execution-grade HOW planning; front-loads interfaces/tests/ownership and lens concerns so implementation can be constrained.
+- `flow-execution` — routes execution-grade work to cheap constrained executors, preserves semantic fallback, layered verification and bounded acceptance review.
 - `flow-tdd` — behavior-first Red/Green/Refactor.
 - `flow-debugging` — root-cause-first diagnosis.
 - `flow-review` — local change, PR reviewer, PR author-feedback, and codebase-audit modes.
@@ -54,13 +55,13 @@ The old 24-skill surface is reduced to 14 skills:
 - `forgejo`, `ui-design`, `blog-post` — domain capabilities.
 - `weft-worklog`, `weft-memory`, `weft-maintenance` — grouped Weft operations.
 
-The old bootstrap (`flow-using-skills`), hand-written planning skill, normal workspace ceremony and standalone verification skill are gone. Native OMP discovery/Plan/isolation replace the local mechanics; validated external ChatGPT/other-harness planning handoffs can preserve already-settled design/strategy without duplicating native Plan; `flow-safety` and `flow-evidence` rules retain the invariants. Normal execution keeps semantic ownership on `@task`, pushes settled mechanical leaves/corrections to `@smol`, preserves non-isolated unit owners when useful, waits eventfully instead of polling long-running children, makes writers own safe touched-file formatting and focused proof, and broadens evidence from leaf to final tree without ritual duplicate full-suite runs. Interactive checkpoints maintain a forward pointer: what changed, what Flow will do next, and whether the user is actually needed.
+The old bootstrap (`flow-using-skills`), normal workspace ceremony and standalone verification skill remain gone. v8 deliberately restores **Flow planning doctrine** on top of native OMP Plan/model mechanics: substantial work becomes contract → execution-grade plan → constrained `@execute` implementation → one strong `@slow` acceptance review. `@task` remains the semantic/debugging fallback and `@smol` the mechanical lane. Review lenses are not deleted: they move left into the plan quality gate for planned work and remain specialist reviewers for unplanned/PR/audit paths. Writers still own focused proof, Main owns integration/final evidence, and LDD resumes from small durable pointers instead of replaying the whole epic.
 
 ## Model philosophy
 
 Skills and agents use **roles**, never concrete models. Native OMP profiles provide provider-specific role maps while the Flow content stays shared.
 
-The OpenAI Codex profile keeps the quota-conscious Luna → Terra → Sol ladder. The Ollama Cloud profile uses DeepSeek V4 Flash for cheap roles, GLM-5.3-Flash for routine coding/vision, DeepSeek V4 Pro for deliberate planning/review, and Kimi K3 for explicit critical escalation.
+The OpenAI Codex v8 trial keeps Terra as Main, uses Sol for planning/final acceptance, and adds Luna as `@execute` for decision-complete plan work. The Ollama Cloud trial moves Main to DeepSeek V4 Pro while keeping GLM-5.3-Flash for constrained execution/semantic coding/vision, DeepSeek V4 Flash for cheap roles, and Kimi K3 for explicit critical escalation.
 
 See `docs/MODEL-ROUTING.md`. Current OMP assumptions are recorded in `docs/OMP-COMPATIBILITY.md`.
 

@@ -11,21 +11,52 @@ modelRoles:
   tiny: ollama-cloud/deepseek-v4-flash:low
   commit: ollama-cloud/deepseek-v4-flash:low
 
-  # Normal coding and multimodal work. OMP currently exposes GLM 5.3 Flash
-  # reasoning at high/max; high is the routine lane.
-  default: ollama-cloud/glm-5.3-flash:high
-  task: ollama-cloud/glm-5.3-flash:high
-  vision: ollama-cloud/glm-5.3-flash:high
-
-  # Deliberate reasoning and independent review.
+  # Controller + deliberate judgment. Unit 2 showed GLM was capable at coding
+  # but less reliable at orchestration, so v8 trials DeepSeek V4 Pro as Main.
+  default: ollama-cloud/deepseek-v4-pro:high
   plan: ollama-cloud/deepseek-v4-pro:high
   slow: ollama-cloud/deepseek-v4-pro:high
   review_aux: ollama-cloud/deepseek-v4-pro:high
+
+  # Constrained plan execution / semantic fallback / multimodal work.
+  execute: ollama-cloud/glm-5.3-flash:high
+  task: ollama-cloud/glm-5.3-flash:high
+  vision: ollama-cloud/glm-5.3-flash:high
 
   # Explicit frontier escalation only. Keep this high rather than max because
   # OMP maps generic Ollama Cloud xhigh to high and only advertises supported
   # effort lanes from the discovered model metadata.
   critical: ollama-cloud/kimi-k3:high
+
+# Native backstop for Flow's external-effect gate.
+tools:
+  approval:
+    eval: prompt
+
+bash:
+  patterns:
+    - match: "git push*"
+      approval: prompt
+    - match: "gh pr create*"
+      approval: prompt
+    - match: "gh pr merge*"
+      approval: prompt
+    - match: "gh pr review*"
+      approval: prompt
+    - match: "gh pr comment*"
+      approval: prompt
+    - match: "gh issue comment*"
+      approval: prompt
+    - match: "gh release create*"
+      approval: prompt
+    - match: "gh api*"
+      approval: prompt
+    - match: "tea pr create*"
+      approval: prompt
+    - match: "tea pr merge*"
+      approval: prompt
+    - match: "tea comment*"
+      approval: prompt
 
 # Keep per-dispatch effort disabled so an orchestrator cannot silently turn a
 # cheap worker into the selected model's highest reasoning level.

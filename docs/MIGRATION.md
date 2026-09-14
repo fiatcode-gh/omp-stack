@@ -39,20 +39,24 @@ The old default `~/.omp/agent` tree is left untouched. Delete or retire it only 
 
 ## Routing changes
 
-The OpenAI Codex profile preserves the current quota-conscious routing:
+The v8 trial changes routing because execution-grade planning separates judgment from plan-following:
 
-- `task`: Terra;
+OpenAI Codex:
+
+- `default` / `task`: Terra;
+- `execute`: Luna;
 - `plan` / `slow`: Sol high;
 - `review_aux`: Terra high;
 - `critical`: Sol xhigh;
-- `commit`: Luna low;
-- `task.enableEffort: false`, `maxConcurrency: 3`, per-spawn isolation enabled with backend `auto`.
+- cheap roles remain Luna.
 
-The Ollama Cloud profile maps the same roles to:
+Ollama Cloud:
 
+- `default` / `plan` / `slow` / `review_aux`: DeepSeek V4 Pro high (controller trial);
+- `execute` / `task` / `vision`: GLM-5.3-Flash high;
 - `smol` / `tiny` / `commit`: DeepSeek V4 Flash low;
-- `default` / `task` / `vision`: GLM-5.3-Flash high;
-- `plan` / `slow` / `review_aux`: DeepSeek V4 Pro high;
 - `critical`: Kimi K3 high.
+
+Both baseline configs also add explicit OMP approval prompts for normal push/PR/release commands and `eval`. **Existing installed profile configs are not overwritten by `omp-stack install`**, so merge the new `modelRoles.execute`, Ollama `default`, `tools.approval.eval`, and `bash.patterns` blocks manually before the field trial.
 
 See `docs/MODEL-ROUTING.md` for the reasoning.

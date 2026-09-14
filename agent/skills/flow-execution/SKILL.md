@@ -1,6 +1,6 @@
 ---
 name: flow-execution
-description: Use when local implementation is authorized for a bounded change or approved OMP plan; route work by judgment, preserve useful unit owners, delegate mechanical leaves cheaply, verify by ownership and review proportionally before integration.
+description: Use when local implementation is authorized; prefer constrained execution from an execution-grade plan, preserve semantic fallback for unresolved judgment, verify by ownership, and close planned work with one strong acceptance review plus bounded correction.
 ---
 
 # Flow execution
@@ -9,7 +9,15 @@ OMP owns plan approval, task spawning, isolation and Agent Hub. This skill owns 
 
 ## 1. Orient
 
-Read the governing request/spec/approved execution strategy and project rules. An accepted external planning handoff may serve as that strategy after local validation; it does not carry implementation authorization. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
+Read the governing request/spec/approved execution strategy and project rules. An accepted external planning handoff is evidence after local validation; it does not carry implementation authorization. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
+
+Classify the execution lane before dispatch:
+
+- current **execution-grade plan** satisfying `flow-planning` → constrained `flow-plan-executor` lane;
+- consequential HOW still unresolved / plan contradiction / debugging or semantic diagnosis → `flow-implementer` (`@task`) or return through `flow-planning`/design;
+- exact behavior-preserving/mechanical leaf or already-diagnosed correction → `sonic` (`@smol`).
+
+Do not treat a strategy document as execution-grade merely because it is detailed. The plan must lock consequential decisions, concrete proof and escalation boundaries. Conversely, do not rerun planning when a validated current external plan already meets that contract.
 
 Classify units:
 
@@ -17,7 +25,7 @@ Classify units:
 - dependent on another unit's result/interface → serialize or start from the verified updated base;
 - overlapping mutable surface → one writer at a time unless the units are explicitly redesigned to be independent.
 
-Separate unresolved **judgment** from settled/mechanical work. A detailed plan reduces rediscovery; it does not make every implementation mechanical. If a validated external strategy already settles the consequential HOW and the relevant tree/contracts are unchanged, do not invoke native Plan only to reproduce it; Plan only the part that remains materially unresolved/risky.
+Separate unresolved **judgment** from plan-following work. Move consequential judgment up into `flow-planning` when doing so will make a substantial unit cheaper/safer to execute; do not manufacture a plan artifact for a tiny obvious edit.
 
 ## 2. Route by work type
 
@@ -26,23 +34,28 @@ Use the cheapest owner that can correctly own the remaining judgment:
 - tiny cohesive edit where spawn overhead exceeds the work → Main may implement directly under `flow-tdd`;
 - bounded read-only fact finding → bundled `scout`;
 - fully specified **behavior-preserving** mechanical edit, or an already-diagnosed exact correction with an existing failing/mechanical proof and one obvious result → bundled `sonic` may be dispatched directly;
-- new executable behavior, TDD sequencing, semantic implementation, debugging, integration or work that still requires judgment → `flow-implementer` (`@task` semantic owner).
+- new executable behavior whose consequential HOW/tests/interfaces are locked by a current execution-grade plan → `flow-plan-executor` (`@execute` constrained owner);
+- semantic implementation/debugging/integration that still requires judgment, or a plan task promoted after contradiction → `flow-implementer` (`@task` semantic owner).
 
-Do not route ambiguous/new behavior, architecture, migration semantics, concurrency/error semantics or root-cause diagnosis to `sonic` merely because a plan exists. Direct Sonic must not bypass Red/Green: when executable behavior is changing, Main/the semantic owner owns the TDD cycle and may delegate only settled leaves within it.
+`@execute` is not a synonym for `@smol`. It may implement new behavior because the expensive judgment and required proof were deliberately settled upstream; its contract is to follow locked decisions and escalate contradictions rather than improvise.
 
-A `flow-implementer` may itself use `scout` for bounded discovery and `sonic` for settled mechanical leaves. Nested delegation is optional and must not create overlapping writers or transfer design/integration responsibility to the child.
+Do not route ambiguous/new behavior, architecture, migration semantics, concurrency/error semantics or root-cause diagnosis to `sonic`. Do not route them to `flow-plan-executor` unless the execution-grade plan has actually settled them.
+
+A `flow-implementer` may itself use `scout` for bounded discovery and `sonic` for settled mechanical leaves. A `flow-plan-executor` does not spawn children; reducing orchestration fan-out is part of the planned lane's economics.
 
 ## 3. Preserve the unit owner
 
-For a sole/sequential implementation unit on a suitable feature checkout, prefer a **non-isolated** `flow-implementer`. This keeps its context/session available for clarification, verification follow-up and review corrections.
+For a sole/sequential implementation unit on a suitable feature checkout, prefer a **non-isolated** owner. This may be `flow-plan-executor` for an execution-grade plan or `flow-implementer` for semantic work. Keeping one planned executor alive across adjacent sequential plan tasks avoids repeated cold-start/context reconstruction.
 
 Use task isolation for independent concurrent writers or an explicitly disposable experiment. Do not isolate by reflex: a completed isolated task is intentionally disposable and may not be revivable after its workspace is applied/cleaned.
 
-Keep the unit owner's agent id/name. When later evidence finds a semantic correction, follow up with that same non-isolated owner through `hub` when available instead of cold-spawning another semantic worker.
+Keep the unit owner's agent id/name. When later evidence finds a correction inside the same valid plan, follow up with that owner through `hub` when available. If the correction reveals missing/invalid plan judgment, repair/promote through `flow-planning`/`flow-implementer` rather than asking the cheap executor to redesign.
 
 ## 4. Write a verification-capable brief
 
 Worker briefs are self-contained: intended behavior, exact scope/subsystem, governing constraints/interfaces, observable acceptance criteria, workspace/concurrency context and verification scope. Do not paste the whole conversation. Do not pass concrete model names.
+
+For `flow-plan-executor`, prefer artifact references over pasted plan prose: give the contract path, `PLAN.md` path, exact assigned `plan-tasks/*.md`, current base/head and verification ownership. The executor reads the small plan index/global constraints plus its assigned task files, not the entire epic/history.
 
 Before spawning a writing worker, run a **dispatch preflight**. The brief must positively state all four of these:
 
@@ -96,26 +109,34 @@ A child proves its leaf; the semantic unit owner proves the combined unit; Main 
 
 When verification/review finds a problem:
 
+- first verify/deduplicate material findings and **batch the verified set** into one correction round where possible; do not wake the owner once per reviewer arrival;
 - exact, fully diagnosed mechanical correction with an existing failing/mechanical proof and one obvious result → direct `sonic` is appropriate;
 - formatter-only failure → have the current owner run the canonical formatter on its touched files, or route the exact formatter correction to `sonic`; never ask a semantic owner to imitate formatter output by hand;
-- correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available; when waiting for that revived owner's correction, use `hub send` with `await: true` or a peer-filtered reply wait rather than the completed task's old job id;
-- owner unavailable/non-revivable → dispatch a new bounded `flow-implementer` as fallback;
-- correction invalidates the governing contract/plan → stop implementation and return through design/Plan/user decision.
+- correction inside a still-valid execution-grade plan → message/revive the existing `flow-plan-executor`;
+- correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available; when waiting for a revived owner, use `hub send` with `await: true` or a peer-filtered reply wait rather than the completed task's old job id;
+- owner unavailable/non-revivable → dispatch the appropriate new bounded owner as fallback;
+- correction exposes a plan defect or invalidates the governing contract → stop the affected work and return through `flow-planning`/design/user decision.
 
-After a correction, rerun the proof affected by that edit plus any integration/final gates made stale. Do not restart the entire workflow by ritual.
+After a correction, rerun the proof affected by that edit plus any integration/final gates made stale. Do not restart the entire workflow by ritual. Planned acceptance gets at most one scoped closure review by default; a further review generation requires a concrete unresolved acceptance risk.
 
 ## 8. Review proportionally
 
-Do not pay for a full specialist round after every tiny task. Review **coherent waves**, high-risk units immediately, and the whole change before integration.
+### Execution-grade planned path
+
+The plan quality gate already moved COR/TTC/CRF/SEC reasoning left. Do **not** automatically pay for the same specialist fan-out again after implementation. After the coherent planned change and focused/integration proof, dispatch one `flow-acceptance-reviewer` (`@slow`) with the governing contract, execution-grade plan/task paths, exact diff/base and evidence. It independently checks contract satisfaction, plan conformance, correctness, tests/contracts, craft and applicable security; it must challenge bad plans rather than advocate for them.
+
+Verify Critical/Important findings, deduplicate them, send one batched correction round, then use one scoped acceptance closure review when independent confirmation is still needed. Minor non-load-bearing findings may be parked rather than forcing another expensive loop. Specialist review is added only when a concrete residual risk warrants it (for example a meaningful security boundary or hard concurrency/data-integrity issue).
+
+### Unplanned / standalone review path
+
+For changes that did not come through an execution-grade plan, keep the existing applicability-driven lens doctrine:
 
 - Correctness: OMP bundled `reviewer` (normal strong review).
 - TTC: `flow-ttc-reviewer` when behavior/tests/validation/migrations/types/schemas/contracts changed.
 - Craft: `flow-craft-reviewer` for non-trivial logic, abstractions, docs/comments, cross-module refactors, duplication/nesting or mixed responsibilities.
 - Security: built-in `security-reviewer` or native `security_scan` when the change crosses a meaningful security boundary.
 
-Before dispatch, record an explicit disposition for **COR / TTC / CRF / SEC**: run or skip, with one short reason grounded in the actual changed surface. COR is always run for an initial coherent change review. Conditional lenses must not disappear by silent omission; the disposition can be concise and need not become user-facing ceremony.
-
-Run applicable read-only lenses in parallel and blind to one another. Verify Critical/Important findings before acting on them. After fixes, rerun only the lens(es) whose findings or newly changed risk surface require independent re-review; a complete review round is not automatic. Avoid endless review/fix loops; repeated disagreement/failure becomes an evidence-backed user decision/escalation.
+Before specialist dispatch, record an explicit disposition for **COR / TTC / CRF / SEC**: run or skip, with one short reason grounded in the actual changed surface. Run applicable lenses in parallel and blind to one another. Verify Critical/Important findings before acting. After fixes, rerun only affected/newly applicable lenses; a complete review round is not automatic.
 
 ## 9. Close execution
 

@@ -22,8 +22,8 @@ skills=list((ROOT/'agent/skills').glob('*/SKILL.md'))
 agents=list((ROOT/'agent/agents').glob('*.md'))
 rules=list((ROOT/'agent/rules').glob('*.md'))
 
-if len(skills)!=14: err(f'expected 14 skills, got {len(skills)}')
-if len(agents)!=6: err(f'expected 6 agents, got {len(agents)}')
+if len(skills)!=15: err(f'expected 15 skills, got {len(skills)}')
+if len(agents)!=9: err(f'expected 9 agents, got {len(agents)}')
 if len(rules)!=2: err(f'expected 2 rules, got {len(rules)}')
 
 names=set()
@@ -37,11 +37,11 @@ for p in skills:
     if re.search(r'pass (?:the )?model explicitly|explicit model per|model: openai-codex/', body, re.I): err(f'{p}: concrete/per-dispatch model routing leaked into skill')
 
 expected={
-'flow-design','flow-execution','flow-tdd','flow-debugging','flow-review','flow-integrating','flow-ldd','flow-external-session','forgejo','ui-design','blog-post','weft-worklog','weft-memory','weft-maintenance'}
+'flow-design','flow-planning','flow-execution','flow-tdd','flow-debugging','flow-review','flow-integrating','flow-ldd','flow-external-session','forgejo','ui-design','blog-post','weft-worklog','weft-memory','weft-maintenance'}
 if names!=expected: err(f'skill set mismatch: {sorted(names^expected)}')
 
 agent_names=set()
-allowed_roles={'@task','@review_aux'}
+allowed_roles={'@task','@execute','@plan','@slow','@review_aux'}
 for p in agents:
     fm,body=frontmatter(p); name=fm.get('name'); desc=fm.get('description')
     if not name or not desc: err(f'{p}: agent needs name+description')
@@ -78,6 +78,28 @@ impl_lower=impl_body.lower()
 for required in ['mechanical leaf work','hub','main','nested children share your current workspace',"child's report is a claim", 'canonical formatter on every file you changed', 'brief sanity check', 'orchestration defect']:
     if required not in impl_lower: err(f'flow-implementer missing nested delegation/clarification invariant: {required}')
 
+planner_path=ROOT/'agent/agents/flow-planner.md'
+planner_fm,planner_body=frontmatter(planner_path)
+if planner_fm.get('model') != '@plan': err('flow-planner must use @plan')
+if 'do not write production code' not in planner_body.lower(): err('flow-planner production-code boundary missing')
+
+executor_path=ROOT/'agent/agents/flow-plan-executor.md'
+executor_fm,executor_body=frontmatter(executor_path)
+if executor_fm.get('model') != '@execute': err('flow-plan-executor must use @execute')
+if executor_fm.get('spawns') not in (None, [], ''): err('flow-plan-executor must not spawn child agents')
+for required in ['locked decisions','executor discretion','plan contradiction','do not spawn subagents']:
+    if required not in executor_body.lower(): err(f'flow-plan-executor invariant missing: {required}')
+
+accept_path=ROOT/'agent/agents/flow-acceptance-reviewer.md'
+accept_fm,accept_body=frontmatter(accept_path)
+if accept_fm.get('model') != '@slow': err('flow-acceptance-reviewer must use @slow')
+for required in ['plan conformance','plan-defect','plan-compliance advocate','contract']:
+    if required not in accept_body.lower(): err(f'flow-acceptance-reviewer invariant missing: {required}')
+
+planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness']:
+    if required not in planning: err(f'flow-planning invariant missing: {required}')
+
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
 for required in [
     'route by work type', 'preserve the unit owner', 'clarify live',
@@ -88,7 +110,8 @@ for required in [
     'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
     'dispatch preflight', 'verification ownership:', 'do not spawn a writing worker until all four entries are concrete',
     'formatter-only failure', 'forward pointer',
-    'accepted external planning handoff', 'do not invoke native plan only to reproduce it',
+    'accepted external planning handoff', 'execution-grade plan', 'flow-plan-executor',
+    'flow-acceptance-reviewer', 'batch the verified set',
     'do not wait on its old task job id after revival', 'peer-filtered reply wait',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
@@ -98,7 +121,7 @@ for required in [
     'bounded parallel read-only `scout`', 'normally non-isolated',
     'correct efficiently', 'worker self-verification is required', 'forward pointer',
     'external planning intake', 'does not carry local implementation authorization',
-    'current validated external implementation strategy',
+    'flow-planning', 'flow-plan-executor', 'execution-grade',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
@@ -174,7 +197,7 @@ for p in skills:
         if not target.exists(): err(f'{p.relative_to(ROOT)}: missing referenced asset {rel}')
 
 # Every native provider profile must expose the same complete role vocabulary.
-required_roles={'default','smol','tiny','vision','task','plan','slow','review_aux','critical','commit'}
+required_roles={'default','smol','tiny','vision','execute','task','plan','slow','review_aux','critical','commit'}
 profile_cfgs={
     'openai-codex': ROOT/'profiles/openai-codex/config.yml',
     'ollama-cloud': ROOT/'profiles/ollama-cloud/config.yml',
@@ -199,6 +222,7 @@ expected_openai={
     'smol':'openai-codex/gpt-5.6-luna',
     'tiny':'openai-codex/gpt-5.6-luna:low',
     'vision':'openai-codex/gpt-5.6-luna',
+    'execute':'openai-codex/gpt-5.6-luna',
     'task':'openai-codex/gpt-5.6-terra',
     'plan':'openai-codex/gpt-5.6-sol:high',
     'slow':'openai-codex/gpt-5.6-sol:high',
@@ -211,10 +235,11 @@ if openai != expected_openai:
     err('profiles/openai-codex/config.yml: role mapping drifted from documented routing')
 
 expected_ollama={
-    'default':'ollama-cloud/glm-5.3-flash:high',
+    'default':'ollama-cloud/deepseek-v4-pro:high',
     'smol':'ollama-cloud/deepseek-v4-flash:low',
     'tiny':'ollama-cloud/deepseek-v4-flash:low',
     'vision':'ollama-cloud/glm-5.3-flash:high',
+    'execute':'ollama-cloud/glm-5.3-flash:high',
     'task':'ollama-cloud/glm-5.3-flash:high',
     'plan':'ollama-cloud/deepseek-v4-pro:high',
     'slow':'ollama-cloud/deepseek-v4-pro:high',
@@ -225,6 +250,16 @@ expected_ollama={
 ollama=yaml.safe_load(profile_cfgs['ollama-cloud'].read_text()).get('modelRoles',{})
 if ollama != expected_ollama:
     err('profiles/ollama-cloud/config.yml: role mapping drifted from documented routing')
+
+# Native external-effect approval backstop must be present in both baselines.
+for profile,path in profile_cfgs.items():
+    cfg=yaml.safe_load(path.read_text()) or {}
+    approval=((cfg.get('tools') or {}).get('approval') or {})
+    if approval.get('eval') != 'prompt': err(f'{path.relative_to(ROOT)}: tools.approval.eval must prompt')
+    patterns=(cfg.get('bash') or {}).get('patterns') or []
+    pattern_map={p.get('match'):p.get('approval') for p in patterns if isinstance(p,dict)}
+    for command in ['git push*','gh pr create*','gh pr merge*']:
+        if pattern_map.get(command) != 'prompt': err(f'{path.relative_to(ROOT)}: publication prompt missing for {command}')
 
 for p in agents:
     fm,_=frontmatter(p)
