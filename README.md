@@ -63,7 +63,7 @@ The old bootstrap (`flow-using-skills`), normal workspace ceremony and standalon
 
 Skills and agents use **roles**, never concrete models. Native OMP profiles provide provider-specific role maps while the Flow content stays shared.
 
-The OpenAI Codex v8 trial keeps Terra as Main, uses Sol for planning/final acceptance, and adds Luna as `@execute` for decision-complete plan work. The Ollama Cloud trial moves Main to DeepSeek V4 Pro while keeping GLM-5.3-Flash for constrained execution/semantic coding/vision, DeepSeek V4 Flash for cheap roles, and Kimi K3 for explicit critical escalation. The Anthropic profile stays on the pre-trial ladder: Haiku 4.5 for cheap leaves, Sonnet 5 for semantic implementation/vision/auxiliary review, Opus 5 for Main/planning/correctness reasoning, and Fable 5.1 high for explicit critical escalation.
+The OpenAI Codex v8 trial keeps Terra as Main, uses Sol for planning/final acceptance, and adds Luna as `@execute` for decision-complete plan work. The Ollama Cloud trial moves Main to DeepSeek V4 Pro while keeping GLM-5.3-Flash for constrained execution/semantic coding/vision, DeepSeek V4 Flash for cheap roles, and Kimi K3 for explicit critical escalation. The Anthropic v8 profile uses Haiku 4.5 for cheap leaves, Sonnet 5 for constrained execution/semantic implementation/vision/auxiliary review, Opus 5 for Main/planning/correctness reasoning, and Fable 5.1 high for explicit critical escalation.
 
 See `docs/MODEL-ROUTING.md`. Current OMP assumptions are recorded in `docs/OMP-COMPATIBILITY.md`.
 

@@ -19,7 +19,7 @@ The Flow skills/agents are symlinked into all managed profiles, so workflow sema
 | repo exploration | bundled `scout` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
 | behavior-preserving mechanical work / diagnosed exact correction | bundled `sonic` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
 | Main/controller | `@default` | Terra | **DeepSeek V4 Pro high (v8 trial)** | Opus 5 high |
-| execution-grade plan follower | `flow-plan-executor` / `@execute` | **Luna** | **GLM-5.3-Flash high** | — (pre-trial, not yet mapped) |
+| execution-grade plan follower | `flow-plan-executor` / `@execute` | **Luna** | **GLM-5.3-Flash high** | Sonnet 5 high |
 | residual semantic judgment / broken-plan fallback | `flow-implementer` / `@task` | Terra | GLM-5.3-Flash high | Sonnet 5 high |
 | deliberate execution planning | `flow-planner` / `@plan` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
 | final planned acceptance / hard reasoning | `flow-acceptance-reviewer` / `@slow` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
@@ -47,7 +47,7 @@ Keep the exact model IDs under review when OMP or Ollama Cloud changes its disco
 ## Anthropic selection rationale
 
 - **Claude Haiku 4.5** owns `smol` / `tiny` / `commit`: cheap bounded work does not need the premium reasoning tier. The baseline intentionally leaves Haiku's effort suffix unpinned because its first-party OMP effort surface is not the same adaptive ladder as Sonnet/Opus/Fable.
-- **Claude Sonnet 5 high** owns `task` / `vision` / `review_aux`: it is the high-throughput semantic implementation and multimodal lane, while auxiliary review stays independent from the Opus correctness lane.
+- **Claude Sonnet 5 high** owns `execute` / `task` / `vision` / `review_aux`: it is the high-throughput constrained-execution, semantic-implementation and multimodal lane, while auxiliary review stays independent from the Opus correctness lane.
 - **Claude Opus 5 high** owns `default` / `plan` / `slow`: the Team Premium profile spends its larger allowance on controller reliability, long-horizon orchestration, architecture and primary correctness reasoning rather than making Main another implementation-tier session.
 - **Claude Fable 5.1 high** owns `critical`: the role is explicit-only, and `high` is deliberate. Do not pin `max` here; maximum effort would burn Team Premium allowance too aggressively for a reusable baseline.
 
@@ -61,7 +61,7 @@ Use the strongest model for **unresolved judgment**, not for routine plan transc
 
 ## External-effect approval backstop
 
-Both trial baseline profiles (openai-codex, ollama-cloud) add OMP-native `bash.patterns` prompts for normal GitHub/Forgejo publication commands and `tools.approval.eval: prompt`; the Anthropic baseline does not carry this backstop yet. These are a runtime backstop for Flow's user-authorization rule, not sandbox containment: another already-approved program can still perform network effects through its own APIs. The user-facing Flow gate remains authoritative. Existing installed profile configs must merge these settings manually because `omp-stack install` never overwrites profile-owned config.
+All three v8 baseline profiles add OMP-native `bash.patterns` prompts for normal GitHub/Forgejo publication commands and `tools.approval.eval: prompt`. These are a runtime backstop for Flow's user-authorization rule, not sandbox containment: another already-approved program can still perform network effects through its own APIs. The user-facing Flow gate remains authoritative. Existing installed profile configs must merge these settings manually because `omp-stack install` never overwrites profile-owned config.
 
 ## Concurrency
 

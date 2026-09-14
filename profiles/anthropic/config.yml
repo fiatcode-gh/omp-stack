@@ -15,8 +15,9 @@ modelRoles:
   tiny: anthropic/claude-haiku-4-5-20251001
   commit: anthropic/claude-haiku-4-5-20251001
 
-  # High-throughput semantic implementation, multimodal work and auxiliary
-  # review. Keep Main separate from the implementation tier.
+  # High-throughput constrained execution, semantic implementation, multimodal
+  # work and auxiliary review. Keep Main separate from the implementation tier.
+  execute: anthropic/claude-sonnet-5:high
   task: anthropic/claude-sonnet-5:high
   vision: anthropic/claude-sonnet-5:high
   review_aux: anthropic/claude-sonnet-5:high
@@ -30,6 +31,38 @@ modelRoles:
   # Explicit-only frontier escalation. High is deliberate: max would consume
   # Team Premium allowance too aggressively for a reusable baseline.
   critical: anthropic/claude-fable-5-1:high
+
+# Native backstop for Flow's external-effect gate. Explicit prompt policies
+# remain active even under OMP's default yolo approval mode. eval is prompted
+# because bash command patterns do not contain subprocesses launched by eval.
+tools:
+  approval:
+    eval: prompt
+
+bash:
+  patterns:
+    - match: "git push*"
+      approval: prompt
+    - match: "gh pr create*"
+      approval: prompt
+    - match: "gh pr merge*"
+      approval: prompt
+    - match: "gh pr review*"
+      approval: prompt
+    - match: "gh pr comment*"
+      approval: prompt
+    - match: "gh issue comment*"
+      approval: prompt
+    - match: "gh release create*"
+      approval: prompt
+    - match: "gh api*"
+      approval: prompt
+    - match: "tea pr create*"
+      approval: prompt
+    - match: "tea pr merge*"
+      approval: prompt
+    - match: "tea comment*"
+      approval: prompt
 
 # Keep per-dispatch effort disabled so an orchestrator cannot silently turn a
 # cheap worker into the selected model's highest reasoning level.

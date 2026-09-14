@@ -58,13 +58,13 @@ Ollama Cloud:
 - `smol` / `tiny` / `commit`: DeepSeek V4 Flash low;
 - `critical`: Kimi K3 high.
 
-The Anthropic profile is not part of the v8 trial and maps the pre-trial roles (no `execute` yet):
+Anthropic:
 
 - `smol` / `tiny` / `commit`: Claude Haiku 4.5;
-- `task` / `vision` / `review_aux`: Claude Sonnet 5 high;
+- `execute` / `task` / `vision` / `review_aux`: Claude Sonnet 5 high;
 - `default` / `plan` / `slow`: Claude Opus 5 high;
 - `critical`: Claude Fable 5.1 high (explicitly not max).
 
-Both trial baseline configs also add explicit OMP approval prompts for normal push/PR/release commands and `eval`. **Existing installed profile configs are not overwritten by `omp-stack install`**, so merge the new `modelRoles.execute`, Ollama `default`, `tools.approval.eval`, and `bash.patterns` blocks manually before the field trial.
+All three v8 baseline configs also add explicit OMP approval prompts for normal push/PR/release commands and `eval`. **Existing installed profile configs are not overwritten by `omp-stack install`**, so merge the applicable `modelRoles.execute`, controller routing, `tools.approval.eval`, and `bash.patterns` blocks manually before the field trial.
 
 See `docs/MODEL-ROUTING.md` for the reasoning.
