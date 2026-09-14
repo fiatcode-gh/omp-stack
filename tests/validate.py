@@ -87,7 +87,7 @@ executor_path=ROOT/'agent/agents/flow-plan-executor.md'
 executor_fm,executor_body=frontmatter(executor_path)
 if executor_fm.get('model') != '@execute': err('flow-plan-executor must use @execute')
 if executor_fm.get('spawns') not in (None, [], ''): err('flow-plan-executor must not spawn child agents')
-for required in ['locked decisions','executor discretion','plan contradiction','do not spawn subagents']:
+for required in ['locked decisions','executor discretion','plan contradiction','do not spawn subagents','200-request warning','two materially similar failed edit/proof attempts']:
     if required not in executor_body.lower(): err(f'flow-plan-executor invariant missing: {required}')
 
 accept_path=ROOT/'agent/agents/flow-acceptance-reviewer.md'
@@ -97,7 +97,7 @@ for required in ['plan conformance','plan-defect','plan-compliance advocate','co
     if required not in accept_body.lower(): err(f'flow-acceptance-reviewer invariant missing: {required}')
 
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()

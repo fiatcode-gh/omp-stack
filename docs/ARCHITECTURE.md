@@ -56,7 +56,7 @@ planned coherent result → flow-acceptance-reviewer (@slow)
 
 The planning stage locks consequential interfaces/tests/ownership/error semantics and explicit executor discretion. A plan executor may implement new behavior because that judgment was paid upstream, but it cannot redesign; contradictions rise to Main/planning. The semantic `@task` owner remains available when judgment genuinely cannot be removed from execution.
 
-A sole/sequential owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived. One plan executor may continue across adjacent sequential plan tasks to reduce cold starts. Isolation remains primarily for independent concurrent writers or explicitly disposable experiments. Long waits remain event-driven.
+A sole/sequential semantic owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived. Planned execution uses the same checkout sequentially but treats each task brief as a context boundary: fresh `flow-plan-executor` session per task, repository/artifact continuity instead of model-session continuity. Isolation remains primarily for independent concurrent writers or explicitly disposable experiments. Long waits remain event-driven.
 
 ## Evidence hierarchy
 

@@ -43,13 +43,17 @@ Do not route ambiguous/new behavior, architecture, migration semantics, concurre
 
 A `flow-implementer` may itself use `scout` for bounded discovery and `sonic` for settled mechanical leaves. A `flow-plan-executor` does not spawn children; reducing orchestration fan-out is part of the planned lane's economics.
 
-## 3. Preserve the unit owner
+## 3. Preserve semantic ownership; rotate plan executors
 
-For a sole/sequential implementation unit on a suitable feature checkout, prefer a **non-isolated** owner. This may be `flow-plan-executor` for an execution-grade plan or `flow-implementer` for semantic work. Keeping one planned executor alive across adjacent sequential plan tasks avoids repeated cold-start/context reconstruction.
+Preserve the unit owner when semantic judgment benefits from persistent context; rotate task-scoped plan executors instead of carrying their model context across execution-grade task boundaries.
+
+For unresolved semantic work on a suitable feature checkout, prefer a **non-isolated** `flow-implementer` owner so its judgment context can survive clarification and semantic corrections.
+
+For execution-grade planned work, preserve the **workspace**, not the executor session: each `plan-tasks/*.md` normally gets one fresh non-isolated `flow-plan-executor`, run sequentially in the same suitable feature checkout. Repository state/artifacts carry prior-task results forward; model context does not. Do not batch adjacent plan tasks into one persistent executor merely to avoid cold start.
 
 Use task isolation for independent concurrent writers or an explicitly disposable experiment. Do not isolate by reflex: a completed isolated task is intentionally disposable and may not be revivable after its workspace is applied/cleaned.
 
-Keep the unit owner's agent id/name. When later evidence finds a correction inside the same valid plan, follow up with that owner through `hub` when available. If the correction reveals missing/invalid plan judgment, repair/promote through `flow-planning`/`flow-implementer` rather than asking the cheap executor to redesign.
+Keep a semantic unit owner's agent id/name when that ownership is useful. Do not preserve/revive a plan executor across plan-task boundaries. If evidence reveals missing/invalid plan judgment, repair/promote through `flow-planning`/`flow-implementer` rather than asking the cheap executor to redesign.
 
 ## 4. Write a verification-capable brief
 
@@ -112,7 +116,7 @@ When verification/review finds a problem:
 - first verify/deduplicate material findings and **batch the verified set** into one correction round where possible; do not wake the owner once per reviewer arrival;
 - exact, fully diagnosed mechanical correction with an existing failing/mechanical proof and one obvious result → direct `sonic` is appropriate;
 - formatter-only failure → have the current owner run the canonical formatter on its touched files, or route the exact formatter correction to `sonic`; never ask a semantic owner to imitate formatter output by hand;
-- correction inside a still-valid execution-grade plan → message/revive the existing `flow-plan-executor`;
+- correction inside a still-valid execution-grade plan → dispatch a **fresh bounded** `flow-plan-executor` with one exact correction brief and focused proof; do not revive a large prior executor context;
 - correction needing semantic context/judgment → message/revive the existing `flow-implementer` owner when available; when waiting for a revived owner, use `hub send` with `await: true` or a peer-filtered reply wait rather than the completed task's old job id;
 - owner unavailable/non-revivable → dispatch the appropriate new bounded owner as fallback;
 - correction exposes a plan defect or invalidates the governing contract → stop the affected work and return through `flow-planning`/design/user decision.

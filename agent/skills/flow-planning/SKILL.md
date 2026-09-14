@@ -25,6 +25,8 @@ plan-tasks/
 
 For non-LDD work, prefer `.flow/plans/<slug>/PLAN.md` plus `plan-tasks/` when the plan must survive compaction/session changes. A compact one-file plan is fine when it stays readable and no worker needs a sliced brief.
 
+For substantial planning, Main/controller should prefer dispatching `flow-planner` (`@plan`) after the contract/WHAT boundary is settled, then consume its compact READY/BLOCKED receipt. Main owns the governing contract and plan acceptance; it should not retain detailed planning recon in its own context when a dedicated planner can encode that judgment durably.
+
 Record the source revision/dirty-state assumptions the plan was derived from. A revision change triggers targeted revalidation, not ritual replanning.
 
 ## 2. Front-load consequential judgment
@@ -43,6 +45,8 @@ An execution-grade plan settles, where applicable:
 Use exact symbols, file paths and repository-native commands. Include code/pseudocode only where an exact recipe prevents rediscovery; do not make line count a goal or paste large code merely to appear complete.
 
 A task is right-sized when it owns one coherent behavioral/test cycle and is worth one implementation boundary. Do not create a fresh task for setup or one-line propagation that belongs to a neighboring deliverable.
+
+Each `plan-tasks/*.md` must also be a **fresh-executor capsule**: enough current paths/symbols/preconditions, locked decisions, proof commands and expected handoff state for a new executor session to start without prior worker transcript/context. When a task depends on an earlier task, depend on repository state/artifacts and named proof, not on remembered conversation.
 
 ## 3. Define executor discretion
 
@@ -101,7 +105,7 @@ Main/controller validates the plan receipt and obtains/retains the normal implem
 - task/plan contradiction or deliberately unresolved semantic judgment → `flow-implementer` (`@task`) or return to planning/design;
 - exact mechanical leaf → `sonic` (`@smol`).
 
-Prefer handing workers artifact paths instead of pasting whole plans into prompts. A sequential unit may keep one non-isolated plan executor alive across adjacent plan tasks to avoid cold-start/resident-context cost; independent tasks may use separate executors when concurrency is actually useful.
+Prefer handing workers artifact paths instead of pasting whole plans into prompts. **One execution-grade task brief normally gets one fresh `flow-plan-executor` session.** Sequential tasks stay non-isolated in the same suitable feature checkout and run one writer at a time, so repository state carries forward while model context does not. Do not preserve an executor across adjacent plan tasks merely to avoid cold start; Unit 3 field evidence showed resident-context growth can dominate that cost. Independent tasks may use isolated/concurrent executors only when they are genuinely independent.
 
 ## External handoffs
 

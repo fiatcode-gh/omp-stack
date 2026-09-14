@@ -58,3 +58,4 @@ Future refactors should preserve these even if filenames change:
 23. Planned execution normally closes with one strong acceptance review plus at most one scoped closure round; verified findings are batched rather than triggering reviewer-by-reviewer correction loops.
 24. LDD resume is context-budget aware: RESUME + active contract + active plan/task + git state first; older ledger/history is read only when the pointer/contradiction requires it.
 25. Runtime approval patterns backstop normal publication commands, but they do not replace the semantic rule that stakeholder-visible effects require explicit user authorization.
+26. Execution-grade task briefs are model-context boundaries: sequential tasks share repository state but normally use fresh `@execute` sessions; request-budget warnings or repeated same-blocker churn force an early yield/escalation instead of preserving a bloated executor context.
