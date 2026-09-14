@@ -178,6 +178,7 @@ required_roles={'default','smol','tiny','vision','task','plan','slow','review_au
 profile_cfgs={
     'openai-codex': ROOT/'profiles/openai-codex/config.yml',
     'ollama-cloud': ROOT/'profiles/ollama-cloud/config.yml',
+    'anthropic': ROOT/'profiles/anthropic/config.yml',
 }
 profile_roles={}
 for profile,path in profile_cfgs.items():
@@ -225,6 +226,22 @@ expected_ollama={
 ollama=yaml.safe_load(profile_cfgs['ollama-cloud'].read_text()).get('modelRoles',{})
 if ollama != expected_ollama:
     err('profiles/ollama-cloud/config.yml: role mapping drifted from documented routing')
+
+expected_anthropic={
+    'default':'anthropic/claude-opus-5:high',
+    'smol':'anthropic/claude-haiku-4-5-20251001',
+    'tiny':'anthropic/claude-haiku-4-5-20251001',
+    'vision':'anthropic/claude-sonnet-5:high',
+    'task':'anthropic/claude-sonnet-5:high',
+    'plan':'anthropic/claude-opus-5:high',
+    'slow':'anthropic/claude-opus-5:high',
+    'review_aux':'anthropic/claude-sonnet-5:high',
+    'critical':'anthropic/claude-fable-5-1:high',
+    'commit':'anthropic/claude-haiku-4-5-20251001',
+}
+anthropic=yaml.safe_load(profile_cfgs['anthropic'].read_text()).get('modelRoles',{})
+if anthropic != expected_anthropic:
+    err('profiles/anthropic/config.yml: role mapping drifted from documented routing')
 
 for p in agents:
     fm,_=frontmatter(p)

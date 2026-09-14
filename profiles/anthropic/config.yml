@@ -1,0 +1,84 @@
+# omp-stack managed baseline for: omp --profile anthropic
+# scripts/omp-stack copies this file only when the profile has no config.yml.
+# Authenticate this profile through OMP's Anthropic/Claude OAuth flow; never
+# store Team credentials in this repository.
+providers:
+  webSearchOrder: []
+
+defaultThinkingLevel: auto
+
+modelRoles:
+  # Cheap background / mechanical roles. Haiku is intentionally left without
+  # an explicit effort suffix; OMP's first-party Haiku effort surface is not
+  # the same adaptive ladder exposed by Sonnet/Opus/Fable.
+  smol: anthropic/claude-haiku-4-5-20251001
+  tiny: anthropic/claude-haiku-4-5-20251001
+  commit: anthropic/claude-haiku-4-5-20251001
+
+  # High-throughput semantic implementation, multimodal work and auxiliary
+  # review. Keep Main separate from the implementation tier.
+  task: anthropic/claude-sonnet-5:high
+  vision: anthropic/claude-sonnet-5:high
+  review_aux: anthropic/claude-sonnet-5:high
+
+  # Spend the larger Team Premium allowance where controller reliability and
+  # unresolved judgment have the most leverage.
+  default: anthropic/claude-opus-5:high
+  plan: anthropic/claude-opus-5:high
+  slow: anthropic/claude-opus-5:high
+
+  # Explicit-only frontier escalation. High is deliberate: max would consume
+  # Team Premium allowance too aggressively for a reusable baseline.
+  critical: anthropic/claude-fable-5-1:high
+
+# Keep per-dispatch effort disabled so an orchestrator cannot silently turn a
+# cheap worker into the selected model's highest reasoning level.
+task:
+  maxConcurrency: 3
+  maxRecursionDepth: 2
+  enableEffort: false
+  isolation:
+    enabled: true
+
+isolation:
+  backend: auto
+
+symbolPreset: nerd
+composer:
+  shape: rule
+theme:
+  dark: titanium
+  light: light
+setupVersion: 2
+statusLine:
+  preset: custom
+  leftSegments:
+    - pi
+    - model
+    - mode
+    - git
+    - context_pct
+  rightSegments:
+    - session_name
+    - usage
+  separator: powerline-thin
+  sessionAccent: true
+  compactThinkingLevel: true
+  contextLine: embedded
+  segmentOptions:
+    model:
+      showThinkingLevel: true
+    git:
+      showBranch: true
+      showStaged: true
+      showUnstaged: true
+      showUntracked: true
+colorBlindMode: true
+tui:
+  codexResetFireworks: true
+cycleOrder:
+  - smol
+  - default
+  - slow
+dev:
+  autoqaConsent: granted

@@ -5,33 +5,34 @@ The stack encodes **intent in roles**, not concrete model names. Native OMP prof
 ```sh
 omp --profile openai-codex
 omp --profile ollama-cloud
+omp --profile anthropic
 ```
 
-The Flow skills/agents are symlinked into both profiles, so workflow semantics stay provider-independent while OMP keeps each profile's config, sessions, runtime database and authentication state isolated.
+The Flow skills/agents are symlinked into all managed profiles, so workflow semantics stay provider-independent while OMP keeps each profile's config, sessions, runtime database and authentication state isolated.
 
 ## Routing
 
-| Load | Role / agent | OpenAI Codex profile | Ollama Cloud profile |
-|---|---|---|---|
-| tiny metadata/title/background | `@tiny` | Luna low | DeepSeek V4 Flash low |
-| commit/changelog generation | `@commit` | Luna low | DeepSeek V4 Flash low |
-| repo exploration | bundled `scout` / `@smol` | Luna | DeepSeek V4 Flash low |
-| behavior-preserving mechanical work / diagnosed exact correction | bundled `sonic` / `@smol` | Luna | DeepSeek V4 Flash low |
-| normal interactive coding | `@default` | Terra | GLM-5.3-Flash high |
-| semantic delegated unit / Vibe good | `@task` | Terra | GLM-5.3-Flash high |
-| TTC/CRF/audit auxiliary lenses | `@review_aux` | Terra high | DeepSeek V4 Pro high |
-| deliberate native planning | `@plan` | Sol high | DeepSeek V4 Pro high |
-| primary correctness review / hard reasoning | `@slow` | Sol high | DeepSeek V4 Pro high |
-| vision / multimodal inspection | `@vision` | Luna | GLM-5.3-Flash high |
-| exceptional security/concurrency/data-integrity escalation | `@critical` | Sol xhigh | Kimi K3 high |
+| Load | Role / agent | OpenAI Codex profile | Ollama Cloud profile | Anthropic profile |
+|---|---|---|---|---|
+| tiny metadata/title/background | `@tiny` | Luna low | DeepSeek V4 Flash low | Haiku 4.5 |
+| commit/changelog generation | `@commit` | Luna low | DeepSeek V4 Flash low | Haiku 4.5 |
+| repo exploration | bundled `scout` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
+| behavior-preserving mechanical work / diagnosed exact correction | bundled `sonic` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
+| Main / normal interactive coding | `@default` | Terra | GLM-5.3-Flash high | Opus 5 high |
+| semantic delegated unit / Vibe good | `@task` | Terra | GLM-5.3-Flash high | Sonnet 5 high |
+| TTC/CRF/audit auxiliary lenses | `@review_aux` | Terra high | DeepSeek V4 Pro high | Sonnet 5 high |
+| deliberate native planning | `@plan` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
+| primary correctness review / hard reasoning | `@slow` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
+| vision / multimodal inspection | `@vision` | Luna | GLM-5.3-Flash high | Sonnet 5 high |
+| exceptional security/concurrency/data-integrity escalation | `@critical` | Sol xhigh | Kimi K3 high | Fable 5.1 high |
 
 `slow` intentionally stops below the most expensive explicit escalation. `critical` is the escape hatch; no automatic Flow agent binds `@critical` on purpose. Escalation should be a conscious model/session choice, not accidental fan-out.
 
 ## Provider profiles
 
-`profiles/openai-codex/config.yml` and `profiles/ollama-cloud/config.yml` are first-install baselines, not runtime overlays. `scripts/omp-stack install` copies a baseline only when the corresponding native profile has no `config.yml`; later installs leave profile-owned config untouched.
+`profiles/openai-codex/config.yml`, `profiles/ollama-cloud/config.yml`, and `profiles/anthropic/config.yml` are first-install baselines, not runtime overlays. `scripts/omp-stack install` copies a baseline only when the corresponding native profile has no `config.yml`; later installs leave profile-owned config untouched.
 
-OMP named profiles isolate the full OMP-native user root, not merely model selection. The installer therefore links the same `AGENTS.md`, agents, rules, skills, extensions and support library into both profile roots. MCP remains profile-owned and opt-in. Sessions, blobs, `agent.db` and provider authentication remain genuinely separate by design.
+OMP named profiles isolate the full OMP-native user root, not merely model selection. The installer therefore links the same `AGENTS.md`, agents, rules, skills, extensions and support library into every managed profile root. MCP remains profile-owned and opt-in. Sessions, blobs, `agent.db` and provider authentication remain genuinely separate by design.
 
 ## Ollama Cloud selection rationale
 
@@ -41,6 +42,15 @@ OMP named profiles isolate the full OMP-native user root, not merely model selec
 - **Kimi K3** owns `critical`: it is reserved for explicit frontier escalation. The profile uses `high`, matching OMP's generic Ollama Cloud effort mapping rather than inventing an unsupported `max` lane.
 
 Keep the exact model IDs under review when OMP or Ollama Cloud changes its discovered catalog. The role topology matters more than any one model name.
+
+## Anthropic selection rationale
+
+- **Claude Haiku 4.5** owns `smol` / `tiny` / `commit`: cheap bounded work does not need the premium reasoning tier. The baseline intentionally leaves Haiku's effort suffix unpinned because its first-party OMP effort surface is not the same adaptive ladder as Sonnet/Opus/Fable.
+- **Claude Sonnet 5 high** owns `task` / `vision` / `review_aux`: it is the high-throughput semantic implementation and multimodal lane, while auxiliary review stays independent from the Opus correctness lane.
+- **Claude Opus 5 high** owns `default` / `plan` / `slow`: the Team Premium profile spends its larger allowance on controller reliability, long-horizon orchestration, architecture and primary correctness reasoning rather than making Main another implementation-tier session.
+- **Claude Fable 5.1 high** owns `critical`: the role is explicit-only, and `high` is deliberate. Do not pin `max` here; maximum effort would burn Team Premium allowance too aggressively for a reusable baseline.
+
+Authenticate the profile through OMP's Anthropic/Claude OAuth flow so Team entitlement remains profile-local. Do not put account credentials in this repository. Keep exact model IDs under review when OMP or Anthropic changes the first-party catalog.
 
 ## Routing principle
 

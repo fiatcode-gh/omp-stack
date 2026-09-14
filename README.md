@@ -17,13 +17,14 @@ agent/
 profiles/
   openai-codex/config.yml   first-install baseline for `omp --profile openai-codex`
   ollama-cloud/config.yml   first-install baseline for `omp --profile ollama-cloud`
+  anthropic/config.yml      first-install baseline for `omp --profile anthropic`
 mcp.example.json            optional Context7 MCP example
 scripts/omp-stack           install / verify / doctor
 ```
 
 ## Install
 
-The installer provisions two native OMP profiles: `openai-codex` and `ollama-cloud`. It symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
+The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
 
 ```sh
 ./scripts/omp-stack install
@@ -35,6 +36,7 @@ Launch OMP directly with the native profile selector:
 ```sh
 omp --profile openai-codex
 omp --profile ollama-cloud
+omp --profile anthropic
 ```
 
 Existing profile configs are never overwritten; compare them with `profiles/<name>/config.yml` after stack updates. See `docs/MIGRATION.md`.
@@ -60,7 +62,7 @@ The old bootstrap (`flow-using-skills`), hand-written planning skill, normal wor
 
 Skills and agents use **roles**, never concrete models. Native OMP profiles provide provider-specific role maps while the Flow content stays shared.
 
-The OpenAI Codex profile keeps the quota-conscious Luna → Terra → Sol ladder. The Ollama Cloud profile uses DeepSeek V4 Flash for cheap roles, GLM-5.3-Flash for routine coding/vision, DeepSeek V4 Pro for deliberate planning/review, and Kimi K3 for explicit critical escalation.
+The OpenAI Codex profile keeps the quota-conscious Luna → Terra → Sol ladder. The Ollama Cloud profile uses DeepSeek V4 Flash for cheap roles, GLM-5.3-Flash for routine coding/vision, DeepSeek V4 Pro for deliberate planning/review, and Kimi K3 for explicit critical escalation. The Anthropic profile uses Haiku 4.5 for cheap leaves, Sonnet 5 for semantic implementation/vision/auxiliary review, Opus 5 for Main/planning/correctness reasoning, and Fable 5.1 high for explicit critical escalation.
 
 See `docs/MODEL-ROUTING.md`. Current OMP assumptions are recorded in `docs/OMP-COMPATIBILITY.md`.
 
