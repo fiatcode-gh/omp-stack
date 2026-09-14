@@ -16,9 +16,10 @@ HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
 
 cmp -s "$TMP/openai.before" "$TMP/.omp/profiles/openai-codex/agent/config.yml"
 cmp -s "$ROOT/profiles/ollama-cloud/config.yml" "$TMP/.omp/profiles/ollama-cloud/agent/config.yml"
+cmp -s "$ROOT/profiles/anthropic/config.yml" "$TMP/.omp/profiles/anthropic/agent/config.yml"
 grep -q 'default sentinel' "$TMP/.omp/agent/AGENTS.md"
 
-for profile in openai-codex ollama-cloud; do
+for profile in openai-codex ollama-cloud anthropic; do
   for name in AGENTS.md agents rules skills extensions lib; do
     test -L "$TMP/.omp/profiles/$profile/agent/$name"
   done
@@ -31,6 +32,7 @@ HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" verify >/dev/null
 TMP_CFG=$(mktemp -d)
 HOME="$TMP_CFG" PI_CONFIG_DIR=.custom PI_CODING_AGENT_DIR="$TMP_CFG/ignored" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
 test -L "$TMP_CFG/.custom/profiles/openai-codex/agent/skills"
+test -L "$TMP_CFG/.custom/profiles/anthropic/agent/skills"
 test ! -e "$TMP_CFG/ignored/skills"
 rm -rf "$TMP_CFG"
 
@@ -50,9 +52,10 @@ chmod +x "$TMP_NATIVE/bin/omp"
 HOME="$TMP_NATIVE" PATH="$TMP_NATIVE/bin:/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
 test -L "$TMP_NATIVE/native/openai-codex/agent/skills"
 test -L "$TMP_NATIVE/native/ollama-cloud/agent/skills"
+test -L "$TMP_NATIVE/native/anthropic/agent/skills"
 rm -rf "$TMP_NATIVE"
 
-# Refuse to clobber a real managed-surface directory inside either profile.
+# Refuse to clobber a real managed-surface directory inside a managed profile.
 TMP2=$(mktemp -d)
 mkdir -p "$TMP2/.omp/profiles/ollama-cloud/agent/skills"
 if HOME="$TMP2" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null 2>&1; then

@@ -22,10 +22,10 @@ Why:
 ## Recommended sequence
 
 1. Extract/clone `omp-stack` somewhere stable.
-2. Run `./scripts/omp-stack install`. This provisions `openai-codex` and `ollama-cloud` under OMP's native profile roots.
+2. Run `./scripts/omp-stack install`. This provisions `openai-codex`, `ollama-cloud`, and `anthropic` under OMP's native profile roots.
 3. If a profile already had `config.yml`, compare/merge it with `profiles/<name>/config.yml`; the installer never overwrites an existing profile config.
 4. Remove any old `ai-stack` `extensions:` registrations and `skills.customDirectories` entries from the profile configs.
-5. Authenticate each profile/provider as needed. Named OMP profiles do not inherit runtime/auth state from the default profile or from each other. `OLLAMA_CLOUD_API_KEY` may instead be supplied through the environment.
+5. Authenticate each profile/provider as needed. Named OMP profiles do not inherit runtime/auth state from the default profile or from each other. `OLLAMA_CLOUD_API_KEY` may instead be supplied through the environment. For the Anthropic Team profile, use OMP's Anthropic/Claude OAuth login inside `omp --profile anthropic`; never commit Team credentials.
 6. Optionally copy `mcp.example.json` to a profile's `mcp.json` if you use Context7. MCP is intentionally profile-owned and the installer never writes credentials.
 7. Run `./scripts/omp-stack verify` and `./scripts/omp-stack doctor`.
 8. Launch with native OMP profile selection:
@@ -33,9 +33,10 @@ Why:
    ```sh
    omp --profile openai-codex
    omp --profile ollama-cloud
+   omp --profile anthropic
    ```
 
-The old default `~/.omp/agent` tree is left untouched. Delete or retire it only after both named profiles behave as expected.
+The old default `~/.omp/agent` tree is left untouched. Delete or retire it only after all named profiles behave as expected.
 
 ## Routing changes
 
@@ -57,6 +58,13 @@ Ollama Cloud:
 - `smol` / `tiny` / `commit`: DeepSeek V4 Flash low;
 - `critical`: Kimi K3 high.
 
-Both baseline configs also add explicit OMP approval prompts for normal push/PR/release commands and `eval`. **Existing installed profile configs are not overwritten by `omp-stack install`**, so merge the new `modelRoles.execute`, Ollama `default`, `tools.approval.eval`, and `bash.patterns` blocks manually before the field trial.
+The Anthropic profile is not part of the v8 trial and maps the pre-trial roles (no `execute` yet):
+
+- `smol` / `tiny` / `commit`: Claude Haiku 4.5;
+- `task` / `vision` / `review_aux`: Claude Sonnet 5 high;
+- `default` / `plan` / `slow`: Claude Opus 5 high;
+- `critical`: Claude Fable 5.1 high (explicitly not max).
+
+Both trial baseline configs also add explicit OMP approval prompts for normal push/PR/release commands and `eval`. **Existing installed profile configs are not overwritten by `omp-stack install`**, so merge the new `modelRoles.execute`, Ollama `default`, `tools.approval.eval`, and `bash.patterns` blocks manually before the field trial.
 
 See `docs/MODEL-ROUTING.md` for the reasoning.

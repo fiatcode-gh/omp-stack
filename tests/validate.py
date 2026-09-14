@@ -201,6 +201,7 @@ required_roles={'default','smol','tiny','vision','execute','task','plan','slow',
 profile_cfgs={
     'openai-codex': ROOT/'profiles/openai-codex/config.yml',
     'ollama-cloud': ROOT/'profiles/ollama-cloud/config.yml',
+    'anthropic': ROOT/'profiles/anthropic/config.yml',
 }
 profile_roles={}
 for profile,path in profile_cfgs.items():
@@ -209,8 +210,9 @@ for profile,path in profile_cfgs.items():
         continue
     cfg=yaml.safe_load(path.read_text()) or {}
     roles=cfg.get('modelRoles') or {}
-    if set(roles) != required_roles:
-        err(f'{path.relative_to(ROOT)}: modelRoles mismatch: {sorted(set(roles)^required_roles)}')
+    expected_roles=required_roles if profile in {'openai-codex','ollama-cloud'} else required_roles-{'execute'}
+    if set(roles) != expected_roles:
+        err(f'{path.relative_to(ROOT)}: modelRoles mismatch: {sorted(set(roles)^expected_roles)}')
     profile_roles[profile]=set(roles)
     prefix=profile+'/'
     for role,model in roles.items():
@@ -251,9 +253,28 @@ ollama=yaml.safe_load(profile_cfgs['ollama-cloud'].read_text()).get('modelRoles'
 if ollama != expected_ollama:
     err('profiles/ollama-cloud/config.yml: role mapping drifted from documented routing')
 
-# Native external-effect approval backstop must be present in both baselines.
+expected_anthropic={
+    'default':'anthropic/claude-opus-5:high',
+    'smol':'anthropic/claude-haiku-4-5-20251001',
+    'tiny':'anthropic/claude-haiku-4-5-20251001',
+    'vision':'anthropic/claude-sonnet-5:high',
+    'task':'anthropic/claude-sonnet-5:high',
+    'plan':'anthropic/claude-opus-5:high',
+    'slow':'anthropic/claude-opus-5:high',
+    'review_aux':'anthropic/claude-sonnet-5:high',
+    'critical':'anthropic/claude-fable-5-1:high',
+    'commit':'anthropic/claude-haiku-4-5-20251001',
+}
+anthropic=yaml.safe_load(profile_cfgs['anthropic'].read_text()).get('modelRoles',{})
+if anthropic != expected_anthropic:
+    err('profiles/anthropic/config.yml: role mapping drifted from documented routing')
+
+# The v8 trial roles (`execute`) and the external-effect approval backstop apply
+# to the two trial baselines only; the Anthropic profile stays pre-trial.
+trial_profiles={'openai-codex','ollama-cloud'}
 for profile,path in profile_cfgs.items():
     cfg=yaml.safe_load(path.read_text()) or {}
+    if profile not in trial_profiles: continue
     approval=((cfg.get('tools') or {}).get('approval') or {})
     if approval.get('eval') != 'prompt': err(f'{path.relative_to(ROOT)}: tools.approval.eval must prompt')
     patterns=(cfg.get('bash') or {}).get('patterns') or []
@@ -261,12 +282,16 @@ for profile,path in profile_cfgs.items():
     for command in ['git push*','gh pr create*','gh pr merge*']:
         if pattern_map.get(command) != 'prompt': err(f'{path.relative_to(ROOT)}: publication prompt missing for {command}')
 
+# `@execute` is a v8-trial role: trial profiles must map it, the pre-trial
+# Anthropic profile is allowed to omit it.
+trial_roles={'openai-codex','ollama-cloud'}
 for p in agents:
     fm,_=frontmatter(p)
     model=fm.get('model')
     if isinstance(model,str) and model.startswith('@'):
         role=model[1:]
         for profile,roles in profile_roles.items():
+            if role=='execute' and profile not in trial_roles: continue
             if role not in roles:
                 err(f'{p.relative_to(ROOT)}: role {model} missing from {profile} profile')
 
