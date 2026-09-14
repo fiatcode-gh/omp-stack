@@ -55,6 +55,8 @@ Use task isolation for independent concurrent writers or an explicitly disposabl
 
 Keep a semantic unit owner's agent id/name when that ownership is useful. Do not preserve/revive a plan executor across plan-task boundaries. If evidence reveals missing/invalid plan judgment, repair/promote through `flow-planning`/`flow-implementer` rather than asking the cheap executor to redesign.
 
+Treat Main/controller context as phase-scoped too. At a major phase boundary — especially plan accepted → execution supervision, or coherent implementation accepted → long device/integration verification — if durable artifacts now contain the needed state and the accumulated Main transcript no longer contributes material judgment, write a recovery/forward checkpoint and prefer a fresh controller session. Never rotate Main merely to hide unresolved state, and never make the user reconstruct context manually; if the harness requires a new top-level session, provide the terse resume command as a context optimization rather than a new approval gate.
+
 ## 4. Write a verification-capable brief
 
 Worker briefs are self-contained: intended behavior, exact scope/subsystem, governing constraints/interfaces, observable acceptance criteria, workspace/concurrency context and verification scope. Do not paste the whole conversation. Do not pass concrete model names.
@@ -94,9 +96,15 @@ Workers should not terminally fail at the first real ambiguity. They first deriv
 
 Main may clarify within the already-approved contract. Main must not silently expand authorization. If the answer requires a new product/design/user choice or proves the governing plan wrong, tell the worker to stop at a clean boundary and return BLOCKED, then route through design/Plan/user decision.
 
-When Main has useful independent work, do it while children run. When Main is otherwise blocked on a child completion or reply, wait **eventfully rather than polling**: use one bounded `hub` wait over the relevant task job ids when available, with a window long enough for the expected work (commonly 15–30 minutes for a semantic unit), or use `hub send` with `await: true` / a peer-filtered wait when the next useful event is one specific child's reply. A completed non-isolated owner that is revived by `hub send` is a live agent, not a new task job: do not wait on its old task job id after revival. Prefer `hub send` with `await: true` when sending the correction and waiting in one step, or a peer-filtered wait on that agent's next reply. Do not burn turns on repeated 3–5 minute status polls. Do not use an unbounded wait by default; if a long bounded wait expires, inspect liveness/current state before deciding whether to wait again or intervene.
+When Main has useful independent work, do it while children run. Otherwise, **never wait merely to observe** a running child. Record the pending dependency (agent/job plus expected receipt), remain interactive, and let the child's eventual completion/yield become the event that resumes that dependency. This keeps the foreground Main available for user discussion instead of blocking the session on progress monitoring.
+
+Use `hub wait` only when Main is deliberately continuing autonomously, its **next immediate action** cannot proceed without the child result, no useful independent work remains, and foreground blocking is acceptable. Such waits stay bounded and are not a default 15–30 minute sleep. Do not poll with repeated short waits.
+
+Use `hub send` with `await: true` or a peer-filtered reply wait only for a targeted live clarification/correction when the answer is required now for the next immediate action; otherwise send asynchronously and remain interactive. A completed non-isolated owner revived by `hub send` is a live agent, not a new task job: do not wait on its old task job id after revival.
 
 ## 6. Accept by layered evidence
+
+Consume delegated work **receipt-first**. Planner/executor/reviewer/verifier receipts should identify status, start/base and resulting head or dirty state, artifact/task scope, files/evidence changed, proof commands/results, deviations or residual risks, and the exact next action. Use that receipt to target inspection; it is still a claim, not proof, so independently inspect consequential diffs/evidence instead of broadly replaying the child's entire recon.
 
 For each completed unit/wave:
 
@@ -146,6 +154,12 @@ Before specialist dispatch, record an explicit disposition for **COR / TTC / CRF
 
 When the governing plan/user expects local commits, commit coherent behavior units rather than one mechanical task per commit by ritual; use Conventional Commits and the repository's pre-commit checks. Do not create commits merely because an internal worker boundary existed.
 
-Run or reuse fresh Main-owned final verification only while the final tree/head is unchanged and the evidence covers the final claims. Inspect the final diff. Then use `flow-integrating` for the user's integration choice.
+Run or reuse fresh Main-owned final verification while its evidence remains fresh for the claims it covers. Inspect the final diff and classify any later edit by which proof it actually invalidates instead of ritual-rerunning every broad gate.
+
+Before a potentially long/manual/external gate — especially device/emulator acceptance, visual inspection, long smoke work, or an operation likely to cross a provider/session window — write a **durable recovery checkpoint** first when the work has a durable state surface. Record exact head/tree and dirty/user-owned state, evidence already accepted and why it is still fresh, remaining acceptance criteria, relevant external/device state and the exact next action. A session/provider failure after that checkpoint must be safely resumable without reconstructing hidden conversation state.
+
+When the remaining gate is primarily visual/device evidence rather than implementation judgment, dispatch one fresh bounded `flow-evidence-verifier` (`@vision`) with the exact acceptance criteria, allowed environment/device mutations, evidence destination and restore obligations. It may operate the designated verification environment and capture evidence but does not edit production behavior or declare the unit accepted. Main consumes its compact receipt, independently inspects consequential evidence, and owns the acceptance decision.
+
+Then use `flow-integrating` for the user's integration choice.
 
 At meaningful user-facing checkpoints, maintain the forward pointer: state the outcome, name the next Flow action, and say whether user input is needed. When the next action is internal and authorized, continue it rather than ending with a generic "what next?".

@@ -19,4 +19,13 @@ Treat context/request growth as a correctness constraint for this lane. If OMP e
 
 Never push, merge, create/update a pull request, publish/reply to reviews, request reviewers, release, or otherwise create stakeholder-visible effects. Local commits are allowed only when the brief explicitly assigns them.
 
-Before yielding, report only: DONE/BLOCKED/YIELD, plan task completed, files changed, focused verification commands/outcomes, any plan contradiction/deviation, whether a request-budget/churn guard fired, and broader gates intentionally left to Main.
+Before yielding, return one compact receipt only:
+- `STATUS`: DONE/BLOCKED/YIELD;
+- assigned plan task;
+- start head and resulting head/dirty state;
+- files changed;
+- focused verification commands/outcomes;
+- plan contradiction/deviation, if any;
+- whether a request-budget/churn guard fired;
+- broader gates intentionally left to Main;
+- exact next action.

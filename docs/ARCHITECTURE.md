@@ -52,11 +52,14 @@ Main/controller (@default)
     └── sonic (@smol) — settled mechanical leaf edits
 
 planned coherent result → flow-acceptance-reviewer (@slow)
+long visual/device gate → flow-evidence-verifier (@vision) → Main acceptance judgment
 ```
 
 The planning stage locks consequential interfaces/tests/ownership/error semantics and explicit executor discretion. A plan executor may implement new behavior because that judgment was paid upstream, but it cannot redesign; contradictions rise to Main/planning. The semantic `@task` owner remains available when judgment genuinely cannot be removed from execution.
 
-A sole/sequential semantic owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived. Planned execution uses the same checkout sequentially but treats each task brief as a context boundary: fresh `flow-plan-executor` session per task, repository/artifact continuity instead of model-session continuity. Isolation remains primarily for independent concurrent writers or explicitly disposable experiments. Long waits remain event-driven.
+A sole/sequential semantic owner on a suitable feature checkout is normally non-isolated so it can be messaged/revived. Planned execution uses the same checkout sequentially but treats each task brief as a context boundary: fresh `flow-plan-executor` session per independently provable behavioral slice, repository/artifact continuity instead of model-session continuity. Isolation remains primarily for independent concurrent writers or explicitly disposable experiments.
+
+Child completion is event-driven but Main stays interactive: it never enters a foreground wait merely to observe progress. A bounded Hub wait is exceptional and only for autonomous continuation whose next immediate action genuinely requires the result. Main itself is phase-scoped too: once durable artifacts make an old controller transcript unnecessary, checkpoint and prefer a fresh controller session rather than carrying irrelevant context through the next phase.
 
 ## Evidence hierarchy
 
@@ -66,9 +69,11 @@ Evidence broadens with ownership rather than repeating the same full gate everyw
 leaf proof → unit proof → integration/review proof → final-tree gate
 ```
 
-Writers must verify their own changes, including canonical formatting of touched files when the formatter can be safely scoped. Writer dispatch has a verification-capable preflight: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are stated explicitly before spawn. A blanket "do not verify because Main will" brief is invalid; the implementer also detects that contradiction so one controller mistake cannot silently recreate a blind worker. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary. Evidence may be reused only while its exact tree/head/environment remains unchanged. Temporary probes against pre-existing dirty files restore against a captured pre-edit snapshot, never against `HEAD`.
+Writers must verify their own changes, including canonical formatting of touched files when the formatter can be safely scoped. Writer dispatch has a verification-capable preflight: focused proof, touched-file formatting, focused static/build checks and Main-owned broader gates are stated explicitly before spawn. A blanket "do not verify because Main will" brief is invalid; the implementer also detects that contradiction so one controller mistake cannot silently recreate a blind worker. Parent/controller verification remains independent for consequential claims, but independence does not require ritual duplicate whole-repository runs when a targeted different proof better covers the boundary.
 
-Interactive Flow also keeps a **forward pointer**: at meaningful user-facing checkpoints Main states the outcome, the next workflow action, and whether user input is required. Internal authorized next actions continue automatically; concrete questions are reserved for real design/approval/integration gates.
+Delegation is **receipt-first**: planner/executor/reviewer/verifier reports carry exact state, proof, deviations/risks and next action so Main can target its independent checks instead of replaying broad recon. Receipts remain claims, not proof. Evidence freshness follows the dependency surface of the claim: a docs-only checkpoint does not stale unchanged app behavior proof, while changed production/test surfaces invalidate the proof they actually affect. Temporary probes against pre-existing dirty files restore against a captured pre-edit snapshot, never against `HEAD`.
+
+Interactive Flow also keeps a **forward pointer**: at meaningful user-facing checkpoints Main states the outcome, the next workflow action, and whether user input is required. Internal authorized next actions continue automatically; concrete questions are reserved for real design/approval/integration gates. Before long/manual/device/external acceptance gates, that pointer becomes a durable recovery checkpoint with exact head/tree, current evidence, remaining criteria and environment state so provider/session failure is a safe interruption.
 
 ## Planning and review
 

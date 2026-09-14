@@ -23,7 +23,7 @@ agents=list((ROOT/'agent/agents').glob('*.md'))
 rules=list((ROOT/'agent/rules').glob('*.md'))
 
 if len(skills)!=15: err(f'expected 15 skills, got {len(skills)}')
-if len(agents)!=9: err(f'expected 9 agents, got {len(agents)}')
+if len(agents)!=10: err(f'expected 10 agents, got {len(agents)}')
 if len(rules)!=2: err(f'expected 2 rules, got {len(rules)}')
 
 names=set()
@@ -41,7 +41,7 @@ expected={
 if names!=expected: err(f'skill set mismatch: {sorted(names^expected)}')
 
 agent_names=set()
-allowed_roles={'@task','@execute','@plan','@slow','@review_aux'}
+allowed_roles={'@task','@execute','@plan','@slow','@review_aux','@vision'}
 for p in agents:
     fm,body=frontmatter(p); name=fm.get('name'); desc=fm.get('description')
     if not name or not desc: err(f'{p}: agent needs name+description')
@@ -96,8 +96,14 @@ if accept_fm.get('model') != '@slow': err('flow-acceptance-reviewer must use @sl
 for required in ['plan conformance','plan-defect','plan-compliance advocate','contract']:
     if required not in accept_body.lower(): err(f'flow-acceptance-reviewer invariant missing: {required}')
 
+verifier_path=ROOT/'agent/agents/flow-evidence-verifier.md'
+verifier_fm,verifier_body=frontmatter(verifier_path)
+if verifier_fm.get('model') != '@vision': err('flow-evidence-verifier must use @vision')
+for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted']:
+    if required not in verifier_body.lower(): err(f'flow-evidence-verifier invariant missing: {required}')
+
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','receipt-first']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -106,7 +112,8 @@ for required in [
     'never broadly tell a writer', 'route corrections cheaply',
     'delegation never transfers verification responsibility',
     'a complete review round is not automatic',
-    'eventfully rather than polling', 'do not use an unbounded wait by default',
+    'never wait merely to observe', 'remain interactive', 'receipt-first',
+    'durable recovery checkpoint', 'flow-evidence-verifier', 'phase boundary',
     'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
     'dispatch preflight', 'verification ownership:', 'do not spawn a writing worker until all four entries are concrete',
     'formatter-only failure', 'forward pointer',
@@ -122,6 +129,8 @@ for required in [
     'correct efficiently', 'worker self-verification is required', 'forward pointer',
     'external planning intake', 'does not carry local implementation authorization',
     'flow-planning', 'flow-plan-executor', 'execution-grade',
+    'never wait merely to observe', 'durable recovery checkpoint',
+    'flow-evidence-verifier', 'fresh controller session',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
@@ -156,7 +165,7 @@ for required in [
     'writers verify their own work', 'delegation never transfers verification responsibility',
     'leaf worker proves its leaf', 'do not rerun the same expensive full suite',
     'pre-edit bytes', 'not restoration proof when the file was already modified',
-    'invalid flow orchestration',
+    'invalid flow orchestration', 'docs-only', 'affected evidence stale',
 ]:
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 

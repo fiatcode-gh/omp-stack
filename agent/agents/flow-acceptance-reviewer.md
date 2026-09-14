@@ -22,3 +22,5 @@ Classify each material finding as one of: `implementation-defect`, `plan-drift`,
 Do not become a plan-compliance advocate: the governing contract and actual correctness outrank a flawed plan.
 
 Minor non-load-bearing craft observations should normally be parkable rather than forcing another implementation/review cycle. Return `ACCEPT` when no Critical/Important finding remains; otherwise return `CHANGES` with a single deduplicated finding set suitable for one batched correction round.
+
+Return a compact receipt: verdict, exact reviewed base/head or diff, verification evidence considered, deduplicated findings, residual risks, and the exact next action. Do not restate the whole plan or repository history.

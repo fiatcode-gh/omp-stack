@@ -44,9 +44,9 @@ An execution-grade plan settles, where applicable:
 
 Use exact symbols, file paths and repository-native commands. Include code/pseudocode only where an exact recipe prevents rediscovery; do not make line count a goal or paste large code merely to appear complete.
 
-A task is right-sized when it owns one coherent behavioral/test cycle and is worth one implementation boundary. Do not create a fresh task for setup or one-line propagation that belongs to a neighboring deliverable.
+A task is right-sized when it owns one **independently provable behavioral slice** and is worth one implementation/context boundary. Split a brief when it contains multiple Red→Green proof clusters that can each reach a valid repository handoff state independently, or when unrelated subsystems can be verified separately. Do not split one inseparable behavior merely to satisfy a numeric file/turn/token target, and do not create a fresh task for setup or one-line propagation that belongs to a neighboring deliverable.
 
-Each `plan-tasks/*.md` must also be a **fresh-executor capsule**: enough current paths/symbols/preconditions, locked decisions, proof commands and expected handoff state for a new executor session to start without prior worker transcript/context. When a task depends on an earlier task, depend on repository state/artifacts and named proof, not on remembered conversation.
+Each `plan-tasks/*.md` must also be a **fresh-executor capsule**: enough current paths/symbols/preconditions, locked decisions, proof commands and expected handoff state for a new executor session to start without prior worker transcript/context. State the expected starting repository condition and the compact completion receipt the next controller should receive. When a task depends on an earlier task, depend on repository state/artifacts and named proof, not on remembered conversation.
 
 ## 3. Define executor discretion
 
@@ -106,6 +106,8 @@ Main/controller validates the plan receipt and obtains/retains the normal implem
 - exact mechanical leaf → `sonic` (`@smol`).
 
 Prefer handing workers artifact paths instead of pasting whole plans into prompts. **One execution-grade task brief normally gets one fresh `flow-plan-executor` session.** Sequential tasks stay non-isolated in the same suitable feature checkout and run one writer at a time, so repository state carries forward while model context does not. Do not preserve an executor across adjacent plan tasks merely to avoid cold start; Unit 3 field evidence showed resident-context growth can dominate that cost. Independent tasks may use isolated/concurrent executors only when they are genuinely independent.
+
+The planner's handoff is receipt-first: source/base revision and dirty-state assumption, plan/task paths, dependency shape, quality-gate disposition, residual risks and the exact next action. Main uses that receipt to target any independent recheck instead of broadly replaying planner recon.
 
 ## External handoffs
 
