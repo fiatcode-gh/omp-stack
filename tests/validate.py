@@ -103,7 +103,7 @@ for required in ['verification only', 'designated verification environment', 'do
     if required not in verifier_body.lower(): err(f'flow-evidence-verifier invariant missing: {required}')
 
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -121,6 +121,9 @@ for required in [
     'formatter-only failure', 'forward pointer',
     'accepted external planning handoff', 'execution-grade plan', 'flow-plan-executor',
     'flow-acceptance-reviewer', 'batch the verified set',
+    'generic unit-start/resume command is not local implementation authorization',
+    'must not begin device/emulator/manual/external evidence capture',
+    'must not personally drive a multi-step device/manual acceptance sequence',
     'do not wait on its old task job id after revival', 'peer-filtered reply wait',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
@@ -134,6 +137,9 @@ for required in [
     'never wait merely to observe', 'return foreground control',
     'before the first device/emulator/manual/external acceptance action',
     'one coherent scene/state/acceptance cluster', 'active main cannot rotate itself',
+    'unit-start/resume command does not create missing approval',
+    'explicit plan approval', 'acceptance review is a dependency barrier',
+    'multi-step device/manual acceptance',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
@@ -195,7 +201,7 @@ if 'do not end a locally-complete integration checkpoint with only a status summ
     err('flow-integrating mandatory integration handoff missing')
 
 agents_md=(ROOT/'agent/AGENTS.md').read_text().lower()
-for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate']:
+for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker']:
     if required not in agents_md: err(f'AGENTS communication invariant missing: {required}')
 
 

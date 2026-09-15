@@ -99,7 +99,7 @@ If these do not hold, keep the artifact as strategy/draft and route unresolved j
 
 ## 6. Execution handoff
 
-Main/controller validates the plan receipt and obtains/retains the normal implementation authorization boundary. Then `flow-execution` chooses:
+Main/controller validates the plan receipt and obtains/retains the normal implementation authorization boundary. Under `flow-ldd`, plan receipt validation does not itself authorize implementation: Main presents the completed execution-grade plan and obtains **explicit user plan approval** before the first production-writing worker. A generic unit-start/resume command does not create missing approval; a recorded prior approval remains valid while the approved plan envelope is materially unchanged. Then `flow-execution` chooses:
 
 - current execution-grade plan → `flow-plan-executor` (`@execute`) for the constrained implementation lane;
 - task/plan contradiction or deliberately unresolved semantic judgment → `flow-implementer` (`@task`) or return to planning/design;
