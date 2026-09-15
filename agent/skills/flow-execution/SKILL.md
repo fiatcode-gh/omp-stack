@@ -100,6 +100,8 @@ When Main has useful independent work, do it while children run. Otherwise, **ne
 
 After dispatching a task agent, do not call `hub wait` merely because the dependency graph has no other runnable work. Ending/yielding the current Main turn is the normal interactive behavior. A sequential workflow may continue when the child's completion event arrives; do not convert sequential dependency into foreground blocking.
 
+The `flow-orchestration-guard` runtime extension mechanically backstops this for interactive Main: `hub` `wait` without a process `name`, or without a peer `from` target free of job `ids`, is blocked. Treat that block as a signal to return foreground control; do not bypass it with polling or another blocking primitive. Named process waits and targeted peer-reply waits remain available.
+
 Use `hub wait`, `hub send` with `await: true`, or a peer-filtered reply wait only for a targeted live request/response when Main is deliberately operating autonomously and the answer is required now for its next immediate action. Such waits stay bounded. Otherwise send asynchronously and remain interactive. Never use repeated short waits as polling, and never use one long wait as a substitute for asynchronous task completion. A completed non-isolated owner revived by `hub send` is a live agent, not a new task job: do not wait on its old task job id after revival.
 
 ## 6. Accept by layered evidence
@@ -160,7 +162,20 @@ Run or reuse fresh Main-owned final verification while its evidence remains fres
 
 Before the **first device/emulator/manual/external acceptance action** — not after setup has already started — write a **durable recovery checkpoint** when the work has a durable state surface. This includes the first ADB/device command, emulator/app driving, screenshot capture, manual smoke interaction, or other acceptance action likely to cross a provider/session window. Record exact head/tree and dirty/user-owned state, evidence already accepted and why it is still fresh, remaining acceptance criteria, relevant external/device state and the exact next action. A session/provider failure after that checkpoint must be safely resumable without reconstructing hidden conversation state.
 
-When the remaining gate is primarily visual/device evidence rather than implementation judgment, Main **must not personally drive a multi-step device/manual acceptance sequence** when `flow-evidence-verifier` (`@vision`) is available. Main owns the durable checkpoint, acceptance brief, consequential evidence inspection and final acceptance judgment; fresh bounded verifier sessions own the designated environment/device operations and evidence capture. A trivial single read/observation that does not benefit from delegation may stay with Main. **One verifier session owns one coherent evidence capsule**: one scene family, device state, or independently restartable acceptance cluster. If the gate contains multiple independently preparable scene families/clusters, split them into sequential fresh verifier sessions that share durable device/repository/evidence state, not verifier transcript context. Give each verifier the exact acceptance criteria, allowed environment/device mutations, evidence destination and restore obligations. It may operate the designated verification environment and capture evidence but does not edit production behavior or declare the unit accepted. Main consumes each compact receipt, independently inspects consequential evidence, and owns the acceptance decision.
+When the remaining gate is primarily visual/device evidence rather than implementation judgment, Main **must not personally drive a multi-step device/manual acceptance sequence** when `flow-evidence-verifier` (`@vision`) is available. Main owns the durable checkpoint, acceptance brief, consequential evidence inspection and final acceptance judgment; fresh bounded verifier sessions own the designated environment/device operations and evidence capture. A trivial single read/observation that does not benefit from delegation may stay with Main.
+
+**One verifier session owns one coherent evidence capsule.** Before dispatch, split the gate into independently restartable capsules. Every `flow-evidence-verifier` task brief must contain this manifest **inside that task's own brief** (not only shared batch context):
+
+```text
+Evidence capsule:
+- ID: <stable short id>
+- Owns: <one coherent scene family/device state/acceptance cluster>
+- Independent split check: none | <why the named evidence is inseparable>
+- Excludes: <other capsules left to fresh verifier sessions>
+- Restore obligation: NONE | <state that must be restored>
+```
+
+The runtime guard rejects verifier dispatches missing these markers; the verifier independently rejects a manifest that still packs separable scene families. Fresh verifier sessions share durable device/repository/evidence state, not transcript context. Give each verifier exact acceptance criteria, allowed environment/device mutations and evidence destination. It may operate the designated verification environment and capture evidence but does not edit production behavior or declare the unit accepted. When restore obligations exist, the receipt must report each target's `before` and `after` identity/hash plus MATCH/MISMATCH/UNKNOWN; Main may reuse an unchanged MATCH receipt unless later mutation or contrary evidence makes it stale. Main consumes each compact receipt, independently inspects consequential evidence, and owns the acceptance decision.
 
 Then use `flow-integrating` for the user's integration choice.
 

@@ -99,8 +99,15 @@ for required in ['plan conformance','plan-defect','plan-compliance advocate','co
 verifier_path=ROOT/'agent/agents/flow-evidence-verifier.md'
 verifier_fm,verifier_body=frontmatter(verifier_path)
 if verifier_fm.get('model') != '@vision': err('flow-evidence-verifier must use @vision')
-for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted', 'one evidence capsule per verifier session', 'independent scene families']:
+for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted', 'one evidence capsule per verifier session', 'independent scene families', 'first action is capsule preflight', 'evidence capsule:', 'independent split check:', 'restore obligation:', '`before` identity/hash', '`after` identity/hash', 'match/mismatch/unknown']:
     if required not in verifier_body.lower(): err(f'flow-evidence-verifier invariant missing: {required}')
+
+guard_path=ROOT/'agent/extensions/flow-orchestration-guard.ts'
+if not guard_path.exists(): err('flow orchestration runtime guard missing')
+else:
+    guard=guard_path.read_text().lower()
+    for required in ['tool_call', 'event.toolname === "hub"', 'ctx.hasui', 'input.op === "wait"', 'peerwait && !jobids', 'child results self-deliver', 'event.toolname === "task"', 'flow-evidence-verifier', 'evidence capsule:', 'independent split check:', 'restore obligation:']:
+        if required not in guard: err(f'flow orchestration runtime guard invariant missing: {required}')
 
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
 for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval']:
@@ -124,6 +131,9 @@ for required in [
     'generic unit-start/resume command is not local implementation authorization',
     'must not begin device/emulator/manual/external evidence capture',
     'must not personally drive a multi-step device/manual acceptance sequence',
+    'flow-orchestration-guard', 'evidence capsule:', 'independent split check:',
+    'runtime guard rejects verifier dispatches missing these markers',
+    '`before` and `after` identity/hash', 'match/mismatch/unknown',
     'do not wait on its old task job id after revival', 'peer-filtered reply wait',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
@@ -139,7 +149,9 @@ for required in [
     'one coherent scene/state/acceptance cluster', 'active main cannot rotate itself',
     'unit-start/resume command does not create missing approval',
     'explicit plan approval', 'acceptance review is a dependency barrier',
-    'multi-step device/manual acceptance',
+    'multi-step device/manual acceptance', 'runtime orchestration guard',
+    'evidence capsule:', 'independent split check', 'restore obligation',
+    'match/mismatch/unknown',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
