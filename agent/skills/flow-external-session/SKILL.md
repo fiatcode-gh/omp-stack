@@ -27,7 +27,7 @@ When the report returns, independently verify the actual target/diff/evidence be
 
 A static architecture/planning bundle from ChatGPT or another independently run session uses `references/planning-handoff.md`. It is **evidence/proposal, not authority or authorization**. Run `scripts/validate-planning-handoff.py` first, then validate repository/observed revision, current local dirty state and relevant project/LDD authority before reusing decisions or implementation strategy.
 
-Do not create a mailbox for a one-way static planning import. Do not rerun design/Plan merely because the thinking happened in another harness: after targeted revalidation, preserve still-valid settled decisions and skip a redundant native Plan when the implementation strategy is already current and sufficiently specified. If design is unresolved, use `flow-design`; if only implementation strategy remains materially unresolved, use native Plan.
+Do not create a mailbox for a one-way static planning import. Do not rerun design/Plan merely because the thinking happened in another harness: after targeted revalidation, preserve still-valid settled decisions. Treat `implementation_strategy: settled` as a preservation signal, not proof of execution grade. Grade reusable plan artifacts against the current `flow-planning` execution-grade contract: if they pass, skip a redundant native Plan; if they preserve good strategy but leave consequential HOW/tests/interfaces unresolved, use `flow-planning` to refine only those gaps without reopening settled WHAT/WHY. If design is unresolved, use `flow-design`.
 
 ## Mailbox
 

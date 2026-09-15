@@ -25,7 +25,7 @@ plan-tasks/
 
 For non-LDD work, prefer `.flow/plans/<slug>/PLAN.md` plus `plan-tasks/` when the plan must survive compaction/session changes. A compact one-file plan is fine when it stays readable and no worker needs a sliced brief.
 
-For substantial planning, Main/controller should prefer dispatching `flow-planner` (`@plan`) after the contract/WHAT boundary is settled, then consume its compact READY/BLOCKED receipt. Main owns the governing contract and plan acceptance; it should not retain detailed planning recon in its own context when a dedicated planner can encode that judgment durably.
+For substantial LDD planning, Main/controller must dispatch `flow-planner` (`@plan`) after the contract/WHAT boundary is settled unless a current validated external plan already satisfies this skill's execution-grade contract. Main owns the governing contract and plan acceptance; it does not author substantial LDD consequential HOW itself and instead consumes the planner's compact READY/BLOCKED receipt. For substantial non-LDD planning, prefer the same dedicated planner so detailed planning recon can be encoded durably outside Main's context.
 
 Record the source revision/dirty-state assumptions the plan was derived from. A revision change triggers targeted revalidation, not ritual replanning.
 

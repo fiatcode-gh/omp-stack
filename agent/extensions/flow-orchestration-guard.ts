@@ -5,6 +5,7 @@ type ToolInput = Record<string, unknown>;
 const VERIFIER = "flow-evidence-verifier";
 const CAPSULE_MARKERS = [
 	"evidence capsule:",
+	"id:",
 	"owns:",
 	"independent split check:",
 	"excludes:",

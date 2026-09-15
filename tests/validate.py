@@ -106,11 +106,11 @@ guard_path=ROOT/'agent/extensions/flow-orchestration-guard.ts'
 if not guard_path.exists(): err('flow orchestration runtime guard missing')
 else:
     guard=guard_path.read_text().lower()
-    for required in ['tool_call', 'event.toolname === "hub"', 'ctx.hasui', 'input.op === "wait"', 'peerwait && !jobids', 'child results self-deliver', 'event.toolname === "task"', 'flow-evidence-verifier', 'evidence capsule:', 'independent split check:', 'restore obligation:']:
+    for required in ['tool_call', 'event.toolname === "hub"', 'ctx.hasui', 'input.op === "wait"', 'peerwait && !jobids', 'child results self-deliver', 'event.toolname === "task"', 'flow-evidence-verifier', 'evidence capsule:', 'id:', 'independent split check:', 'restore obligation:']:
         if required not in guard: err(f'flow orchestration runtime guard invariant missing: {required}')
 
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval','substantial ldd planning','must dispatch `flow-planner` (`@plan`)']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -134,7 +134,7 @@ for required in [
     'flow-orchestration-guard', 'evidence capsule:', 'independent split check:',
     'runtime guard rejects verifier dispatches missing these markers',
     '`before` and `after` identity/hash', 'match/mismatch/unknown',
-    'do not wait on its old task job id after revival', 'peer-filtered reply wait',
+    'do not wait on its old task job id after revival', 'peer-filtered reply wait', 'non-ldd only',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
@@ -151,12 +151,13 @@ for required in [
     'explicit plan approval', 'acceptance review is a dependency barrier',
     'multi-step device/manual acceptance', 'runtime orchestration guard',
     'evidence capsule:', 'independent split check', 'restore obligation',
-    'match/mismatch/unknown',
+    'match/mismatch/unknown', 'substantial ldd consequential how',
+    'dispatch a dedicated `flow-planner` (`@plan`)',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
 external=(ROOT/'agent/skills/flow-external-session/SKILL.md').read_text().lower()
-for required in ['planning handoff intake', 'references/planning-handoff.md', 'evidence/proposal, not authority or authorization', 'do not create a mailbox for a one-way static planning import']:
+for required in ['planning handoff intake', 'references/planning-handoff.md', 'evidence/proposal, not authority or authorization', 'do not create a mailbox for a one-way static planning import', 'implementation_strategy: settled', 'execution-grade contract', 'refine only those gaps']:
     if required not in external: err(f'flow-external-session planning-handoff invariant missing: {required}')
 
 ph=(ROOT/'agent/skills/flow-external-session/references/planning-handoff.md').read_text().lower()
@@ -167,7 +168,7 @@ else:
     schema=json.loads(schema_path.read_text())
     if schema.get('properties',{}).get('authorization',{}).get('const') != 'not-carried': err('planning-handoff schema authorization boundary missing')
     if schema.get('additionalProperties') is not False: err('planning-handoff schema must reject unknown fields')
-for required in ['flow_handoff', 'authorization', 'not-carried', 'reject absolute paths', 'skip a redundant plan call', 'current local project instructions', 'flow-handoff.json', 'not a complete protocol handoff', 'kickoff prompt']:
+for required in ['flow_handoff', 'authorization', 'not-carried', 'reject absolute paths', 'implementation_strategy: settled', 'execution-grade contract', 'refine only the missing consequential how/tests/interfaces', 'current local project instructions', 'flow-handoff.json', 'not a complete protocol handoff', 'kickoff prompt']:
     if required not in ph: err(f'planning-handoff schema invariant missing: {required}')
 
 validator=ROOT/'agent/skills/flow-external-session/scripts/validate-planning-handoff.py'
@@ -181,6 +182,20 @@ interop=(ROOT/'docs/GPT-INTEROP.md').read_text().lower()
 for required in ['flow-planning', 'never authorization', 'synchronization discipline', 'standalone markdown', 'kickoff prompts']:
     if required not in interop: err(f'gpt interop doctrine missing: {required}')
 
+compat=(ROOT/'docs/OMP-COMPATIBILITY.md').read_text().lower()
+for required in ['ordinary task completion as event-driven', 'targeted peer-reply waits']:
+    if required not in compat: err(f'OMP compatibility doctrine missing: {required}')
+if 'long bounded waits' in compat: err('OMP compatibility stale long-wait doctrine survived')
+
+doctrine_drift=[
+    ('flow-planning', planning, 'for substantial planning, main/controller should prefer dispatching'),
+    ('flow-execution', execution, '- tiny cohesive edit where spawn overhead exceeds the work → main may implement directly under `flow-tdd`;'),
+    ('flow-external-session', external, 'skip a redundant native plan when the implementation strategy is already current and sufficiently specified'),
+    ('planning-handoff', ph, 'design and implementation strategy settled/current → skip a redundant plan call'),
+]
+for label,text,bad in doctrine_drift:
+    if bad in text: err(f'{label}: stale doctrine survived: {bad}')
+
 evidence=(ROOT/'agent/rules/flow-evidence.md').read_text().lower()
 for required in [
     'writers verify their own work', 'delegation never transfers verification responsibility',
@@ -191,7 +206,7 @@ for required in [
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 
 safety=(ROOT/'agent/rules/flow-safety.md').read_text().lower()
-for required in ['sole/sequential writer', 'independent concurrent writers', 'completed isolated task workspaces', 'snapshot its exact current content']:
+for required in ['sole/sequential semantic owner', 'fresh `flow-plan-executor` rotation', 'independent concurrent writers', 'completed isolated task workspaces', 'snapshot its exact current content']:
     if required not in safety: err(f'flow-safety workspace-lifecycle invariant missing: {required}')
 
 tdd=(ROOT/'agent/skills/flow-tdd/SKILL.md').read_text().lower()
@@ -213,7 +228,7 @@ if 'do not end a locally-complete integration checkpoint with only a status summ
     err('flow-integrating mandatory integration handoff missing')
 
 agents_md=(ROOT/'agent/AGENTS.md').read_text().lower()
-for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker']:
+for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker', 'sole/sequential semantic owner', 'fresh `flow-plan-executor`']:
     if required not in agents_md: err(f'AGENTS communication invariant missing: {required}')
 
 
