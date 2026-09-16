@@ -99,7 +99,7 @@ for required in ['plan conformance','plan-defect','plan-compliance advocate','co
 verifier_path=ROOT/'agent/agents/flow-evidence-verifier.md'
 verifier_fm,verifier_body=frontmatter(verifier_path)
 if verifier_fm.get('model') != '@vision': err('flow-evidence-verifier must use @vision')
-for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted', 'one evidence capsule per verifier session', 'independent scene families', 'first action is capsule preflight', 'evidence capsule:', 'independent split check:', 'restore obligation:', '`before` identity/hash', '`after` identity/hash', 'match/mismatch/unknown']:
+for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted', 'one evidence capsule per verifier session', 'independent scene families', 'first action is capsule preflight', 'different acceptance modalities or operators', 'shared screen/save/setup state', 'physical human interaction', 'synthetic input', 'evidence capsule:', 'independent split check:', 'restore obligation:', '`before` identity/hash', '`after` identity/hash', 'rendered `before` and `after` values', 'match/mismatch/unknown']:
     if required not in verifier_body.lower(): err(f'flow-evidence-verifier invariant missing: {required}')
 
 guard_path=ROOT/'agent/extensions/flow-orchestration-guard.ts'
@@ -134,6 +134,9 @@ for required in [
     'flow-orchestration-guard', 'evidence capsule:', 'independent split check:',
     'runtime guard rejects verifier dispatches missing these markers',
     '`before` and `after` identity/hash', 'match/mismatch/unknown',
+    'shared setup, save, screen, or device state does not by itself make evidence inseparable',
+    'different acceptance modalities or operators', 'physical human-operated interaction', 'synthetic input',
+    'receipt may report `match` only when', 'report `unknown`',
     'do not wait on its old task job id after revival', 'peer-filtered reply wait', 'non-ldd only',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
@@ -152,6 +155,10 @@ for required in [
     'multi-step device/manual acceptance', 'runtime orchestration guard',
     'evidence capsule:', 'independent split check', 'restore obligation',
     'match/mismatch/unknown', 'substantial ldd consequential how',
+    'different acceptance modalities/operators are separable by default',
+    'shared device/save/setup state is not sufficient evidence of inseparability',
+    'automated capture/proxy evidence stays separate from physical human-operated/manual/assistive-technology interaction',
+    '`match` is valid only when the rendered before/after values self-consistently agree',
     'dispatch a dedicated `flow-planner` (`@plan`)',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
@@ -202,6 +209,8 @@ for required in [
     'leaf worker proves its leaf', 'do not rerun the same expensive full suite',
     'pre-edit bytes', 'not restoration proof when the file was already modified',
     'invalid flow orchestration', 'docs-only', 'affected evidence stale',
+    'structured evidence receipts must be internally self-consistent',
+    '`match` is itself an evidence claim', 'contradictory or transcription-damaged receipt',
 ]:
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 
@@ -283,16 +292,16 @@ if openai != expected_openai:
 
 expected_ollama={
     'default':'ollama-cloud/deepseek-v4-pro:high',
-    'smol':'ollama-cloud/deepseek-v4-flash:low',
-    'tiny':'ollama-cloud/deepseek-v4-flash:low',
+    'smol':'ollama-cloud/deepseek-v4.1-flash:low',
+    'tiny':'ollama-cloud/deepseek-v4.1-flash:low',
     'vision':'ollama-cloud/glm-5.3-flash:high',
     'execute':'ollama-cloud/glm-5.3-flash:high',
     'task':'ollama-cloud/glm-5.3-flash:high',
     'plan':'ollama-cloud/deepseek-v4-pro:high',
     'slow':'ollama-cloud/deepseek-v4-pro:high',
-    'review_aux':'ollama-cloud/deepseek-v4-pro:high',
+    'review_aux':'ollama-cloud/glm-5.3-flash:high',
     'critical':'ollama-cloud/kimi-k3:high',
-    'commit':'ollama-cloud/deepseek-v4-flash:low',
+    'commit':'ollama-cloud/deepseek-v4.1-flash:low',
 }
 ollama=yaml.safe_load(profile_cfgs['ollama-cloud'].read_text()).get('modelRoles',{})
 if ollama != expected_ollama:

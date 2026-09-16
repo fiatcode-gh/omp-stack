@@ -14,16 +14,16 @@ The Flow skills/agents are symlinked into all managed profiles, so workflow sema
 
 | Load | Role / agent | OpenAI Codex profile | Ollama Cloud profile | Anthropic profile |
 |---|---|---|---|---|
-| tiny metadata/title/background | `@tiny` | Luna low | DeepSeek V4 Flash low | Haiku 4.5 |
-| commit/changelog generation | `@commit` | Luna low | DeepSeek V4 Flash low | Haiku 4.5 |
-| repo exploration | bundled `scout` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
-| behavior-preserving mechanical work / diagnosed exact correction | bundled `sonic` / `@smol` | Luna | DeepSeek V4 Flash low | Haiku 4.5 |
+| tiny metadata/title/background | `@tiny` | Luna low | DeepSeek V4.1 Flash low | Haiku 4.5 |
+| commit/changelog generation | `@commit` | Luna low | DeepSeek V4.1 Flash low | Haiku 4.5 |
+| repo exploration | bundled `scout` / `@smol` | Luna | DeepSeek V4.1 Flash low | Haiku 4.5 |
+| behavior-preserving mechanical work / diagnosed exact correction | bundled `sonic` / `@smol` | Luna | DeepSeek V4.1 Flash low | Haiku 4.5 |
 | Main/controller | `@default` | Terra | **DeepSeek V4 Pro high (v8 trial)** | Opus 5 high |
 | execution-grade plan follower | `flow-plan-executor` / `@execute` | **Luna** | **GLM-5.3-Flash high** | Sonnet 5 high |
 | residual semantic judgment / broken-plan fallback | `flow-implementer` / `@task` | Terra | GLM-5.3-Flash high | Sonnet 5 high |
 | deliberate execution planning | `flow-planner` / `@plan` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
 | final planned acceptance / hard reasoning | `flow-acceptance-reviewer` / `@slow` | Sol high | DeepSeek V4 Pro high | Opus 5 high |
-| TTC/CRF/audit auxiliary lenses (exceptional/planned escalation + standalone review) | `@review_aux` | Terra high | DeepSeek V4 Pro high | Sonnet 5 high |
+| TTC/CRF/audit auxiliary lenses (exceptional/planned escalation + standalone review) | `@review_aux` | Terra high | GLM-5.3-Flash high | Sonnet 5 high |
 | vision / multimodal inspection | `@vision` | Luna | GLM-5.3-Flash high | Sonnet 5 high |
 | exceptional security/concurrency/data-integrity escalation | `@critical` | Sol xhigh | Kimi K3 high | Fable 5.1 high |
 
@@ -37,9 +37,9 @@ OMP named profiles isolate the full OMP-native user root, not merely model selec
 
 ## Ollama Cloud selection rationale
 
-- **DeepSeek V4 Flash** owns `smol` / `tiny` / `commit`: cheap reasoning is appropriate for discovery, mechanical leaves and background text.
-- **DeepSeek V4 Pro** owns `default` / `plan` / `slow` / `review_aux` in the v8 trial. Unit 2 showed GLM could implement substantial code but slipped on orchestration constraints; this tests whether a stronger controller improves adherence without moving routine execution onto the expensive lane.
-- **GLM-5.3-Flash** owns `execute` / `task` / `vision`: constrained plan-following is its primary v8 lane; `task` remains the semantic fallback while the experiment gathers more evidence.
+- **DeepSeek V4.1 Flash** owns `smol` / `tiny` / `commit`: cheap reasoning is appropriate for discovery, mechanical leaves and background text.
+- **DeepSeek V4 Pro** owns `default` / `plan` / `slow` in the v8 trial. Unit 2 showed GLM could implement substantial code but slipped on orchestration constraints; this keeps stronger controller/planning/final-acceptance judgment without moving routine execution onto the expensive lane.
+- **GLM-5.3-Flash** owns `execute` / `task` / `vision` / `review_aux`: constrained plan-following is its primary v8 lane; `task` remains the semantic fallback while auxiliary review stays on a separate model family from the controller.
 - **Kimi K3** owns `critical`: it is reserved for explicit frontier escalation. The profile uses `high`, matching OMP's generic Ollama Cloud effort mapping rather than inventing an unsupported `max` lane.
 
 Keep the exact model IDs under review when OMP or Ollama Cloud changes its discovered catalog. The role topology matters more than any one model name.
