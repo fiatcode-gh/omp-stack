@@ -1,6 +1,6 @@
 # OMP compatibility assumptions
 
-This stack's v8 trial assumptions were revalidated against the public `can1357/oh-my-pi` main branch at commit `9b2a43514bfcfc0b9607ac9ac160115aec897f06` (2026-09-14). Anthropic profile selectors and adaptive-effort support were additionally re-checked against `a2501722aa05670eeab327ea1325e3fde55e51a9` / OMP 18.1.21 (2026-09-14). OMP moves quickly; re-check these assumptions when upgrading across substantial releases.
+This stack's v8 trial assumptions were revalidated against the public `can1357/oh-my-pi` main branch at commit `9b2a43514bfcfc0b9607ac9ac160115aec897f06` (2026-09-14). Anthropic profile selectors and adaptive-effort support were additionally re-checked against `a2501722aa05670eeab327ea1325e3fde55e51a9` / OMP 18.1.21 (2026-09-14). Agent Hub wait behavior was re-checked against OMP 18.1.22 (`23a5b9a`, 2026-09-14), whose unified waits use an adaptive window while remaining interruptible through the normal tool-abort/steering path. OMP moves quickly; re-check these assumptions when upgrading across substantial releases.
 
 The design relies on these native behaviors:
 
@@ -13,7 +13,7 @@ The design relies on these native behaviors:
 - task batches support per-item agents and optional per-spawn isolation when `task.isolation.enabled` is on;
 - task model selection comes from agent overrides/frontmatter roles rather than a per-call model field;
 - headless subagents cannot prompt for approvals, so Flow constrains writer authority in the task contract and verifies results at the controller;
-- child agents can coordinate with their parent/Main through `hub`; ordinary non-isolated agents are revivable after parking, while completed isolated task runs are torn down and are not revivable; unified Hub waits wake on watched job completion or peer messages, and `send` can await one peer reply; Flow treats ordinary task completion as event-driven and keeps interactive Main out of bare/job waits, while named process waits and targeted peer-reply waits remain available for bounded request/response cases;
+- child agents can coordinate with their parent/Main through `hub`; ordinary non-isolated agents are revivable after parking, while completed isolated task runs are torn down and are not revivable; unified Hub waits wake on watched job completion or peer messages and are interruptible by user steering, so a wait parks the current autonomous run without preventing the user from prompting; ordinary task results may also self-deliver, and `send` can await one peer reply; Flow leaves native wait/steering semantics intact, does useful independent work first, may wait when the next meaningful action depends on the result, and avoids progress polling; targeted peer-reply waits remain available for bounded request/response cases;
 - nested agents are depth-gated by OMP; `flow-implementer` intentionally restricts nested spawning to bundled `scout` and `sonic`;
 - Agent Hub/history/agent artifacts are execution records, not replacements for LDD's durable ledger;
 - bundled `reviewer` handles ordinary correctness review, while security review/scan remains OMP-native; Flow may bind its planned acceptance reviewer to `@slow`;

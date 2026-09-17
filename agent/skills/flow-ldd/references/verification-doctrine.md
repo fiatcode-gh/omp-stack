@@ -10,7 +10,7 @@ For every returned unit:
 4. Map the unit acceptance criteria to concrete evidence.
 5. Run an independent instrument for the consequential claim/integration boundary where practical: focused test, build, typecheck, static trace, schema validation, reproduction, or remote-state read. Independence does not require rerunning the exact same whole-repository suite when a narrower/different proof tests the acceptance boundary better.
 6. Check cross-unit contracts and dependencies, not only the unit in isolation.
-7. Reuse a recent proof only if the exact tree/head and relevant environment are unchanged and its scope still covers the claim.
+7. Reuse recent proof by claim dependency rather than ritual tree/head identity: a later change stales only proof whose dependency surface it can affect. When carrying proof across a changed tree/head, state why the intervening diff cannot affect the reused claim and rerun proof whose dependency surface is uncertain.
 8. Record what was not verified and why.
 9. If the worker disproves a spec/ledger assumption, correct the ledger as a new decision/correction before dependent work continues.
 

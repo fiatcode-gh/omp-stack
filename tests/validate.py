@@ -102,15 +102,22 @@ if verifier_fm.get('model') != '@vision': err('flow-evidence-verifier must use @
 for required in ['verification only', 'designated verification environment', 'do not edit production', 'main independently inspects', 'never declares the unit accepted', 'one evidence capsule per verifier session', 'independent scene families', 'first action is capsule preflight', 'different acceptance modalities or operators', 'shared screen/save/setup state', 'physical human interaction', 'synthetic input', 'evidence capsule:', 'independent split check:', 'restore obligation:', '`before` identity/hash', '`after` identity/hash', 'rendered `before` and `after` values', 'match/mismatch/unknown']:
     if required not in verifier_body.lower(): err(f'flow-evidence-verifier invariant missing: {required}')
 
-guard_path=ROOT/'agent/extensions/flow-orchestration-guard.ts'
-if not guard_path.exists(): err('flow orchestration runtime guard missing')
+guard_path=ROOT/'agent/extensions/flow-evidence-guard.ts'
+if not guard_path.exists(): err('flow evidence-capsule runtime guard missing')
 else:
     guard=guard_path.read_text().lower()
-    for required in ['tool_call', 'event.toolname === "hub"', 'ctx.hasui', 'input.op === "wait"', 'peerwait && !jobids', 'child results self-deliver', 'event.toolname === "task"', 'flow-evidence-verifier', 'evidence capsule:', 'id:', 'independent split check:', 'restore obligation:']:
-        if required not in guard: err(f'flow orchestration runtime guard invariant missing: {required}')
+    for required in ['tool_call', 'event.toolname === "task"', 'flow-evidence-verifier', 'evidence capsule:', 'id:', 'independent split check:', 'restore obligation:', 'omp owns agent hub wait/steering semantics', 'does not', 'intercept hub waits']:
+        if required not in guard: err(f'flow evidence-capsule runtime guard invariant missing: {required}')
+    for forbidden in ['event.toolname === "hub"', 'input.op === "wait"', 'ctx.hasui', 'peerwait', 'jobids']:
+        if forbidden in guard: err(f'flow runtime guard must not intercept native hub wait semantics: {forbidden}')
+
+legacy_guard_path=ROOT/'agent/extensions/flow-orchestration-guard.ts'
+if legacy_guard_path.exists(): err('legacy flow-orchestration-guard.ts must be removed; native Hub wait semantics belong to OMP')
+legacy_guard_test=ROOT/'tests/flow-orchestration-guard.test.mjs'
+if legacy_guard_test.exists(): err('legacy flow-orchestration-guard.test.mjs must be removed')
 
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval','substantial ldd planning','must dispatch `flow-planner` (`@plan`)']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval','substantial ldd planning','must dispatch `flow-planner` (`@plan`)','answers to open contract questions do not themselves approve']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -119,8 +126,8 @@ for required in [
     'never broadly tell a writer', 'route corrections cheaply',
     'delegation never transfers verification responsibility',
     'a complete review round is not automatic',
-    'never wait merely to observe', 'return foreground control', 'do not call `hub wait`',
-    'remain interactive', 'receipt-first',
+    'native `hub wait` is valid', 'interruptible by user steering', 'does not prevent the user from prompting',
+    'repeated `hub jobs` snapshots', 'does not intercept agent hub waits', 'receipt-first',
     'before the **first device/emulator/manual/external acceptance action**',
     'one verifier session owns one coherent evidence capsule', 'cannot rotate itself',
     'touched-file formatting', 'explicit disposition for **cor / ttc / crf / sec**',
@@ -131,13 +138,14 @@ for required in [
     'generic unit-start/resume command is not local implementation authorization',
     'must not begin device/emulator/manual/external evidence capture',
     'must not personally drive a multi-step device/manual acceptance sequence',
-    'flow-orchestration-guard', 'evidence capsule:', 'independent split check:',
-    'runtime guard rejects verifier dispatches missing these markers',
+    'flow-evidence-guard', 'evidence capsule:', 'independent split check:',
+    'evidence-capsule runtime preflight rejects verifier dispatches missing these markers',
     '`before` and `after` identity/hash', 'match/mismatch/unknown',
     'shared setup, save, screen, or device state does not by itself make evidence inseparable',
     'different acceptance modalities or operators', 'physical human-operated interaction', 'synthetic input',
     'receipt may report `match` only when', 'report `unknown`',
     'do not wait on its old task job id after revival', 'peer-filtered reply wait', 'non-ldd only',
+    're-enter the stability barrier', 'rerun affected capsules', 'reuse unaffected capsules',
 ]:
     if required not in execution: err(f'flow-execution missing execution-policy invariant: {required}')
 
@@ -147,12 +155,13 @@ for required in [
     'correct efficiently', 'worker self-verification is required', 'forward pointer',
     'external planning intake', 'does not carry local implementation authorization',
     'flow-planning', 'flow-plan-executor', 'execution-grade',
-    'never wait merely to observe', 'return foreground control',
+    'native interruptible `hub wait` is valid', 'does not block user steering/prompting',
+    'flow does not intercept agent hub waits',
     'before the first device/emulator/manual/external acceptance action',
     'one coherent scene/state/acceptance cluster', 'active main cannot rotate itself',
     'unit-start/resume command does not create missing approval',
     'explicit plan approval', 'acceptance review is a dependency barrier',
-    'multi-step device/manual acceptance', 'runtime orchestration guard',
+    'multi-step device/manual acceptance', 'evidence-capsule runtime preflight',
     'evidence capsule:', 'independent split check', 'restore obligation',
     'match/mismatch/unknown', 'substantial ldd consequential how',
     'different acceptance modalities/operators are separable by default',
@@ -160,6 +169,8 @@ for required in [
     'automated capture/proxy evidence stays separate from physical human-operated/manual/assistive-technology interaction',
     '`match` is valid only when the rendered before/after values self-consistently agree',
     'dispatch a dedicated `flow-planner` (`@plan`)',
+    'answers to blocking/open contract questions do not themselves approve',
+    'reopens the stability barrier', 'rerun affected capsules', 'reuse unaffected capsules',
 ]:
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
@@ -190,12 +201,15 @@ for required in ['flow-planning', 'never authorization', 'synchronization discip
     if required not in interop: err(f'gpt interop doctrine missing: {required}')
 
 compat=(ROOT/'docs/OMP-COMPATIBILITY.md').read_text().lower()
-for required in ['ordinary task completion as event-driven', 'targeted peer-reply waits']:
+for required in ['interruptible by user steering', 'without preventing the user from prompting', 'ordinary task results may also self-deliver', 'leaves native wait/steering semantics intact', 'targeted peer-reply waits']:
     if required not in compat: err(f'OMP compatibility doctrine missing: {required}')
-if 'long bounded waits' in compat: err('OMP compatibility stale long-wait doctrine survived')
+for stale in ['long bounded waits', 'keeps interactive main out of bare/job waits']:
+    if stale in compat: err(f'OMP compatibility stale wait doctrine survived: {stale}')
 
 doctrine_drift=[
     ('flow-planning', planning, 'for substantial planning, main/controller should prefer dispatching'),
+    ('flow-execution-wait', execution, 'never wait merely to observe'),
+    ('flow-ldd-wait', ldd, 'never wait merely to observe'),
     ('flow-execution', execution, '- tiny cohesive edit where spawn overhead exceeds the work → main may implement directly under `flow-tdd`;'),
     ('flow-external-session', external, 'skip a redundant native plan when the implementation strategy is already current and sufficiently specified'),
     ('planning-handoff', ph, 'design and implementation strategy settled/current → skip a redundant plan call'),
@@ -211,6 +225,7 @@ for required in [
     'invalid flow orchestration', 'docs-only', 'affected evidence stale',
     'structured evidence receipts must be internally self-consistent',
     '`match` is itself an evidence claim', 'contradictory or transcription-damaged receipt',
+    'reopens the stability barrier', 'rerun only affected evidence', 'reuse of unaffected capsules',
 ]:
     if required not in evidence: err(f'flow-evidence invariant missing: {required}')
 
@@ -237,7 +252,7 @@ if 'do not end a locally-complete integration checkpoint with only a status summ
     err('flow-integrating mandatory integration handoff missing')
 
 agents_md=(ROOT/'agent/AGENTS.md').read_text().lower()
-for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker', 'sole/sequential semantic owner', 'fresh `flow-plan-executor`']:
+for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker', 'sole/sequential semantic owner', 'fresh `flow-plan-executor`', 'answers to open contract questions do not themselves approve']:
     if required not in agents_md: err(f'AGENTS communication invariant missing: {required}')
 
 
@@ -356,6 +371,28 @@ old={
 ledger=(ROOT/'docs/PRINCIPLES.md').read_text()
 for name in sorted(old):
     if f'`{name}`' not in ledger: err(f'docs/PRINCIPLES.md: old skill not accounted for: {name}')
+
+principles=ledger.lower()
+for required in [
+    'native `hub wait` is a legitimate dependency primitive',
+    'does not override native agent hub wait semantics',
+    'answers to open contract questions do not themselves approve',
+    'later production-, asset-, or build-affecting mutation reopens',
+    'rerun only evidence whose owned dependency surface changed',
+]:
+    if required not in principles: err(f'docs/PRINCIPLES.md invariant missing: {required}')
+
+migration=(ROOT/'docs/MIGRATION.md').read_text().lower()
+for stale in ['deepseek v4 flash low', '`default` / `plan` / `slow` / `review_aux`: deepseek v4 pro high']:
+    if stale in migration: err(f'docs/MIGRATION.md stale Ollama routing survived: {stale}')
+for required in ['deepseek v4.1 flash low', '`execute` / `task` / `vision` / `review_aux`: glm-5.3-flash high']:
+    if required not in migration: err(f'docs/MIGRATION.md current Ollama routing missing: {required}')
+
+verification_doctrine=(ROOT/'agent/skills/flow-ldd/references/verification-doctrine.md').read_text().lower()
+for required in ['reuse recent proof by claim dependency', 'later change stales only proof whose dependency surface it can affect']:
+    if required not in verification_doctrine: err(f'LDD verification doctrine freshness invariant missing: {required}')
+if 'reuse a recent proof only if the exact tree/head' in verification_doctrine:
+    err('LDD verification doctrine stale exact-tree-only freshness rule survived')
 
 if errors:
     print('\n'.join('FAIL: '+e for e in errors)); sys.exit(1)

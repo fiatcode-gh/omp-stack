@@ -1,7 +1,7 @@
-// Behavioral tests for the narrow Flow runtime orchestration guard.
+// Behavioral tests for the narrow Flow runtime evidence-capsule preflight.
 // Dependency-free: Node native TypeScript stripping loads the extension directly.
 import assert from "node:assert/strict";
-import guardExtension from "../agent/extensions/flow-orchestration-guard.ts";
+import guardExtension from "../agent/extensions/flow-evidence-guard.ts";
 
 let toolCall;
 guardExtension({
@@ -15,30 +15,23 @@ assert.equal(typeof toolCall, "function", "guard must register a tool_call handl
 const call = (toolName, input, hasUI = true) =>
 	toolCall({ toolName, input }, { hasUI });
 
-let result = await call("hub", { op: "wait" });
-assert.equal(result?.block, true, "interactive bare hub wait must be blocked");
-
-result = await call("hub", { op: "wait", ids: ["job-1"] });
-assert.equal(result?.block, true, "interactive job wait must be blocked");
-
-result = await call("hub", { op: "wait", name: "server" });
-assert.equal(result, undefined, "named process wait must remain allowed");
-
-result = await call("hub", { op: "wait", from: "worker-a" });
-assert.equal(result, undefined, "targeted peer wait must remain allowed");
-
-result = await call("hub", { op: "wait", from: "worker-a", ids: ["job-1"] });
-assert.equal(result?.block, true, "peer wait carrying job ids must be blocked");
-
-result = await call("hub", { op: "wait", ids: ["job-1"] }, false);
-assert.equal(result, undefined, "headless/non-interactive wait is outside Main guard scope");
+for (const input of [
+	{ op: "wait" },
+	{ op: "wait", ids: ["job-1"] },
+	{ op: "wait", name: "server" },
+	{ op: "wait", from: "worker-a" },
+	{ op: "wait", from: "worker-a", ids: ["job-1"] },
+]) {
+	const result = await call("hub", input);
+	assert.equal(result, undefined, "Flow must not intercept native hub wait semantics");
+}
 
 const capsuleWithoutId = `Evidence capsule:
 - Owns: one coherent scene
 - Independent split check: none
 - Excludes: other scenes
 - Restore obligation: NONE`;
-result = await call("task", {
+let result = await call("task", {
 	agent: "flow-evidence-verifier",
 	task: capsuleWithoutId,
 });
@@ -66,4 +59,4 @@ result = await call("task", {
 assert.equal(result?.block, true, "batch verifier capsule without ID must be blocked");
 assert.match(result.reason, /tasks\[1\].*id:/i, "batch rejection must identify the bad task");
 
-console.log("ok: flow orchestration guard");
+console.log("ok: flow evidence capsule preflight");

@@ -12,10 +12,6 @@ const CAPSULE_MARKERS = [
 	"restore obligation:",
 ] as const;
 
-function nonEmptyString(value: unknown): boolean {
-	return typeof value === "string" && value.trim().length > 0;
-}
-
 function missingCapsuleMarkers(task: unknown): string[] {
 	if (typeof task !== "string") return [...CAPSULE_MARKERS];
 	const lower = task.toLowerCase();
@@ -42,23 +38,11 @@ function verifierBriefErrors(input: ToolInput): string[] {
 }
 
 export default function (pi: ExtensionAPI) {
-	pi.on("tool_call", async (event, ctx) => {
+	pi.on("tool_call", async (event) => {
 		const input = event.input as ToolInput;
 
-		if (event.toolName === "hub" && ctx.hasUI && input.op === "wait") {
-			const processWait = nonEmptyString(input.name);
-			const peerWait = nonEmptyString(input.from);
-			const jobIds = Array.isArray(input.ids) && input.ids.length > 0;
-
-			if (!processWait && !(peerWait && !jobIds)) {
-				return {
-					block: true,
-					reason:
-						"Flow orchestration guard: interactive Main cannot block on hub wait for child/job completion. Child results self-deliver; return foreground control. Use hub wait with name for a supervised process, or from without ids for a targeted peer reply.",
-				};
-			}
-		}
-
+		// OMP owns Agent Hub wait/steering semantics. Flow intentionally does not
+		// intercept hub waits; this extension only guards verifier task manifests.
 		if (event.toolName === "task") {
 			const errors = verifierBriefErrors(input);
 			if (errors.length > 0) {
