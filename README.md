@@ -14,6 +14,7 @@ agent/
   skills/                   optional workflow/domain capabilities
   extensions/               auto-discovered OMP extensions
   lib/                      extension support code
+  keybindings.yml           shared chord remaps (zellij-safe)
 profiles/
   openai-codex/config.yml   first-install baseline for `omp --profile openai-codex`
   ollama-cloud/config.yml   first-install baseline for `omp --profile ollama-cloud`
@@ -24,7 +25,7 @@ scripts/omp-stack           install / verify / doctor
 
 ## Install
 
-The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
+The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
 
 ```sh
 ./scripts/omp-stack install

@@ -19,6 +19,12 @@ profile_dir() { # profile
   fi
 }
 
+shared_agent_dir() { # <config-root>/agent, derived from a profile agent dir
+  set -- $PROFILES
+  dir=$(profile_dir "$1")
+  printf '%s/agent\n' "$(dirname -- "$(dirname -- "$(dirname -- "$dir")")")"
+}
+
 link_owned() { # source dest
   src=$1 dst=$2
   if [ -e "$dst" ] && [ ! -L "$dst" ]; then
@@ -47,7 +53,15 @@ install_profile() { # profile
   info "left $dir/mcp.json untouched; optional example: $ROOT/mcp.example.json"
 }
 
+install_shared() {
+  dir=$(shared_agent_dir)
+  mkdir -p "$dir"
+  link_owned "$ROOT/agent/keybindings.yml" "$dir/keybindings.yml"
+  info "linked $dir/keybindings.yml -> $ROOT/agent/keybindings.yml"
+}
+
 install() {
+  install_shared
   for profile in $PROFILES; do
     install_profile "$profile"
   done
@@ -73,8 +87,14 @@ verify_profile() { # profile
   return "$rc"
 }
 
+verify_shared() {
+  dir=$(shared_agent_dir)
+  verify_link "$ROOT/agent/keybindings.yml" "$dir/keybindings.yml"
+}
+
 verify() {
   rc=0
+  verify_shared || rc=1
   for profile in $PROFILES; do
     verify_profile "$profile" || rc=1
   done
