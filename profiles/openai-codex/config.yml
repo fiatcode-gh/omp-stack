@@ -101,3 +101,5 @@ cycleOrder:
   - slow
 dev:
   autoqaConsent: granted
+codexResets:
+  autoRedeem: "no"
