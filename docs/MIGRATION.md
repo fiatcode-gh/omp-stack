@@ -26,7 +26,7 @@ Why:
 3. If a profile already had `config.yml`, compare/merge it with `profiles/<name>/config.yml`; the installer never overwrites an existing profile config.
 4. Remove any old `ai-stack` `extensions:` registrations and `skills.customDirectories` entries from the profile configs.
 5. Authenticate each profile/provider as needed. Named OMP profiles do not inherit runtime/auth state from the default profile or from each other. `OLLAMA_CLOUD_API_KEY` may instead be supplied through the environment. For the Anthropic Team profile, use OMP's Anthropic/Claude OAuth login inside `omp --profile anthropic`; never commit Team credentials.
-6. Move credential-bearing MCP servers out of each profile's `mcp.json` into that profile's `.mcp.json`; the installer links `agent/mcp.json` over the former and refuses to clobber a real file there. `mcp.example.json` shows the `.mcp.json` shape. Credentials stay profile-owned; credential-free servers shared by every profile belong in `agent/mcp.json`.
+6. Optionally copy `mcp.example.json` to a profile's `mcp.json` if you use Context7. MCP is intentionally profile-owned and the installer never writes credentials.
 7. Run `./scripts/omp-stack verify` and `./scripts/omp-stack doctor`.
 8. Launch with native OMP profile selection:
 

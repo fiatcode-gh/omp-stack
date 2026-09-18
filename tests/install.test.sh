@@ -20,14 +20,9 @@ cmp -s "$ROOT/profiles/anthropic/config.yml" "$TMP/.omp/profiles/anthropic/agent
 grep -q 'default sentinel' "$TMP/.omp/agent/AGENTS.md"
 
 for profile in openai-codex ollama-cloud anthropic; do
-  for name in AGENTS.md agents rules skills extensions lib mcp.json; do
+  for name in AGENTS.md agents rules skills extensions lib; do
     test -L "$TMP/.omp/profiles/$profile/agent/$name"
   done
-done
-
-# A profile-owned .mcp.json is never created or touched by the installer.
-for profile in openai-codex ollama-cloud anthropic; do
-  test ! -e "$TMP/.omp/profiles/$profile/agent/.mcp.json"
 done
 
 HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" verify >/dev/null

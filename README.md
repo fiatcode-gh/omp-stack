@@ -4,6 +4,14 @@ Personal, OMP-native coding-agent stack for fiatcode.
 
 This repository intentionally does **not** emulate the old cross-harness `ai-stack` layout. OMP owns execution mechanics — Plan mode, task agents, isolation, Agent Hub, built-in review/security — while Flow owns engineering judgment, safety, review lenses, TDD, debugging, durable epic state, and external-effect gates.
 
+## Dependencies
+
+- `omp` — the harness itself.
+- [`codebase-memory-mcp`](https://github.com/DeusData/codebase-memory-mcp) — the codebase graph that `agent/AGENTS.md` routes structural lookups to. Without it, `Codebase graph lookup` has nothing to query and agents fall back to `grep`/`glob`.
+- `@upstash/context7-mcp` via `npx` — library documentation lookup, also named in `agent/AGENTS.md`.
+
+Both MCP servers are configured per profile; see [MCP servers](#mcp-servers).
+
 ## Layout
 
 ```text
@@ -15,20 +23,17 @@ agent/
   extensions/               auto-discovered OMP extensions
   lib/                      extension support code
   keybindings.yml           shared chord remaps (zellij-safe)
-  mcp.json                  credential-free MCP servers shared by every profile
 profiles/
   openai-codex/config.yml   first-install baseline for `omp --profile openai-codex`
   ollama-cloud/config.yml   first-install baseline for `omp --profile ollama-cloud`
   anthropic/config.yml      first-install baseline for `omp --profile anthropic`
-mcp.example.json            profile-owned `.mcp.json` example (credentials, per-profile servers)
+mcp.example.json            MCP server template, copied per profile (see below)
 scripts/omp-stack           install / verify / doctor
 ```
 
 ## Install
 
-The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, and refuses to clobber real managed-surface files/directories.
-
-`agent/mcp.json` is one of the linked surfaces, so a credential-free MCP server is configured once for every profile. Credential-bearing and per-profile servers stay in that profile's own `.mcp.json`, which the installer never writes: OMP reads both files at the same user level and merges them by server name.
+The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
 
 ```sh
 ./scripts/omp-stack install
@@ -44,6 +49,20 @@ omp --profile anthropic
 ```
 
 Existing profile configs are never overwritten; compare them with `profiles/<name>/config.yml` after stack updates. See `docs/MIGRATION.md`.
+
+## MCP servers
+
+MCP stays profile-owned: the installer never writes or links `mcp.json`, because the file carries credentials and per-profile enablement. Every profile is meant to see the **same** servers, so copy the template into each one and keep the copies identical:
+
+```sh
+for p in openai-codex ollama-cloud anthropic; do
+  cp mcp.example.json "$(omp --profile "$p" config path)/mcp.json"
+done
+```
+
+Then replace `ctx7sk-REPLACE-WITH-YOUR-KEY` in each copy with the real Context7 key. The ClickUp entry needs no secret — it authenticates over OAuth on first use. A profile whose `mcp.json` is missing simply has no MCP servers; OMP starts normally and the doctrine in `agent/AGENTS.md` falls back to `grep`/`glob` and upstream documentation.
+
+`codebase-memory-mcp` keeps its own per-account index and background watcher outside this repository (`~/.cache/codebase-memory-mcp`). It indexes a project on explicit `index_repository` and re-indexes on git-detected change; `auto_index` is off by default, so a never-indexed repository answers nothing until it is indexed once. Never commit the optional `.codebase-memory/graph.db.zst` export — the watcher rewrites it constantly.
 
 ## Flow shape
 
