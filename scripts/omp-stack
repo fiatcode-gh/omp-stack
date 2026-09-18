@@ -33,24 +33,36 @@ link_owned() { # source dest
   ln -sfn "$src" "$dst"
 }
 
+link_config() { # profile dir
+  profile=$1 dir=$2
+  cfg="$dir/config.yml"
+  template="$ROOT/profiles/$profile/config.yml"
+  if [ -L "$cfg" ] || [ ! -e "$cfg" ]; then
+    link_owned "$template" "$cfg"
+    info "linked $cfg -> $template"
+    return 0
+  fi
+  if cmp -s "$cfg" "$template"; then
+    ln -sfn "$template" "$cfg"
+    info "replaced identical copy: $cfg -> $template"
+    return 0
+  fi
+  info "WARN: $cfg differs from $template; left untouched (merge it, then rerun install)"
+  return 1
+}
+
 install_profile() { # profile
   profile=$1
   dir=$(profile_dir "$profile")
   mkdir -p "$dir"
+  prc=0
   for name in AGENTS.md agents rules skills extensions lib; do
     link_owned "$ROOT/agent/$name" "$dir/$name"
     info "linked $dir/$name -> $ROOT/agent/$name"
   done
-
-  cfg="$dir/config.yml"
-  template="$ROOT/profiles/$profile/config.yml"
-  if [ -e "$cfg" ]; then
-    info "left $cfg untouched; compare/merge $template manually"
-  else
-    cp "$template" "$cfg"
-    info "created $cfg from $template"
-  fi
+  link_config "$profile" "$dir" || prc=1
   info "left $dir/mcp.json untouched; optional example: $ROOT/mcp.example.json"
+  return "$prc"
 }
 
 install_shared() {
@@ -61,10 +73,13 @@ install_shared() {
 }
 
 install() {
+  rc=0
   install_shared
   for profile in $PROFILES; do
-    install_profile "$profile"
+    install_profile "$profile" || rc=1
   done
+  [ "$rc" -eq 0 ] || info "one or more profile configs diverge from their template; nothing was overwritten"
+  return "$rc"
 }
 
 verify_link() { # source dest
@@ -78,13 +93,13 @@ verify_link() { # source dest
 verify_profile() { # profile
   profile=$1
   dir=$(profile_dir "$profile")
-  rc=0
+  prc=0
   info "profile: $profile ($dir)"
   for name in AGENTS.md agents rules skills extensions lib; do
-    verify_link "$ROOT/agent/$name" "$dir/$name" || rc=1
+    verify_link "$ROOT/agent/$name" "$dir/$name" || prc=1
   done
-  [ -f "$dir/config.yml" ] && info "ok: $dir/config.yml present (profile-owned)" || { info "FAIL: $dir/config.yml missing"; rc=1; }
-  return "$rc"
+  verify_link "$ROOT/profiles/$profile/config.yml" "$dir/config.yml" || prc=1
+  return "$prc"
 }
 
 verify_shared() {

@@ -33,7 +33,9 @@ scripts/omp-stack           install / verify / doctor
 
 ## Install
 
-The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
+The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces and that profile's `config.yml` into each profile, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
+
+`profiles/<name>/config.yml` is the single source of truth: each profile's `config.yml` is a symlink back to it, so a settings change belongs in this repository. An existing real file is replaced by the symlink only when it is already byte-identical to the template; otherwise the installer warns, leaves it alone, and exits non-zero so the divergence is visible. Merge it by hand, then rerun `install`. Editing settings through OMP's own settings UI rewrites the target file in this repository — review it with `git diff` like any other change.
 
 ```sh
 ./scripts/omp-stack install
@@ -48,7 +50,7 @@ omp --profile ollama-cloud
 omp --profile anthropic
 ```
 
-Existing profile configs are never overwritten; compare them with `profiles/<name>/config.yml` after stack updates. See `docs/MIGRATION.md`.
+See `docs/MIGRATION.md` for moving an existing profile onto the linked config.
 
 ## MCP servers
 

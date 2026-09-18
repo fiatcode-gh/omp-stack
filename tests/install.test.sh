@@ -4,25 +4,39 @@ ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 TMP=$(mktemp -d)
 trap 'rm -rf "$TMP"' EXIT HUP INT TERM
 
-# Keep the default profile untouched and preseed one named profile config. The
-# installer must preserve existing profile config while bootstrapping the other.
+LINKED="AGENTS.md agents rules skills extensions lib"
+
+# Keep the default profile untouched and preseed one named profile with a
+# divergent config. The installer must refuse to replace a customized profile
+# config while still linking everything else.
 mkdir -p "$TMP/.omp/agent" "$TMP/.omp/profiles/openai-codex/agent"
 printf '%s\n' 'default sentinel' > "$TMP/.omp/agent/AGENTS.md"
 printf '%s\n' 'modelRoles:' '  default: sentinel/model' > "$TMP/.omp/profiles/openai-codex/agent/config.yml"
 cp "$TMP/.omp/profiles/openai-codex/agent/config.yml" "$TMP/openai.before"
 
-HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
-HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
+if HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null 2>&1; then
+  echo 'FAIL: installer accepted a divergent profile config' >&2
+  exit 1
+fi
 
 cmp -s "$TMP/openai.before" "$TMP/.omp/profiles/openai-codex/agent/config.yml"
-cmp -s "$ROOT/profiles/ollama-cloud/config.yml" "$TMP/.omp/profiles/ollama-cloud/agent/config.yml"
-cmp -s "$ROOT/profiles/anthropic/config.yml" "$TMP/.omp/profiles/anthropic/agent/config.yml"
+test ! -L "$TMP/.omp/profiles/openai-codex/agent/config.yml"
+for profile in ollama-cloud anthropic; do
+  test -L "$TMP/.omp/profiles/$profile/agent/config.yml"
+done
 grep -q 'default sentinel' "$TMP/.omp/agent/AGENTS.md"
 
+# An untouched copy that already matches its template becomes a symlink.
+cp "$ROOT/profiles/openai-codex/config.yml" "$TMP/.omp/profiles/openai-codex/agent/config.yml"
+
+HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
+HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" install >/dev/null
+
 for profile in openai-codex ollama-cloud anthropic; do
-  for name in AGENTS.md agents rules skills extensions lib; do
+  for name in $LINKED config.yml; do
     test -L "$TMP/.omp/profiles/$profile/agent/$name"
   done
+  cmp -s "$ROOT/profiles/$profile/config.yml" "$TMP/.omp/profiles/$profile/agent/config.yml"
 done
 
 HOME="$TMP" PATH="/usr/bin:/bin" "$ROOT/scripts/omp-stack" verify >/dev/null
