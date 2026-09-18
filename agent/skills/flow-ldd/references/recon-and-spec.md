@@ -6,6 +6,8 @@ Start from inherited claims, then verify them against code/docs/runtime/forge ev
 
 For broad recon with separable questions, prefer bounded parallel read-only `scout` tasks for extraction/mapping (for example independent subsystems, historical source comparison, caller inventories). Do not fan out trivial recon. Scouts collect evidence; the architect synthesizes centrally and independently checks consequential facts before locking a decision.
 
+In an indexed repository, take the structural pass from the codebase graph (`get_architecture`, `search_graph`, `trace_path`) before dispatching scouts, then let scouts verify and read the specific seams that matter. Graph rows are ranked evidence: confirm a cited path before a claim depends on it.
+
 Recon checks what is true. It does not decide what the user wants.
 
 Historical LDD artifacts can contain execution instructions from an older harness/version. Preserve their durable domain facts/decisions, but revalidate transport, isolation, model-routing and mailbox mechanics against the current Flow/OMP stack.
