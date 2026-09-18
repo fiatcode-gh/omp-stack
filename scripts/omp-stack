@@ -37,7 +37,7 @@ install_profile() { # profile
   profile=$1
   dir=$(profile_dir "$profile")
   mkdir -p "$dir"
-  for name in AGENTS.md agents rules skills extensions lib; do
+  for name in AGENTS.md agents rules skills extensions lib mcp.json; do
     link_owned "$ROOT/agent/$name" "$dir/$name"
     info "linked $dir/$name -> $ROOT/agent/$name"
   done
@@ -50,7 +50,7 @@ install_profile() { # profile
     cp "$template" "$cfg"
     info "created $cfg from $template"
   fi
-  info "left $dir/mcp.json untouched; optional example: $ROOT/mcp.example.json"
+  info "left $dir/.mcp.json untouched; optional example: $ROOT/mcp.example.json"
 }
 
 install_shared() {
@@ -80,7 +80,7 @@ verify_profile() { # profile
   dir=$(profile_dir "$profile")
   rc=0
   info "profile: $profile ($dir)"
-  for name in AGENTS.md agents rules skills extensions lib; do
+  for name in AGENTS.md agents rules skills extensions lib mcp.json; do
     verify_link "$ROOT/agent/$name" "$dir/$name" || rc=1
   done
   [ -f "$dir/config.yml" ] && info "ok: $dir/config.yml present (profile-owned)" || { info "FAIL: $dir/config.yml missing"; rc=1; }

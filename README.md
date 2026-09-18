@@ -15,17 +15,20 @@ agent/
   extensions/               auto-discovered OMP extensions
   lib/                      extension support code
   keybindings.yml           shared chord remaps (zellij-safe)
+  mcp.json                  credential-free MCP servers shared by every profile
 profiles/
   openai-codex/config.yml   first-install baseline for `omp --profile openai-codex`
   ollama-cloud/config.yml   first-install baseline for `omp --profile ollama-cloud`
   anthropic/config.yml      first-install baseline for `omp --profile anthropic`
-mcp.example.json            optional Context7 MCP example
+mcp.example.json            profile-owned `.mcp.json` example (credentials, per-profile servers)
 scripts/omp-stack           install / verify / doctor
 ```
 
 ## Install
 
-The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, refuses to clobber real managed-surface files/directories, and never writes `mcp.json`.
+The installer provisions three native OMP profiles: `openai-codex`, `ollama-cloud`, and `anthropic`. It links `agent/keybindings.yml` into the shared agent directory once — named profiles inherit it and can still override single actions — symlinks the shared Flow surfaces into each profile, copies that profile's baseline `config.yml` only when one does not already exist, and refuses to clobber real managed-surface files/directories.
+
+`agent/mcp.json` is one of the linked surfaces, so a credential-free MCP server is configured once for every profile. Credential-bearing and per-profile servers stay in that profile's own `.mcp.json`, which the installer never writes: OMP reads both files at the same user level and merges them by server name.
 
 ```sh
 ./scripts/omp-stack install

@@ -1,5 +1,5 @@
 {
-	"_comment": "Copy to the desired profile agent directory as mcp.json and replace the placeholder API key. scripts/omp-stack intentionally never installs this file because MCP credentials and enablement are profile-owned.",
+	"_comment": "Copy to a profile agent directory as .mcp.json and replace the placeholder API key. scripts/omp-stack never installs this file: credential-bearing and per-profile servers stay profile-owned. Credential-free shared servers belong in agent/mcp.json, which the installer links; OMP merges both files by server name.",
 	"mcpServers": {
 		"context7": {
 			"command": "npx",
@@ -10,10 +10,9 @@
 				"ctx7sk-REPLACE-WITH-YOUR-KEY"
 			]
 		},
-		"codebase-memory": {
-			"type": "stdio",
-			"command": "codebase-memory-mcp",
-			"args": []
+		"clickup": {
+			"type": "http",
+			"url": "https://mcp.clickup.com/mcp"
 		}
 	}
 }

@@ -1,0 +1,11 @@
+{
+	"$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+	"_comment": "Credential-free MCP servers shared by every profile. OMP reads this file and the profile-owned .mcp.json at the same user level and merges them by server name, so credentials and per-profile servers stay in .mcp.json (see mcp.example.json).",
+	"mcpServers": {
+		"codebase-memory": {
+			"type": "stdio",
+			"command": "codebase-memory-mcp",
+			"args": []
+		}
+	}
+}
