@@ -69,6 +69,23 @@ Write tool commands in POSIX `sh`. When Bash-only syntax is necessary, invoke Ba
 
 For libraries, frameworks, SDKs, APIs, CLIs and cloud services, prefer the configured Context7 MCP when available. If it is unavailable or insufficient, use upstream official documentation or current web research rather than guessing.
 
+## Codebase graph lookup
+
+In a repository indexed by the `codebase-memory` MCP (`index_status` reports ready), use
+the graph for orientation and breadth — where a concept lives, what a package depends on,
+which call chains reach a subsystem — instead of opening many files or guessing at `grep`
+patterns.
+
+- `lsp` stays authoritative at an exact position (definition, references, hover,
+  implementation) and for the reference pass before changing an exported symbol. Graph
+  call/usage edges are leads, not a complete reference list. `grep` stays the tool for
+  literals, comments, configuration and other non-code text.
+- Confirm a cited path or line by reading it; check the reported `parse_partial` /
+  `not_indexed` gaps before concluding something does not exist.
+- Not indexed or not ready: index this root once with `index_repository` (never with
+  `persistence`, which writes an artifact into the repository), or fall back to `grep`
+  and say so.
+
 ## Python
 
 Use `uv` for Python.

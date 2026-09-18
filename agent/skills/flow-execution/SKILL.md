@@ -32,7 +32,8 @@ Separate unresolved **judgment** from plan-following work. Move consequential ju
 Use the cheapest owner that can correctly own the remaining judgment:
 
 - **non-LDD only:** tiny cohesive edit where spawn overhead exceeds the work → Main may implement directly under `flow-tdd`; while `flow-ldd` is active, production edits remain delegated, including tiny corrections;
-- bounded read-only fact finding → bundled `scout`;
+- bounded read-only fact finding → bundled `scout`, handed the symbols/paths already
+  known so it verifies rather than rediscovers;
 - fully specified **behavior-preserving** mechanical edit, or an already-diagnosed exact correction with an existing failing/mechanical proof and one obvious result → bundled `sonic` may be dispatched directly;
 - new executable behavior whose consequential HOW/tests/interfaces are locked by a current execution-grade plan → `flow-plan-executor` (`@execute` constrained owner);
 - semantic implementation/debugging/integration that still requires judgment, or a plan task promoted after contradiction → `flow-implementer` (`@task` semantic owner).
