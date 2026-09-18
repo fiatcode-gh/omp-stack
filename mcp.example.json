@@ -9,6 +9,11 @@
 				"--api-key",
 				"ctx7sk-REPLACE-WITH-YOUR-KEY"
 			]
+		},
+		"codebase-memory": {
+			"type": "stdio",
+			"command": "codebase-memory-mcp",
+			"args": []
 		}
 	}
 }
