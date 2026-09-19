@@ -116,8 +116,12 @@ if legacy_guard_path.exists(): err('legacy flow-orchestration-guard.ts must be r
 legacy_guard_test=ROOT/'tests/flow-orchestration-guard.test.mjs'
 if legacy_guard_test.exists(): err('legacy flow-orchestration-guard.test.mjs must be removed')
 
+design=(ROOT/'agent/skills/flow-design/SKILL.md').read_text().lower()
+for required in ['before substantial planning','governing contract','clarify the intention with the user','completed governing contract','explicit user approval','main owns the contract','internal brainstorm','external handoff']:
+    if required not in design: err(f'flow-design contract-formation invariant missing: {required}')
+
 planning=(ROOT/'agent/skills/flow-planning/SKILL.md').read_text().lower()
-for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval','substantial ldd planning','must dispatch `flow-planner` (`@plan`)','answers to open contract questions do not themselves approve']:
+for required in ['execution-grade plan','locked decisions','executor discretion','plan quality gate','cor','ttc','crf','sec','decision completeness','fresh-executor capsule','one fresh `flow-plan-executor` session','independently provable behavioral slice','valid intermediate handoff exists','receipt-first','plan receipt validation does not itself authorize implementation','explicit user plan approval','for substantial planned work','approved governing contract','for substantial planning','ldd or non-ldd','must dispatch `flow-planner` (`@plan`)','answers to clarification questions do not themselves approve']:
     if required not in planning: err(f'flow-planning invariant missing: {required}')
 
 execution=(ROOT/'agent/skills/flow-execution/SKILL.md').read_text().lower()
@@ -135,7 +139,7 @@ for required in [
     'formatter-only failure', 'forward pointer',
     'accepted external planning handoff', 'execution-grade plan', 'flow-plan-executor',
     'flow-acceptance-reviewer', 'batch the verified set',
-    'generic unit-start/resume command is not local implementation authorization',
+    'for substantial work, a generic start/resume command is not local implementation authorization',
     'must not begin device/emulator/manual/external evidence capture',
     'must not personally drive a multi-step device/manual acceptance sequence',
     'flow-evidence-guard', 'evidence capsule:', 'independent split check:',
@@ -175,7 +179,7 @@ for required in [
     if required not in ldd: err(f'flow-ldd missing execution-policy invariant: {required}')
 
 external=(ROOT/'agent/skills/flow-external-session/SKILL.md').read_text().lower()
-for required in ['planning handoff intake', 'references/planning-handoff.md', 'evidence/proposal, not authority or authorization', 'do not create a mailbox for a one-way static planning import', 'implementation_strategy: settled', 'execution-grade contract', 'refine only those gaps']:
+for required in ['planning handoff intake', 'references/planning-handoff.md', 'evidence/proposal, not authority or authorization', 'do not create a mailbox for a one-way static planning import', 'contract-formation stage', 'locally governing what/why contract', 'implementation_strategy: settled', 'execution-grade contract', 'refine only those gaps']:
     if required not in external: err(f'flow-external-session planning-handoff invariant missing: {required}')
 
 ph=(ROOT/'agent/skills/flow-external-session/references/planning-handoff.md').read_text().lower()
@@ -208,6 +212,7 @@ for stale in ['long bounded waits', 'keeps interactive main out of bare/job wait
 
 doctrine_drift=[
     ('flow-planning', planning, 'for substantial planning, main/controller should prefer dispatching'),
+    ('flow-planning-non-ldd', planning, 'for substantial non-ldd planning, prefer the same dedicated planner'),
     ('flow-execution-wait', execution, 'never wait merely to observe'),
     ('flow-ldd-wait', ldd, 'never wait merely to observe'),
     ('flow-execution', execution, '- tiny cohesive edit where spawn overhead exceeds the work → main may implement directly under `flow-tdd`;'),
@@ -252,8 +257,10 @@ if 'do not end a locally-complete integration checkpoint with only a status summ
     err('flow-integrating mandatory integration handoff missing')
 
 agents_md=(ROOT/'agent/AGENTS.md').read_text().lower()
-for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'unit-start kickoff', 'completed unit contract', 'production-writing worker', 'sole/sequential semantic owner', 'fresh `flow-plan-executor`', 'answers to open contract questions do not themselves approve']:
+for required in ['maintain the **forward pointer**', 'next workflow action', 'genuine decision/approval gate', 'production-writing worker', 'sole/sequential semantic owner', 'fresh `flow-plan-executor`', 'before substantial work enters planning', 'governing what/why contract', 'for substantial work, require explicit user approval of the completed governing contract', 'answers to clarification questions do not themselves approve', 'outside `flow-ldd`, main may code only in the main-direct lane defined by `flow-execution`', 'never route push/pr/review/comment/release actions through omp `eval`']:
     if required not in agents_md: err(f'AGENTS communication invariant missing: {required}')
+if 'for ordinary work, the main session may code' in agents_md:
+    err('AGENTS: blanket Main coding permission survived')
 
 
 # Relative skill asset references must resolve from each skill directory.
@@ -345,10 +352,22 @@ for profile,path in profile_cfgs.items():
     cfg=yaml.safe_load(path.read_text()) or {}
     if profile not in trial_profiles: continue
     approval=((cfg.get('tools') or {}).get('approval') or {})
-    if approval.get('eval') != 'prompt': err(f'{path.relative_to(ROOT)}: tools.approval.eval must prompt')
+    if 'eval' in approval: err(f'{path.relative_to(ROOT)}: blanket tools.approval.eval must remain unset')
     patterns=(cfg.get('bash') or {}).get('patterns') or []
     pattern_map={p.get('match'):p.get('approval') for p in patterns if isinstance(p,dict)}
-    for command in ['git push*','gh pr create*','gh pr merge*']:
+    for command in [
+        'git push*',
+        'gh pr create*',
+        'gh pr merge*',
+        'gh pr review*',
+        'gh pr comment*',
+        'gh issue comment*',
+        'gh release create*',
+        'gh api*',
+        'tea pr create*',
+        'tea pr merge*',
+        'tea comment*',
+    ]:
         if pattern_map.get(command) != 'prompt': err(f'{path.relative_to(ROOT)}: publication prompt missing for {command}')
 
 # Every role-backed Flow agent must resolve in every managed provider profile.
@@ -376,11 +395,17 @@ principles=ledger.lower()
 for required in [
     'native `hub wait` is a legitimate dependency primitive',
     'does not override native agent hub wait semantics',
-    'answers to open contract questions do not themselves approve',
+    'answers to clarification questions do not themselves approve',
+    'approved governing what/why contract before planning',
+    'substantial consequential how is then planner-owned',
+    'substantial planned work has two explicit user approval gates',
+    'main coordinating/escalating rather than becoming the production writer',
     'later production-, asset-, or build-affecting mutation reopens',
     'rerun only evidence whose owned dependency surface changed',
 ]:
     if required not in principles: err(f'docs/PRINCIPLES.md invariant missing: {required}')
+if 'unresolved semantic/debugging/integration judgment → main/`@task`' in principles:
+    err('docs/PRINCIPLES.md: ambiguous Main semantic-writer routing survived')
 
 migration=(ROOT/'docs/MIGRATION.md').read_text().lower()
 for stale in ['deepseek v4 flash low', '`default` / `plan` / `slow` / `review_aux`: deepseek v4 pro high']:

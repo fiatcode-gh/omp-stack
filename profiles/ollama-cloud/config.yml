@@ -29,11 +29,8 @@ modelRoles:
   # effort ladder, where high is the strongest advertised effort.
   critical: ollama-cloud/kimi-k3:high
 
-# Native backstop for Flow's external-effect gate.
-tools:
-  approval:
-    eval: prompt
-
+# Native backstop for Flow's external-effect gate. Keep publication commands
+# on the direct Bash/forge surface so these explicit prompt policies apply.
 bash:
   patterns:
     - match: "git push*"

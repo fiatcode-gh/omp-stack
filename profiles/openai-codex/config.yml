@@ -18,13 +18,8 @@ modelRoles:
   critical: openai-codex/gpt-5.6-sol:xhigh
   commit: openai-codex/gpt-5.6-luna:low
 
-# Native backstop for Flow's external-effect gate. Explicit prompt policies
-# remain active even under OMP's default yolo approval mode. eval is prompted
-# because bash command patterns do not contain subprocesses launched by eval.
-tools:
-  approval:
-    eval: prompt
-
+# Native backstop for Flow's external-effect gate. Keep publication commands
+# on the direct Bash/forge surface so these explicit prompt policies apply.
 bash:
   patterns:
     - match: "git push*"

@@ -9,7 +9,7 @@ OMP owns plan approval, task spawning, isolation and Agent Hub. This skill owns 
 
 ## 1. Orient
 
-Read the governing request/spec/approved execution strategy and project rules. An accepted external planning handoff is evidence after local validation; it does not carry implementation authorization. Under `flow-ldd`, a generic unit-start/resume command is not local implementation authorization: before dispatching a production-writing worker, require recorded explicit approval of the governing contract and execution-grade plan, or explicit direct-implementation approval when a separate plan was intentionally skipped. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
+Read the governing request/spec/approved execution strategy and project rules. An accepted external planning handoff is evidence after local validation; it does not carry implementation authorization. For substantial work, a generic start/resume command is not local implementation authorization: before dispatching a production-writing worker, require recorded explicit approval of the governing contract and execution-grade plan. Under `flow-ldd`, the same authorization rule applies within the unit-contract authority; when a tiny/obvious LDD unit deliberately skips a separate plan, require explicit direct-implementation approval after contract approval. Ordinary tiny/mechanical non-LDD work remains governed by the user's concrete request and the Main-direct lane. Inspect branch/worktree and dirty state. Identify the **dependency graph**, not just a task list.
 
 Classify the execution lane before dispatch:
 

@@ -17,7 +17,7 @@ The design relies on these native behaviors:
 - nested agents are depth-gated by OMP; `flow-implementer` intentionally restricts nested spawning to bundled `scout` and `sonic`;
 - Agent Hub/history/agent artifacts are execution records, not replacements for LDD's durable ledger;
 - bundled `reviewer` handles ordinary correctness review, while security review/scan remains OMP-native; Flow may bind its planned acceptance reviewer to `@slow`;
-- ordered `bash.patterns` support explicit `prompt` rules that remain effective under yolo; those rules cover Bash only, so `tools.approval.eval: prompt` is required when eval must not bypass the normal publication-command gate; headless subagents cannot satisfy a prompt and therefore fail closed on those explicitly prompted tools;
+- ordered `bash.patterns` support explicit `prompt` rules that remain effective under yolo. The baseline intentionally leaves blanket `tools.approval.eval` prompting unset because it creates excessive friction for ordinary eval use; stakeholder-visible publication actions must stay on the direct guarded Bash/forge surface rather than being wrapped in eval. Headless subagents cannot satisfy a direct publication prompt and therefore fail closed on those explicitly prompted commands;
 - the first-party Anthropic provider exposes `claude-sonnet-5`, `claude-opus-5`, and `claude-fable-5-1` with adaptive effort including `high`; Haiku 4.5 is kept without an explicit effort suffix in the baseline;
 - Anthropic OAuth credentials are profile-local under named profiles; the repository never stores Team credentials.
 

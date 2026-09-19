@@ -1,6 +1,6 @@
 ---
 name: flow-planning
-description: Use after material WHAT/WHY is settled when consequential implementation HOW should be made decision-complete before coding; write an execution-grade plan that moves judgment up front so constrained executors can work cheaply and escalate contradictions instead of improvising.
+description: Use after the governing WHAT/WHY contract is approved when consequential implementation HOW should be made decision-complete before coding; write an execution-grade plan that moves judgment up front so constrained executors can work cheaply and escalate contradictions instead of improvising.
 ---
 
 # Flow planning
@@ -11,7 +11,7 @@ Use this skill when the implementer would otherwise need to decide material file
 
 ## 1. Establish the planning boundary
 
-Read the governing request/spec/unit contract, current source seams, tests, project rules, branch/worktree state and any validated external planning handoff. Planning does not carry implementation authorization.
+Read the approved governing contract/spec, current source seams, tests, project rules, branch/worktree state and any validated external planning handoff. For substantial work, `flow-design` owns formation/approval of the WHAT/WHY contract before this skill begins. Planning does not carry implementation authorization.
 
 For LDD, write under `.flow/ldd/<epic>/units/<unit>/`:
 
@@ -25,7 +25,7 @@ plan-tasks/
 
 For non-LDD work, prefer `.flow/plans/<slug>/PLAN.md` plus `plan-tasks/` when the plan must survive compaction/session changes. A compact one-file plan is fine when it stays readable and no worker needs a sliced brief.
 
-For substantial LDD planning, Main/controller must dispatch `flow-planner` (`@plan`) only after the completed contract/WHAT boundary has explicit user approval, unless a current validated external plan already satisfies this skill's execution-grade contract. Answers to open contract questions do not themselves approve the completed or materially amended contract. Main owns the governing contract and plan acceptance; it does not author substantial LDD consequential HOW itself and instead consumes the planner's compact READY/BLOCKED receipt. For substantial non-LDD planning, prefer the same dedicated planner so detailed planning recon can be encoded durably outside Main's context.
+For substantial planning — LDD or non-LDD — Main/controller must dispatch `flow-planner` (`@plan`) to own consequential HOW recon/writing unless a current validated external plan already satisfies this skill's execution-grade contract. Dispatch only after the completed governing contract/WHAT boundary has explicit user approval. Answers to clarification questions do not themselves approve the completed or materially amended contract. Main owns the governing contract, validates the planner receipt, and owns plan acceptance, but it does not author substantial consequential HOW itself.
 
 Record the source revision/dirty-state assumptions the plan was derived from. A revision change triggers targeted revalidation, not ritual replanning.
 
@@ -99,7 +99,7 @@ If these do not hold, keep the artifact as strategy/draft and route unresolved j
 
 ## 6. Execution handoff
 
-Main/controller validates the plan receipt and obtains/retains the normal implementation authorization boundary. Under `flow-ldd`, plan receipt validation does not itself authorize implementation: Main presents the completed execution-grade plan and obtains **explicit user plan approval** before the first production-writing worker. A generic unit-start/resume command does not create missing approval; a recorded prior approval remains valid while the approved plan envelope is materially unchanged. Then `flow-execution` chooses:
+Main/controller validates the plan receipt and obtains/retains the normal implementation authorization boundary. For substantial planned work, plan receipt validation does not itself authorize implementation: Main presents the completed execution-grade plan and obtains **explicit user plan approval** before the first production-writing worker. A generic start/resume command does not create missing approval; a recorded prior approval remains valid while the approved plan envelope is materially unchanged. Under `flow-ldd`, this is the second gate after contract approval; non-LDD substantial work uses the same plan-approval boundary without LDD ledger mechanics. Then `flow-execution` chooses:
 
 - current execution-grade plan → `flow-plan-executor` (`@execute`) for the constrained implementation lane;
 - task/plan contradiction or deliberately unresolved semantic judgment → `flow-implementer` (`@task`) or return to planning/design;
@@ -111,4 +111,4 @@ The planner's handoff is receipt-first: source/base revision and dirty-state ass
 
 ## External handoffs
 
-A validated ChatGPT/other-harness bundle may already contain an execution-grade plan. Judge it against this contract. If it passes and source assumptions remain current, preserve it and do not repeat planning. If it contains a good strategy but not an execution-grade plan, keep the settled strategy and refine only the missing HOW; do not reopen settled WHAT/WHY.
+A validated ChatGPT/other-harness bundle may already contain an execution-grade plan. Judge it against this contract and the approved governing WHAT/WHY contract. If it passes, remains compatible with that contract, and source assumptions remain current, preserve it and do not repeat planning. If it contains a good strategy but not an execution-grade plan, keep the settled strategy and refine only the missing HOW; do not reopen settled WHAT/WHY.
