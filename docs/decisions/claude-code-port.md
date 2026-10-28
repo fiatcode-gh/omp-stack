@@ -1,6 +1,6 @@
 # Claude Code Flow port
 
-Work: `feat: add the Claude Code Flow port` on `claude/fervent-lamport-rgseel`, 2026-10-28.
+Work: `feat: add the Claude Code Flow port` and `feat: port the Weft skills to the Claude Code plugin` on `feat/claude-code-port`, 2026-10-28.
 
 ## Decisions
 
