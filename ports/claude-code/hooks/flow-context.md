@@ -60,9 +60,56 @@ Claude Code on the web runs in an ephemeral container with a fresh clone. These 
 
 - The container can be reclaimed. `.flow/` (approvals included) is lost with it. The chat transcript survives. So show each contract and plan in full in chat before approval. On resume, when `.flow/` is missing, rewrite the artifacts from the transcript and ask the user to approve them again.
 - Work on the branch the session was given. It counts as a feature branch.
-- Pushing that branch and opening a draft pull request is how a cloud session delivers its work. Do it when `flow-integrating` says the work is locally complete. Every other stakeholder-visible write (marking ready, merging, review comments, replies on someone else's pull request, releases) needs explicit user approval for that action.
+- Pushing that branch and opening a draft pull request is how a cloud session delivers its work. Do it when `flow-integrating` says the work is locally complete. `weft_publish` pushes to the Weft graph repository are also pre-approved (Weft graph below). Every other stakeholder-visible write (marking ready, merging, review comments, replies on someone else's pull request, releases) needs explicit user approval for that action.
 - Use the GitHub MCP tools (`mcp__github__*`) for GitHub reads and writes. `gh` is not authenticated here.
-- The Weft graph and the codebase-memory MCP are local-only. Skip the Weft lifecycle steps and use `Grep`, `Glob` and `Explore` for code lookup.
+- The codebase-memory MCP is local-only. Use `Grep`, `Glob` and `Explore` for code lookup.
+- The Weft graph reaches a cloud session as a clone of its GitHub repository (Weft graph below).
+
+## Weft graph
+
+`${WEFT_GRAPH}` is the user's durable human and project knowledge graph: a local directory. It has two setups:
+
+- **Local:** `WEFT_GRAPH` points at the user's own copy. Flow never commits or syncs it; the user does.
+- **Cloud:** the environment also sets `WEFT_GRAPH_REPO=<owner>/<repo>`. The guard clones that repository into `${WEFT_GRAPH}`, and `weft_publish` commits and pushes each write straight to its default branch. No branch, no pull request.
+
+Run the guard before any Weft read or write. Paste these functions into each Bash call that uses them.
+
+```sh
+weft_guard() { # prints ok, or why the graph is unavailable
+  [ -n "${WEFT_GRAPH:-}" ] || { echo MISSING; return 1; }
+  if [ ! -d "$WEFT_GRAPH" ] && [ -n "${WEFT_GRAPH_REPO:-}" ]; then
+    git clone -q --depth 1 "https://github.com/$WEFT_GRAPH_REPO" "$WEFT_GRAPH" || { echo "CLONE-FAILED: $WEFT_GRAPH_REPO"; return 1; }
+  fi
+  [ -d "$WEFT_GRAPH" ] || { echo MISSING; return 1; }
+  if [ -n "${WEFT_GRAPH_REPO:-}" ]; then
+    git -C "$WEFT_GRAPH" pull -q --rebase --autostash || { echo PULL-FAILED; return 1; }
+  fi
+  echo "ok: $WEFT_GRAPH"
+}
+weft_publish() { # weft_publish "<message>"   cloud only; a no-op on a local graph
+  [ -n "${WEFT_GRAPH_REPO:-}" ] || { echo "local graph: left for the user to commit"; return 0; }
+  git -C "$WEFT_GRAPH" add -A && git -C "$WEFT_GRAPH" commit -q -m "$1" || return 1
+  if ! git -C "$WEFT_GRAPH" pull -q --rebase; then
+    git -C "$WEFT_GRAPH" rebase --abort; echo "CONFLICT: commit kept locally, not pushed"; return 1
+  fi
+  git -C "$WEFT_GRAPH" push -q && echo "pushed: $1"
+}
+```
+
+- `MISSING`: skip the Weft steps and say so once. Never fall back to a hardcoded path.
+- `CLONE-FAILED` in a cloud session: attach the repository with `add_repo` (`access: "push"`), then run the guard again. If that is refused, relay the reason and skip the Weft steps.
+- Run `weft_publish` once after each approved or lifecycle write, with a message such as `journal: 2026-10-28` or `memory: <one-line summary>`.
+- On `CONFLICT` or a refused push, stop and report it. Never force-push, reset or rewrite the graph's history.
+
+Rules:
+
+- Before substantive work in a project, read its project page, when one exists, for constraints and gotchas.
+- Before substantive work, run `weft-memory` recall for the current project and harness (`## Harness: [[Claude]]`).
+- Run `weft-worklog` Mode C as a lifecycle hook around substantive Flow work. Before the work, query the project's or topic's `TODO` / `LATER` / stray `DOING` items. After it, update only the items this session owned, and log the completed work to today's journal.
+- Do not ask for approval of these worklog writes, or of their `weft_publish`. Never change unrelated search matches.
+- Keep durable project state, backlog and conventions in Weft, not in harness-native memory files (`CLAUDE.md`, auto memory) or ad-hoc repository backlogs.
+- When you review someone else's PR, you may log the review and advance or close the user's own review item. Never create, pull or promote `TODO` / `LATER` items from that PR's findings: the code belongs to its author.
+- Name a personal collection project `*-stack`, with a matching `[[X Stack]]` canonical page where applicable.
 
 ## Commits
 

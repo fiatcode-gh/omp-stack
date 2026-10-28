@@ -610,10 +610,15 @@ for p in port_skills+port_agents:
 port_docs=port_skills+port_agents+list((port/'skills').glob('*/references/*.md'))+list((port/'hooks').glob('*.md'))
 for p in port_docs:
     text=p.read_text()
-    for omp_only in ['flow_gate','skill://','`hub`','hub wait','@task','@execute','@slow','@smol','@plan','@vision','@review_aux','`sonic`','`scout`','WEFT_GRAPH']:
+    for omp_only in ['flow_gate','skill://','`hub`','hub wait','@task','@execute','@slow','@smol','@plan','@vision','@review_aux','`sonic`','`scout`']:
         if omp_only in text: err(f'{rel(p)}: OMP-only mechanic in the Claude Code port: {omp_only}')
 for path in ['skills/flow-tdd/SKILL.md','skills/ui-design/SKILL.md']:
     if (port/path).read_bytes()!=(ROOT/'agent'/path).read_bytes(): err(f'ports/claude-code/{path}: verbatim mirror drifted from agent/{path}')
+for path in ['skills/weft-worklog/references/voice.md','skills/weft-worklog/references/page-archetypes.md']:
+    if (port/path).read_bytes()!=(ROOT/'agent'/path).read_bytes(): err(f'ports/claude-code/{path}: verbatim mirror drifted from agent/{path}')
+for other,names in [('weft-memory',['conventions.md','voice.md']),('weft-maintenance',['conventions.md','voice.md','page-archetypes.md'])]:
+    for name in names:
+        if (port/'skills/weft-worklog/references'/name).read_bytes()!=(port/'skills'/other/'references'/name).read_bytes(): err(f'ports/claude-code/skills/{other}/references/{name}: Weft reference copies differ')
 for path in ['references/planning-handoff.schema.json','scripts/validate-planning-handoff.py']:
     if (port/'skills/flow-external-session'/path).read_bytes()!=(ROOT/'agent/skills/flow-external-session'/path).read_bytes(): err(f'ports/claude-code/skills/flow-external-session/{path}: verbatim mirror drifted')
 # Claude Code keeps only about 2 KB of SessionStart hook output in context.

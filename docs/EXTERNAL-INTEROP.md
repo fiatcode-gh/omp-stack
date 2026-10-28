@@ -33,10 +33,11 @@ The chat reads through GitHub's read-only MCP server and writes nothing: no file
 | Port path | Mirrors |
 |---|---|
 | `hooks/flow-core.md`, `hooks/session-start.sh` | a 2 KB always-on core that points at `flow-context.md`; Claude Code keeps only about 2 KB of hook output |
-| `hooks/flow-context.md` | `AGENTS.md` (Engineering principles, OMP / Flow execution, Commits, Communication, Documentation lookup, Python), `flow-safety`, `flow-evidence`, `flow-artifacts`; adds the approval record and the cloud-session rules |
+| `hooks/flow-context.md` | `AGENTS.md` (Engineering principles, OMP / Flow execution, Weft graph, Commits, Communication, Documentation lookup, Python), `flow-safety`, `flow-evidence`, `flow-artifacts`; adds the approval record, the cloud-session rules and the Weft guard/publish functions |
 | `skills/flow-tdd`, `skills/ui-design` | verbatim; `tests/validate.py` fails on drift |
 | `skills/flow-design`, `flow-planning`, `flow-execution`, `flow-debugging`, `flow-integrating`, `flow-review` | the OMP skills, with OMP mechanics reworded |
 | `skills/flow-review/references/` | `review-lenses.md`, `audit-lenses.md`, `pr-review.md`, `author-feedback.md`, `audit.md`; `github-operations.md` is rewritten for the GitHub MCP tools and absorbs `author-operations.md` |
+| `skills/weft-worklog`, `weft-memory`, `weft-maintenance` | the OMP skills; `voice.md` and `page-archetypes.md` verbatim; `conventions.md` swaps never-commit for `weft_publish`; `memory-schema.md` adds the no-injector note |
 | `skills/flow-external-session` | planning handoff intake, plus a handoff-out mode; the schema and validator are verbatim |
 | `agents/` | the OMP agents except `flow-evidence-verifier`, plus `flow-cor-reviewer` for the bundled OMP `reviewer` |
 
@@ -50,9 +51,11 @@ Mechanics map:
 | `hub` clarification and `hub wait` | the agent returns BLOCKED; Main continues it with `SendMessage`; background agents notify on completion |
 | OMP `todo` | the task list |
 | OMP isolation | `isolation: "worktree"` |
+| `${WEFT_GRAPH}` as a local graph the user syncs | the same locally; in a cloud session `WEFT_GRAPH_REPO` makes `weft_guard` clone it shallow and `weft_publish` push each write to its default branch |
+| `ai-memory` hub injection | `weft-memory` recall at the start of substantive work, with `## Harness: [[Claude]]` |
 | `gh` publication behind `bash.patterns` prompts | GitHub MCP tools; the cloud harness pushes the session branch and opens a draft pull request |
 
-Not ported: `weft-worklog`, `weft-memory`, `weft-maintenance` and `blog-post` need `${WEFT_GRAPH}` or a local site checkout; `flow-evidence-verifier` and the checkpoint step serve device and manual acceptance, which a cloud container has no use for; frozen LDD ledgers; codebase-memory and shell-awareness doctrine.
+Not ported: `blog-post` needs a local site checkout; `flow-evidence-verifier` and the checkpoint step serve device and manual acceptance, which a cloud container has no use for; frozen LDD ledgers; codebase-memory and shell-awareness doctrine.
 
 Getting the plugin into a cloud session, which starts from a fresh container each time:
 
