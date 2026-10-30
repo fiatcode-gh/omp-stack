@@ -57,11 +57,12 @@ Mechanics map:
 
 Not ported: `blog-post` needs a local site checkout; `flow-evidence-verifier` and the checkpoint step serve device and manual acceptance, which a cloud container has no use for; frozen LDD ledgers; codebase-memory and shell-awareness doctrine.
 
-Getting the plugin into a cloud session, which starts from a fresh container each time:
+A cloud session starts from a fresh container, so the cloud environment installs the plugin on every start. In the environment's settings:
 
-- **Per repository:** commit `.claude/settings.json` with `extraKnownMarketplaces` (`omp-stack` from GitHub `fiatcode-gh/omp-stack`) and `enabledPlugins` (`"flow@omp-stack": true`). Every session on that repository, local or cloud, gets it.
-- **Per cloud environment:** add `claude plugin marketplace add fiatcode-gh/omp-stack && claude plugin install flow@omp-stack` to the environment's setup script. The script cannot read secrets, so this needs a repository the container can clone.
-- **Per claude.ai account:** plugins enabled on claude.ai sync into cloud sessions. Publishing goes through the organization's plugin library.
+- Setup script: `claude plugin marketplace add fiatcode-gh/omp-stack && claude plugin install flow@omp-stack || echo "flow plugin install failed"`. This repository is public, so the setup script can fetch it without the repository being attached to the session.
+- Environment variables: `WEFT_GRAPH=/home/user/weft` and `WEFT_GRAPH_REPO=fiatcode-gh/fiat-codex`.
+
+Keep `WEFT_GRAPH` on its own clone. A session that has `fiat-codex` attached checks it out on the session's own branch; `weft_publish` pushes to the default branch either way.
 
 ## Handoff rule
 
