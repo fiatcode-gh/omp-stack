@@ -63,7 +63,6 @@ Claude Code on the web runs in an ephemeral container with a fresh clone. These 
 - Pushing that branch and opening a draft pull request is how a cloud session delivers its work. Do it when `flow-integrating` says the work is locally complete. `weft_publish` pushes to the Weft graph repository are also pre-approved (Weft graph below). Every other stakeholder-visible write (marking ready, merging, review comments, replies on someone else's pull request, releases) needs explicit user approval for that action.
 - Use the GitHub MCP tools (`mcp__github__*`) for GitHub reads and writes. `gh` is not authenticated here.
 - The codebase-memory MCP is local-only. Use `Grep`, `Glob` and `Explore` for code lookup.
-- The Weft graph reaches a cloud session as a clone of its GitHub repository (Weft graph below).
 
 ## Weft graph
 
